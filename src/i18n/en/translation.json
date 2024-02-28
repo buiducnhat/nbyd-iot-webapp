@@ -83,6 +83,13 @@
   "Image": "",
   "Index": "",
   "Auth token": "",
+  "New device": "",
+  "Instructions": "",
+  "Copy": "",
+  "Action": "",
+  "Select": "",
+  "template_code_instruction_1": "Select the device in the left table to generate the template code",
+  "template_code_instruction_2": "The template code should be at the top of the source code",
 
   "ApiResCode": {
     "1": "An error occurred",

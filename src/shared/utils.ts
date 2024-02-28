@@ -51,3 +51,10 @@ export const searchStr = (input: string, search: string) => {
     removeVietnameseAccents(search.toLowerCase()),
   );
 };
+
+export const getEsp32TemplateCode = (
+  projectId: string,
+  deviceAuthToken: string,
+) => {
+  return `#include <NBYD_IOT.h>\n#define NBYD_PROJECT_ID "${projectId}"\n#define NBYD_AUTH_TOKEN "${deviceAuthToken}"`;
+};
