@@ -1,4 +1,4 @@
-import { TDeviceBasic } from '../devices/device.model';
+import { TDevice } from '../devices/device.model';
 import { TFileBasicDto } from '../files/file.model';
 
 export enum EProjectStatus {
@@ -19,7 +19,7 @@ export type TProjectBasic = {
 };
 
 export type TProjectDetail = TProjectBasic & {
-  devices: TDeviceBasic[];
+  devices: TDevice[];
   metaData?: any;
   webDashboard?: any;
   mobileDashboard?: any;

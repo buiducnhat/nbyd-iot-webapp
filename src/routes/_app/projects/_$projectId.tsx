@@ -3,7 +3,9 @@ import { Outlet, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { Dropdown, Image, Space, Tabs, Typography, theme } from 'antd';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-use';
 
+import useApp from '@/hooks/use-app';
 import ProjectFormDrawer from '@/modules/projects/components/project-form-drawer';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
 
@@ -15,10 +17,10 @@ export const Route = createFileRoute('/_app/projects/_$projectId')({
 function ProjectDetailPage() {
   const { projectId } = Route.useParams();
 
+  const location = useLocation();
   const navigate = useNavigate();
 
-  const { t } = useTranslation();
-  const { token } = theme.useToken();
+  const { t, token } = useApp();
 
   const [openFormDrawer, setOpenFormDrawer] = useState(false);
 
@@ -92,6 +94,7 @@ function ProjectDetailPage() {
               params: { projectId },
             });
           }}
+          activeKey={location.pathname?.split('/').pop()}
           items={[
             {
               key: 'home',
@@ -101,6 +104,11 @@ function ProjectDetailPage() {
             {
               key: 'datastreams',
               label: t('Datastreams'),
+              children: <Outlet />,
+            },
+            {
+              key: 'dashboard',
+              label: t('Dashboard'),
               children: <Outlet />,
             },
           ]}

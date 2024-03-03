@@ -1,3 +1,4 @@
+import { TDatastream } from '../datastreams/datastream.model';
 import { TFileBasicDto } from '../files/file.model';
 
 export enum EDeviceHardware {
@@ -5,18 +6,34 @@ export enum EDeviceHardware {
   ESP8266 = 'ESP8266',
 }
 
+export const EDeviceHardwareOptions = [
+  { label: 'ESP32', value: EDeviceHardware.ESP32 },
+  { label: 'ESP8266', value: EDeviceHardware.ESP8266 },
+];
+
 export enum EDeviceStatus {
   ONLINE = 'ONLINE',
   OFFLINE = 'OFFLINE',
 }
 
-export type TDeviceBasic = {
+export enum EDeviceConnection {
+  WIFI = 'WIFI',
+}
+
+export const EDeviceConnectionOptions = [
+  { label: 'Wifi', value: EDeviceConnection.WIFI },
+];
+
+export type TDevice = {
   id: string;
   name: string;
   imageFile: TFileBasicDto;
   authToken: string;
   hardware: EDeviceHardware;
+  connection: EDeviceConnection;
   status: EDeviceStatus;
   lastOnlineAt?: string | Date;
+  description?: string;
   createdAt: string | Date;
+  datastreams: TDatastream[];
 };

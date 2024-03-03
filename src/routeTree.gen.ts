@@ -20,6 +20,7 @@ import { Route as AppProjectsProjectIdImport } from './routes/_app/projects/_$pr
 import { Route as AppProjectsProjectIdIndexImport } from './routes/_app/projects/_$projectId/index'
 import { Route as AppProjectsProjectIdHomeImport } from './routes/_app/projects/_$projectId/home'
 import { Route as AppProjectsProjectIdDatastreamsImport } from './routes/_app/projects/_$projectId/datastreams'
+import { Route as AppProjectsProjectIdDashboardImport } from './routes/_app/projects/_$projectId/dashboard'
 
 // Create/Update Routes
 
@@ -69,6 +70,12 @@ const AppProjectsProjectIdDatastreamsRoute =
     getParentRoute: () => AppProjectsProjectIdRoute,
   } as any)
 
+const AppProjectsProjectIdDashboardRoute =
+  AppProjectsProjectIdDashboardImport.update({
+    path: '/dashboard',
+    getParentRoute: () => AppProjectsProjectIdRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -97,6 +104,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProjectsIndexImport
       parentRoute: typeof AppImport
     }
+    '/_app/projects/_$projectId/dashboard': {
+      preLoaderRoute: typeof AppProjectsProjectIdDashboardImport
+      parentRoute: typeof AppProjectsProjectIdImport
+    }
     '/_app/projects/_$projectId/datastreams': {
       preLoaderRoute: typeof AppProjectsProjectIdDatastreamsImport
       parentRoute: typeof AppProjectsProjectIdImport
@@ -118,6 +129,7 @@ export const routeTree = rootRoute.addChildren([
   IndexRoute,
   AppRoute.addChildren([
     AppProjectsProjectIdRoute.addChildren([
+      AppProjectsProjectIdDashboardRoute,
       AppProjectsProjectIdDatastreamsRoute,
       AppProjectsProjectIdHomeRoute,
       AppProjectsProjectIdIndexRoute,
