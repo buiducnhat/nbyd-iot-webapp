@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { App, Button, Drawer, Form, Input, Select, Space } from 'antd';
+import { Button, Drawer, Form, Input, Select, Space } from 'antd';
 import { useEffect } from 'react';
 
 import useApp from '@/hooks/use-app';
@@ -8,9 +8,9 @@ import {
   EDeviceConnectionOptions,
   EDeviceHardwareOptions,
   TDevice,
-} from './device.model';
-import deviceService from './device.service';
-import { TCreateDeviceDto } from './dto/create-device.dto';
+} from '../device.model';
+import deviceService from '../device.service';
+import { TCreateDeviceDto } from '../dto/create-device.dto';
 
 type TDeviceFormDrawerProps = {
   open: boolean;
@@ -29,27 +29,20 @@ const DeviceFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
   device,
   refetch,
 }: TDeviceFormDrawerProps) => {
-  const { t } = useApp();
+  const { t, antdApp } = useApp();
 
-  const { message } = App.useApp();
   const [form] = Form.useForm<TCreateDeviceDto>();
-
-  useEffect(() => {
-    if (device) {
-      form.setFieldsValue(device);
-    }
-  }, [device, form]);
 
   const createMutation = useMutation({
     mutationFn: (data: any) => deviceService.create(projectId, data),
     onSuccess: async () => {
       refetch && (await refetch());
-      message.success(t('Created successfully'));
+      antdApp.message.success(t('Created successfully'));
       setOpen(false);
       form.resetFields();
     },
     onError: (error) => {
-      message.error(error.message);
+      antdApp.message.error(error.message);
     },
   });
 
@@ -58,13 +51,19 @@ const DeviceFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
       device ? deviceService.update(projectId, device.id, data) : (null as any),
     onSuccess: async () => {
       refetch && (await refetch());
-      message.success(t('Updated successfully'));
+      antdApp.message.success(t('Updated successfully'));
       setOpen(false);
     },
     onError: (error) => {
-      message.error(error.message);
+      antdApp.message.error(error.message);
     },
   });
+
+  useEffect(() => {
+    if (device) {
+      form.setFieldsValue(device);
+    }
+  }, [device, form]);
 
   useEffect(() => {
     if (action === 'create') {

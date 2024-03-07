@@ -1,13 +1,14 @@
 import { DeleteOutlined } from '@ant-design/icons';
+import { useMutation } from '@tanstack/react-query';
 import { Outlet, createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Dropdown, Image, Space, Tabs, Typography, theme } from 'antd';
+import { Dropdown, Image, Space, Tabs, Typography } from 'antd';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-use';
 
 import useApp from '@/hooks/use-app';
 import ProjectFormDrawer from '@/modules/projects/components/project-form-drawer';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
+import projectService from '@/modules/projects/project.service';
 
 export const Route = createFileRoute('/_app/projects/_$projectId')({
   component: ProjectDetailPage,
@@ -20,11 +21,22 @@ function ProjectDetailPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { t, token } = useApp();
+  const { t, token, antdApp } = useApp();
 
   const [openFormDrawer, setOpenFormDrawer] = useState(false);
 
   const { project, projectQuery } = useGetProjectDetail(projectId);
+
+  const deleteProjectMutation = useMutation({
+    mutationFn: (projectId: string) => projectService.delete(projectId),
+    onSuccess: () => {
+      navigate({ to: '/projects' });
+      antdApp.message.success(t('Deleted successfully'));
+    },
+    onError: (error) => {
+      antdApp.message.error(error.message);
+    },
+  });
 
   return (
     <>
@@ -72,7 +84,15 @@ function ProjectDetailPage() {
                 ],
                 onClick: (item) => {
                   if (item.key === 'delete') {
-                    console.log('delete');
+                    antdApp.modal.confirm({
+                      title: t('Delete confirmation'),
+                      content: t('Are you sure you want to delete this item?'),
+                      okText: t('Yes'),
+                      cancelText: t('No'),
+                      onOk: async () => {
+                        await deleteProjectMutation.mutateAsync(projectId);
+                      },
+                    });
                   }
                 },
               }}
@@ -81,7 +101,7 @@ function ProjectDetailPage() {
               }}
             >
               {t('Edit')}
-            </Dropdown.Button>{' '}
+            </Dropdown.Button>
           </Space>
         </Space>
 

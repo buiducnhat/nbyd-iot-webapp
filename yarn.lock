@@ -1270,6 +1270,11 @@ ansi-styles@^5.0.0:
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-5.2.0.tgz#07449690ad45777d1924ac2abb2fc8895dba836b"
   integrity sha512-Cxwpt2SfTzTtXcfOlzGEee8O+c+MmUgGrNiBcXnuWxuFJHe6a5Hz7qwhwe5OgaSYI0IJvkLqWX1ASG+cJOkEiA==
 
+antd-form-devtools@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/antd-form-devtools/-/antd-form-devtools-1.0.2.tgz#7a9bca6831823f086c3d15b4e799e73c1102b1b4"
+  integrity sha512-R4+Eiml+VCWhelBS7mnDsiRtDKKwjnieV6i/C6eZ69hzpifSqd/FnDvcUwZ5iqBpGYxPEajwakvGLPvMvAP60Q==
+
 antd-img-crop@^4.21.0:
   version "4.21.0"
   resolved "https://registry.yarnpkg.com/antd-img-crop/-/antd-img-crop-4.21.0.tgz#046e62de543ea5de0d502d134d689a884a9e77be"

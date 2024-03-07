@@ -1,10 +1,10 @@
 import { LockFilled, UserOutlined } from '@ant-design/icons';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { App, Button, Flex, Form, Input, Layout, Typography } from 'antd';
+import { Button, Flex, Form, Input, Layout, Typography } from 'antd';
 import { AxiosError } from 'axios';
-import { useTranslation } from 'react-i18next';
 
+import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
 import { TLoginInput } from '@/modules/auth/auth.model';
 import authService from '@/modules/auth/auth.service';
@@ -16,26 +16,24 @@ export const Route = createFileRoute('/_auth/auth/login')({
 });
 
 function LoginPage() {
-  const { t } = useTranslation();
+  const { t, antdApp } = useApp();
 
   const queryClient = useQueryClient();
   const setLoading = useAppStore((state) => state.setLoading);
-
-  const { notification } = App.useApp();
 
   const [form] = Form.useForm<TLoginInput>();
 
   const loginMutation = useMutation({
     mutationFn: (input: TLoginInput) => authService.login(input),
     onSuccess: () => {
-      notification.success({
+      antdApp.notification.success({
         message: t('Login successfully'),
       });
       queryClient.refetchQueries({ queryKey: ['auth/getMe'] });
       setLoading(false);
     },
     onError: (error: AxiosError<THttpResponse<null>>) => {
-      notification.error({
+      antdApp.notification.error({
         message: t('Login failed'),
         description: transApiResDataCode(t, error.response?.data),
       });
@@ -51,7 +49,7 @@ function LoginPage() {
   };
 
   const onFinishFailed = () => {
-    notification.error({
+    antdApp.notification.error({
       message: t('Login failed'),
       description: t('Please contact the administrator'),
     });

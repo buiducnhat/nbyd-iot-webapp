@@ -54,7 +54,7 @@ export const searchStr = (input: string, search: string) => {
 
 export const getEsp32TemplateCode = (
   projectId: string,
-  deviceAuthToken: string,
+  deviceAuthToken = '***',
 ) => {
   return `#include <NBYD_IOT.h>\n#define NBYD_PROJECT_ID "${projectId}"\n#define NBYD_AUTH_TOKEN "${deviceAuthToken}"`;
 };

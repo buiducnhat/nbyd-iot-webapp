@@ -1,7 +1,8 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { App, Button, Drawer, Form, Input, Skeleton, Space } from 'antd';
+import { Button, Drawer, Form, Input, Skeleton, Space } from 'antd';
 import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import useApp from '@/hooks/use-app';
 
 import projectService from '../project.service';
 
@@ -20,9 +21,8 @@ const ProjectFormDrawer: React.FC<TProjectFormDrawerProps> = ({
   id,
   refetch,
 }: TProjectFormDrawerProps) => {
-  const { t } = useTranslation();
+  const { t, antdApp } = useApp();
 
-  const { message } = App.useApp();
   const [form] = Form.useForm();
 
   const getQuery = useQuery({
@@ -43,12 +43,12 @@ const ProjectFormDrawer: React.FC<TProjectFormDrawerProps> = ({
     mutationFn: (data: any) => projectService.create(data),
     onSuccess: async () => {
       refetch && (await refetch());
-      message.success(t('Created successfully'));
+      antdApp.message.success(t('Created successfully'));
       setOpen(false);
       form.resetFields();
     },
     onError: (error) => {
-      message.error(error.message);
+      antdApp.message.error(error.message);
     },
   });
 
@@ -57,12 +57,12 @@ const ProjectFormDrawer: React.FC<TProjectFormDrawerProps> = ({
       id ? projectService.update(id, data) : (null as any),
     onSuccess: async () => {
       refetch && (await refetch());
-      message.success(t('Updated successfully'));
+      antdApp.message.success(t('Updated successfully'));
       setOpen(false);
       // form.resetFields();
     },
     onError: (error) => {
-      message.error(error.message);
+      antdApp.message.error(error.message);
     },
   });
 

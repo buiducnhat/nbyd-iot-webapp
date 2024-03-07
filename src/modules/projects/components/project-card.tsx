@@ -12,7 +12,7 @@ const ProjectCard = ({ project }: TProjectCardProps) => {
   const { t } = useTranslation();
 
   return (
-    <Link to="/projects/$projectId" params={{ projectId: project.id }}>
+    <Link to="/projects/$projectId/home" params={{ projectId: project.id }}>
       <Card
         hoverable
         cover={

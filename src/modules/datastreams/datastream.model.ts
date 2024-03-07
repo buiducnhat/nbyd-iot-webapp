@@ -5,6 +5,13 @@ export enum EDatastreamType {
   ZIGBEE = 'ZIGBEE',
 }
 
+export const EDatastreamTypeOptions = [
+  { value: EDatastreamType.DIGITAL, label: 'Digital' },
+  { value: EDatastreamType.ANALOG, label: 'Analog' },
+  { value: EDatastreamType.VIRTUAL, label: 'Virtual' },
+  { value: EDatastreamType.ZIGBEE, label: 'Zigbee' },
+];
+
 export enum EDatastreamMode {
   INPUT = 'INPUT',
   OUTPUT = 'OUTPUT',
@@ -12,13 +19,26 @@ export enum EDatastreamMode {
   INPUT_PULLDOWN = 'INPUT_PULLDOWN',
 }
 
+export const EDatastreamModeOptions = [
+  { value: EDatastreamMode.INPUT, label: 'Input' },
+  { value: EDatastreamMode.OUTPUT, label: 'Output' },
+  { value: EDatastreamMode.INPUT_PULLUP, label: 'Input Pullup' },
+  { value: EDatastreamMode.INPUT_PULLDOWN, label: 'Input Pulldown' },
+];
+
 export enum EDatastreamDataType {
   BOOLEAN = 'BOOLEAN',
   INTEGER = 'INTEGER',
   FLOAT = 'FLOAT',
   STRING = 'STRING',
-  JSON = 'JSON',
 }
+
+export const EDatastreamDataTypeOptions = [
+  { value: EDatastreamDataType.BOOLEAN, label: 'Boolean' },
+  { value: EDatastreamDataType.INTEGER, label: 'Integer' },
+  { value: EDatastreamDataType.FLOAT, label: 'Float' },
+  { value: EDatastreamDataType.STRING, label: 'String' },
+];
 
 export type TDatastream = {
   id: string;
@@ -27,6 +47,7 @@ export type TDatastream = {
   iconId: number;
   color: string;
   type: EDatastreamType;
+  pin?: string;
   mode?: EDatastreamMode;
   dataType?: EDatastreamDataType;
   minValue?: number;

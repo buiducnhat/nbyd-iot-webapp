@@ -1,15 +1,18 @@
 import {
-  CheckCircleFilled,
   CopyOutlined,
+  DeleteOutlined,
   EditOutlined,
+  EyeOutlined,
+  MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
+import { useMutation } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import {
-  Badge,
   Button,
   Col,
   Divider,
+  Dropdown,
   Flex,
   Image,
   Row,
@@ -19,6 +22,7 @@ import {
   Tooltip,
   Typography,
 } from 'antd';
+import modal from 'antd/es/modal';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -29,12 +33,13 @@ import {
 import styled from 'styled-components';
 
 import useApp from '@/hooks/use-app';
-import DeviceFormDrawer from '@/modules/devices/device-form-drawer';
+import DeviceFormDrawer from '@/modules/devices/components/device-form-drawer';
 import {
   EDeviceHardware,
   EDeviceStatus,
   TDevice,
 } from '@/modules/devices/device.model';
+import deviceService from '@/modules/devices/device.service';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
 import SoftButton from '@/shared/components/soft-button';
 import { TST } from '@/shared/types/tst.type';
@@ -47,7 +52,7 @@ export const Route = createFileRoute('/_app/projects/_$projectId/home')({
 function ProjectIdHome() {
   const { projectId } = Route.useParams();
 
-  const { t, token, isDarkTheme } = useApp();
+  const { t, token, isDarkTheme, antdApp } = useApp();
 
   const [deviceFormAction, setDeviceFormAction] = useState<'create' | 'update'>(
     'create',
@@ -56,6 +61,17 @@ function ProjectIdHome() {
   const [openDeviceFormDrawer, setOpenDeviceFormDrawer] = useState(false);
 
   const { project, projectQuery } = useGetProjectDetail(projectId);
+
+  const deleteDeviceMutation = useMutation({
+    mutationFn: (deviceId: string) => deviceService.delete(projectId, deviceId),
+    onSuccess: () => {
+      projectQuery.refetch();
+      antdApp.message.success(t('Deleted successfully'));
+    },
+    onError: (error) => {
+      antdApp.message.error(error.message);
+    },
+  });
 
   return (
     <>
@@ -104,6 +120,7 @@ function ProjectIdHome() {
                   title: t('Device'),
                   dataIndex: 'name',
                   key: 'name',
+                  fixed: 'left',
                   render: (name: string, record) => (
                     <Space direction="vertical" align="center">
                       <Image
@@ -169,23 +186,64 @@ function ProjectIdHome() {
                   ),
                 },
                 {
-                  title: t('Action'),
+                  title: t('Actions'),
                   dataIndex: '',
                   key: 'action',
-                  render: (record: TDevice) => (
-                    <Space>
-                      <Tooltip title={t('Edit')}>
-                        <Button
-                          type="text"
-                          icon={<EditOutlined />}
-                          onClick={() => {
-                            setDeviceFormAction('update');
-                            setSelectedDevice(record);
-                            setOpenDeviceFormDrawer(true);
-                          }}
-                        />
-                      </Tooltip>
-                    </Space>
+                  fixed: 'right',
+                  render: (_, record) => (
+                    <Dropdown
+                      trigger={['click']}
+                      menu={{
+                        items: [
+                          {
+                            label: t('View'),
+                            key: 'view',
+                            icon: <EyeOutlined />,
+                            onClick: () => {
+                              setSelectedDevice(record);
+                              // setOpenPreviewDrawer(true);
+                            },
+                          },
+                          {
+                            label: t('Edit'),
+                            key: 'edit',
+                            icon: <EditOutlined />,
+                            onClick: () => {
+                              setDeviceFormAction('update');
+                              setSelectedDevice(record);
+                              setOpenDeviceFormDrawer(true);
+                            },
+                          },
+                          {
+                            label: t('Delete'),
+                            key: 'delete',
+                            icon: <DeleteOutlined />,
+                            danger: true,
+                            onClick: () => {
+                              modal.confirm({
+                                title: t('Delete confirmation'),
+                                content: t(
+                                  'Are you sure you want to delete this item?',
+                                ),
+                                okText: t('Yes'),
+                                cancelText: t('No'),
+                                onOk: async () => {
+                                  await deleteDeviceMutation.mutateAsync(
+                                    record.id,
+                                  );
+                                },
+                              });
+                            },
+                          },
+                        ],
+                      }}
+                    >
+                      <Button>
+                        <Space>
+                          <MoreOutlined />
+                        </Space>
+                      </Button>
+                    </Dropdown>
                   ),
                 },
               ]}
@@ -193,11 +251,18 @@ function ProjectIdHome() {
           </Space>
         </Col>
 
-        <Col>
+        <Col
+          span={1}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
           <Divider type="vertical" style={{ height: '100%' }} />
         </Col>
 
-        <Col>
+        <Col span={11}>
           <Space direction="vertical">
             <Typography.Text strong style={{ fontSize: token.fontSizeLG }}>
               {t('Instructions')}
@@ -224,10 +289,7 @@ function ProjectIdHome() {
                   isDarkTheme ? codeHighlightDarkTheme : codeHighlightLightTheme
                 }
               >
-                {getEsp32TemplateCode(
-                  projectId,
-                  selectedDevice?.authToken || '',
-                )}
+                {getEsp32TemplateCode(projectId)}
               </SyntaxHighlighter>
 
               <Tooltip title={t('Copy')}>
@@ -243,7 +305,7 @@ function ProjectIdHome() {
                     navigator.clipboard.writeText(
                       getEsp32TemplateCode(
                         projectId,
-                        selectedDevice?.authToken || '',
+                        selectedDevice?.authToken,
                       ),
                     );
                   }}

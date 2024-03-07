@@ -1,9 +1,10 @@
 import { Button, Result } from 'antd';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+
+import useApp from '@/hooks/use-app';
 
 const ErrorPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t } = useApp();
 
   return (
     <Result

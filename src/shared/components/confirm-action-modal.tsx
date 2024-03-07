@@ -1,5 +1,6 @@
 import { Alert, Button, Modal } from 'antd';
-import { useTranslation } from 'react-i18next';
+
+import useApp from '@/hooks/use-app';
 
 type ConfirmActionModalProps = {
   isModalVisible: boolean;
@@ -8,7 +9,7 @@ type ConfirmActionModalProps = {
 };
 
 const ConfirmActionModal = (props: ConfirmActionModalProps) => {
-  const { t } = useTranslation();
+  const { t } = useApp();
 
   return (
     <Modal
