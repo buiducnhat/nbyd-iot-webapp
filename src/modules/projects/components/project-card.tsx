@@ -18,10 +18,7 @@ const ProjectCard = ({ project }: TProjectCardProps) => {
         cover={
           <img
             alt={project.name}
-            src={
-              project.imageFile?.path ||
-              '/assets/images/project-placeholder.jpeg'
-            }
+            src={project.imageUrl || '/assets/images/project-placeholder.jpeg'}
           />
         }
       >

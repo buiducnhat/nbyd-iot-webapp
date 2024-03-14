@@ -1,5 +1,4 @@
 import { TDevice } from '../devices/device.model';
-import { TFileBasicDto } from '../files/file.model';
 import { TDashboardItem } from './components/widgets';
 
 export enum EProjectStatus {
@@ -12,7 +11,8 @@ export type TProjectBasic = {
   name: string;
   description?: string;
   status: EProjectStatus;
-  imageFile: TFileBasicDto;
+  imageId?: string;
+  imageUrl?: string;
   _count: {
     devices: number;
   };

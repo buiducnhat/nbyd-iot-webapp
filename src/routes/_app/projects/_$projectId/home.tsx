@@ -127,7 +127,7 @@ function ProjectIdHome() {
                         style={{ borderRadius: token.borderRadius }}
                         width={50}
                         src={
-                          record.imageFile?.path ||
+                          record.imageUrl ||
                           '/assets/images/device-placeholder.jpeg'
                         }
                       />

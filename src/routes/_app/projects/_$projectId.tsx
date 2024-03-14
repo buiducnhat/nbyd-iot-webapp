@@ -53,10 +53,7 @@ function ProjectDetailPage() {
           <Image
             width={120}
             height={120}
-            src={
-              project?.imageFile?.path ||
-              '/assets/images/project-placeholder.jpeg'
-            }
+            src={project?.imageUrl || '/assets/images/project-placeholder.jpeg'}
             style={{
               border: `1px solid ${token.colorBorder}`,
               borderRadius: token.borderRadius,

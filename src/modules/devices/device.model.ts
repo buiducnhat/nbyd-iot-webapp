@@ -1,5 +1,4 @@
 import { TDatastream } from '../datastreams/datastream.model';
-import { TFileBasicDto } from '../files/file.model';
 
 export enum EDeviceHardware {
   ESP32 = 'ESP32',
@@ -27,7 +26,8 @@ export const EDeviceConnectionOptions = [
 export type TDevice = {
   id: string;
   name: string;
-  imageFile: TFileBasicDto;
+  imageId?: string;
+  imageUrl?: string;
   authToken: string;
   hardware: EDeviceHardware;
   connection: EDeviceConnection;
