@@ -1,6 +1,8 @@
 import { BlockOutlined, SaveOutlined } from '@ant-design/icons';
+import { useMutation } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { Col, FloatButton, Row, Space, Typography } from 'antd';
+import { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
 import styled from 'styled-components';
@@ -18,7 +20,10 @@ import {
   TWidgetType,
 } from '@/modules/projects/components/widgets';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
+import projectService from '@/modules/projects/project.service';
+import { THttpResponse } from '@/shared/http-service';
 import { TST } from '@/shared/types/tst.type';
+import { transApiResDataCode } from '@/shared/utils';
 
 export const Route = createFileRoute('/_app/projects/_$projectId/dashboard')({
   component: ProjectIdDashboard,
@@ -29,7 +34,7 @@ const GridLayout = WidthProvider(RGL);
 function ProjectIdDashboard() {
   const { projectId } = Route.useParams();
 
-  const { token } = useApp();
+  const { t, token, antdApp } = useApp();
 
   const setLoading = useAppStore((state) => state.setLoading);
 
@@ -38,6 +43,19 @@ function ProjectIdDashboard() {
 
   const [items, setItems] = useState<TDashboardItem[]>([]);
   const [droppingItem, setDroppingItem] = useState<TWidgetCommon>();
+
+  const updateWebDashboard = useMutation({
+    mutationFn: (webDashboard: TDashboardItem[]) =>
+      projectService.updateWebDashboard(projectId, {
+        webDashboard,
+      }),
+    onError: (error: AxiosError<THttpResponse<null>>) =>
+      antdApp.notification.error({
+        message: t('Error'),
+        description: transApiResDataCode(t, error.response?.data),
+      }),
+    onSuccess: () => antdApp.message.success(t('Updated successfully')),
+  });
 
   useEffect(() => {
     projectQuery.isFetching ? setLoading(true) : setLoading(false);
@@ -136,7 +154,7 @@ function ProjectIdDashboard() {
                     webDashboard={items}
                     dashboardItem={item}
                     datastreams={datastreams}
-                    onSave={setItems}
+                    onSave={(webDashboard) => console.log(webDashboard)}
                   >
                     <widget.Widget properties={item.properties} />
                   </EditableDashboardItem>
@@ -146,7 +164,11 @@ function ProjectIdDashboard() {
           </GridLayout>
         </DashboardLayout>
 
-        <FloatButton icon={<SaveOutlined />} type="primary" />
+        <FloatButton
+          icon={<SaveOutlined />}
+          type="primary"
+          onClick={() => updateWebDashboard.mutate(items)}
+        />
       </Col>
     </Row>
   );

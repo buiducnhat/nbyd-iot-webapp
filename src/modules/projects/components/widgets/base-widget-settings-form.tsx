@@ -13,6 +13,7 @@ import {
 } from 'antd';
 import { DevTool } from 'antd-form-devtools';
 import { useEffect, useMemo, useState } from 'react';
+import { useEffectOnce, useUpdate } from 'react-use';
 
 import useApp from '@/hooks/use-app';
 import {
@@ -103,11 +104,14 @@ function BaseWidgetSettingsModal({
       (x) => x.id === formValues?.datastreamId,
     );
     setSelectedDatastream(datastream);
+  }, [dashboardItem.type, datastreams, formValues?.datastreamId]);
+
+  useEffect(() => {
     setPreviewValue(
-      datastream?.defaultValue ||
+      selectedDatastream?.defaultValue ||
         FULL_ATTRIBUTES_WIDGETS[dashboardItem.type].defaultProperties?.value,
     );
-  }, [dashboardItem.type, datastreams, formValues?.datastreamId]);
+  }, [dashboardItem.type, selectedDatastream?.defaultValue]);
 
   useEffect(() => {
     form.setFieldsValue({

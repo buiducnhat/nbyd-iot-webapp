@@ -46,8 +46,7 @@ class ProjectService {
 
   updateWebDashboard(id: string, data: TUpdateProjectWebDashboardDto) {
     console.log(data);
-
-    return httpService.request<void>({
+    return httpService.request<TProjectBasic>({
       url: `/api/projects/${id}/web-dashboard`,
       method: 'PATCH',
       data,
