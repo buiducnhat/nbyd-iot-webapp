@@ -1,9 +1,10 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { Button, Drawer, Form, Input, Skeleton, Space } from 'antd';
+import { useMutation } from '@tanstack/react-query';
+import { Button, Drawer, Form, Input, Space } from 'antd';
 import { useEffect } from 'react';
 
 import useApp from '@/hooks/use-app';
 
+import useGetProjectDetail from '../hooks/use-get-project-detail';
 import projectService from '../project.service';
 
 type TProjectFormDrawerProps = {
@@ -25,19 +26,7 @@ const ProjectFormDrawer: React.FC<TProjectFormDrawerProps> = ({
 
   const [form] = Form.useForm();
 
-  const getQuery = useQuery({
-    queryKey: ['/projects/detail', id],
-    enabled: !!id,
-    queryFn: () => (id ? projectService.getDetail(id) : undefined),
-  });
-
-  useEffect(() => {
-    if (getQuery.data) {
-      const project = getQuery.data.data;
-
-      form.setFieldsValue(project);
-    }
-  }, [getQuery.data, form]);
+  const { project, projectQuery } = useGetProjectDetail(id || '');
 
   const createMutation = useMutation({
     mutationFn: (data: any) => projectService.create(data),
@@ -72,8 +61,15 @@ const ProjectFormDrawer: React.FC<TProjectFormDrawerProps> = ({
     }
   }, [action, form]);
 
+  useEffect(() => {
+    if (project && action === 'update') {
+      form.setFieldsValue(project);
+    }
+  }, [action, form, project]);
+
   return (
     <Drawer
+      forceRender
       title={
         action === 'create' ? t('Create new project') : t('Update project')
       }
@@ -87,7 +83,7 @@ const ProjectFormDrawer: React.FC<TProjectFormDrawerProps> = ({
           <Button
             type="primary"
             loading={createMutation.isPending || updateMutation.isPending}
-            disabled={getQuery.isLoading}
+            disabled={projectQuery.isLoading}
             onClick={() => {
               form.submit();
             }}
@@ -97,35 +93,31 @@ const ProjectFormDrawer: React.FC<TProjectFormDrawerProps> = ({
         </Space>
       }
     >
-      {getQuery.isLoading ? (
-        <Skeleton />
-      ) : (
-        <Form
-          form={form}
-          name="projects"
-          autoComplete="off"
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 18 }}
-          onFinish={(values) => {
-            action === 'create'
-              ? createMutation.mutate({
-                  ...values,
-                })
-              : updateMutation.mutate({
-                  ...values,
-                  id,
-                });
-          }}
-        >
-          <Form.Item name="name" label={t('Name')} required>
-            <Input />
-          </Form.Item>
+      <Form
+        form={form}
+        name="projects"
+        autoComplete="off"
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 18 }}
+        onFinish={(values) => {
+          action === 'create'
+            ? createMutation.mutate({
+                ...values,
+              })
+            : updateMutation.mutate({
+                ...values,
+                id,
+              });
+        }}
+      >
+        <Form.Item name="name" label={t('Name')} required>
+          <Input />
+        </Form.Item>
 
-          <Form.Item name="description" label={t('Description')}>
-            <Input.TextArea />
-          </Form.Item>
-        </Form>
-      )}
+        <Form.Item name="description" label={t('Description')}>
+          <Input.TextArea />
+        </Form.Item>
+      </Form>
     </Drawer>
   );
 };

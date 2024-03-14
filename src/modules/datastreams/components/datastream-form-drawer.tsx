@@ -48,12 +48,10 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
   const { t, antdApp } = useApp();
 
   const [form] = Form.useForm<TDatastream>();
+  const formValues = Form.useWatch<TDatastream>([], form);
 
   const [currentStep, setCurrentStep] = useState(isUpdate ? 2 : 0);
   const [deviceId, setDeviceId] = useState<string>(project.devices[0]?.id);
-  const type = Form.useWatch<EDatastreamType>('type', form);
-  const dataType = Form.useWatch<EDatastreamDataType>('dataType', form);
-  const color = Form.useWatch<string>('color', form);
 
   const createMutation = useMutation({
     mutationFn: (data: CreateDatastreamDto) =>
@@ -148,7 +146,7 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
                   onClick={() => {
                     setCurrentStep(2);
                   }}
-                  disabled={!type}
+                  disabled={!formValues?.type}
                 >
                   {t('Next')}
                 </Button>
@@ -165,22 +163,28 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
               name="name"
               label={t('Name')}
               required
+              rules={[{ required: true }]}
             >
               <Input />
             </Form.Item>
 
             <Form.Item<CreateDatastreamDto> name="color" label={t('Color')}>
               <ColorPicker
-                value={color}
+                value={formValues?.color}
                 onChangeComplete={(_color) =>
                   form.setFieldsValue({ color: _color.toHexString() })
                 }
               />
             </Form.Item>
 
-            {(type === EDatastreamType.DIGITAL ||
-              type === EDatastreamType.ANALOG) && (
-              <Form.Item<CreateDatastreamDto> name="mode" label={t('Mode')}>
+            {(formValues?.type === EDatastreamType.DIGITAL ||
+              formValues?.type === EDatastreamType.ANALOG) && (
+              <Form.Item<CreateDatastreamDto>
+                name="mode"
+                label={t('Mode')}
+                required
+                rules={[{ required: true }]}
+              >
                 <Select>
                   {EDatastreamModeOptions.map((option) => (
                     <Select.Option key={option.value} value={option.value}>
@@ -191,11 +195,12 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
               </Form.Item>
             )}
 
-            {type === EDatastreamType.VIRTUAL && (
+            {formValues?.type === EDatastreamType.VIRTUAL && (
               <Form.Item<CreateDatastreamDto>
                 name="dataType"
                 label={t('Data type')}
                 required
+                rules={[{ required: true }]}
               >
                 <Select>
                   {EDatastreamDataTypeOptions.map((option) => (
@@ -207,44 +212,60 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
               </Form.Item>
             )}
 
-            <Form.Item<CreateDatastreamDto> name="pin" label={t('Pin')}>
+            <Form.Item<CreateDatastreamDto>
+              name="pin"
+              label={t('Pin')}
+              required={formValues?.type !== EDatastreamType.ZIGBEE}
+              rules={[
+                {
+                  required: formValues?.type !== EDatastreamType.ZIGBEE,
+                },
+              ]}
+            >
               <Select>
-                {datastreamService.getListPinOptions(type).map((option) => (
-                  <Select.Option key={option.value} value={option.value}>
-                    {option.label}
-                  </Select.Option>
-                ))}
+                {datastreamService
+                  .getListPinOptions(formValues?.type)
+                  .map((option) => (
+                    <Select.Option key={option.value} value={option.value}>
+                      {option.label}
+                    </Select.Option>
+                  ))}
               </Select>
             </Form.Item>
 
-            {type !== EDatastreamType.DIGITAL &&
-              type !== EDatastreamType.ZIGBEE && (
-                <Form.Item<CreateDatastreamDto> name="unit" label={t('Unit')}>
-                  <Input />
+            {
+              // Analog/Virtual
+              formValues?.type !== EDatastreamType.DIGITAL &&
+                formValues?.type !== EDatastreamType.ZIGBEE && (
+                  <Form.Item<CreateDatastreamDto> name="unit" label={t('Unit')}>
+                    <Input />
+                  </Form.Item>
+                )
+            }
+
+            {
+              // Analog/Virtual(only integer/float)
+              (formValues?.dataType === EDatastreamDataType.INTEGER ||
+                formValues?.dataType === EDatastreamDataType.FLOAT) && (
+                <Form.Item label={t('Extra')}>
+                  <Space.Compact>
+                    <Form.Item<CreateDatastreamDto> name="minValue" noStyle>
+                      <InputNumber placeholder={t('Min')} defaultValue={0} />
+                    </Form.Item>
+
+                    <Form.Item<CreateDatastreamDto> name="maxValue" noStyle>
+                      <InputNumber placeholder={t('Max')} defaultValue={1} />
+                    </Form.Item>
+
+                    <Form.Item<CreateDatastreamDto> name="defaultValue" noStyle>
+                      <InputNumber placeholder={t('Default')} />
+                    </Form.Item>
+                  </Space.Compact>
                 </Form.Item>
-              )}
+              )
+            }
 
-            {(type === EDatastreamType.ANALOG ||
-              dataType === EDatastreamDataType.INTEGER ||
-              dataType === EDatastreamDataType.FLOAT) && (
-              <Form.Item label={t('Extra')}>
-                <Space.Compact>
-                  <Form.Item<CreateDatastreamDto> name="minValue" noStyle>
-                    <InputNumber placeholder={t('Min')} defaultValue={0} />
-                  </Form.Item>
-
-                  <Form.Item<CreateDatastreamDto> name="maxValue" noStyle>
-                    <InputNumber placeholder={t('Max')} defaultValue={1} />
-                  </Form.Item>
-
-                  <Form.Item<CreateDatastreamDto> name="defaultValue" noStyle>
-                    <InputNumber placeholder={t('Default')} />
-                  </Form.Item>
-                </Space.Compact>
-              </Form.Item>
-            )}
-
-            {dataType === EDatastreamDataType.STRING && (
+            {formValues?.dataType === EDatastreamDataType.STRING && (
               <Form.Item<CreateDatastreamDto>
                 name="defaultValue"
                 label={t('Default value')}
@@ -277,7 +298,16 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
         ),
       },
     ],
-    [color, dataType, deviceId, form, isUpdate, project.devices, t, type],
+    [
+      deviceId,
+      form,
+      formValues?.color,
+      formValues?.dataType,
+      formValues?.type,
+      isUpdate,
+      project.devices,
+      t,
+    ],
   );
   const stepItems = useMemo(
     () => steps.map((step) => ({ key: step.title, title: step.title })),
@@ -295,6 +325,19 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
       form.setFieldsValue(datastream);
     }
   }, [datastream, form, isUpdate]);
+
+  useEffect(() => {
+    if (
+      formValues?.type === EDatastreamType.DIGITAL ||
+      formValues?.type === EDatastreamType.ANALOG
+    ) {
+      form.setFieldValue('dataType', EDatastreamDataType.INTEGER);
+
+      if (formValues?.type === EDatastreamType.DIGITAL) {
+        form.setFieldsValue({ minValue: 0, maxValue: 1, defaultValue: '0' });
+      }
+    }
+  }, [form, formValues?.type]);
 
   return (
     <Drawer
@@ -340,6 +383,12 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
         }}
         initialValues={datastream}
       >
+        <div style={{ display: 'none' }}>
+          <Form.Item name="minValue" />
+          <Form.Item name="maxValue" />
+          <Form.Item name="defaultValue" />
+        </div>
+
         {steps.map((step, index) => (
           <div
             key={step.title}

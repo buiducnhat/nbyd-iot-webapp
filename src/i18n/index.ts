@@ -15,7 +15,7 @@ i18n.use(initReactI18next).init({
   fallbackLng: 'en',
   initImmediate: true,
   compatibilityJSON: 'v4',
-  debug: import.meta.env.NODE_ENV !== 'production',
+  debug: false,
   interpolation: {
     escapeValue: false,
   },

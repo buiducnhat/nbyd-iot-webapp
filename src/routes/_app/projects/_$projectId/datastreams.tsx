@@ -17,7 +17,6 @@ import {
   Typography,
 } from 'antd';
 import modal from 'antd/es/modal';
-import * as R from 'ramda';
 import { useState } from 'react';
 
 import useApp from '@/hooks/use-app';
@@ -48,10 +47,7 @@ function ProjectIdDatastreams() {
   const [openCreateForm, setOpenCreateForm] = useState(false);
   const [openUpdateForm, setOpenUpdateForm] = useState(false);
 
-  const { project, projectQuery } = useGetProjectDetail(projectId);
-  const datastreams = R.flatten(
-    R.map((a) => a.datastreams, project?.devices || []),
-  );
+  const { project, datastreams, projectQuery } = useGetProjectDetail(projectId);
 
   const deleteDatastreamMutation = useMutation({
     mutationFn: (data: any) =>

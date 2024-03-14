@@ -1,13 +1,13 @@
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Flex, InputNumber, Space, Typography, theme } from 'antd';
-import { useTranslation } from 'react-i18next';
+import { Button, Flex, InputNumber, Space } from 'antd';
+
+import useApp from '@/hooks/use-app';
 
 import { TWidgetProps } from '.';
+import { BaseWidgetTitle } from './base-widget-title';
 
-function InputNumberWidget({ title, properties }: TWidgetProps) {
-  const { t } = useTranslation();
-
-  const { token } = theme.useToken();
+function InputNumberWidget({ properties }: TWidgetProps<any>) {
+  const { t, token } = useApp();
 
   return (
     <Space
@@ -18,7 +18,9 @@ function InputNumberWidget({ title, properties }: TWidgetProps) {
         width: '100%',
       }}
     >
-      <Typography.Text>{title || t('Input number')}</Typography.Text>
+      <BaseWidgetTitle>
+        {properties?.title || t('Input number')}
+      </BaseWidgetTitle>
 
       <Flex justify="space-between">
         <Button type="text" icon={<MinusOutlined />} />

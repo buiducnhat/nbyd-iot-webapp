@@ -1,20 +1,23 @@
-import { BlockOutlined } from '@ant-design/icons';
+import { BlockOutlined, SaveOutlined } from '@ant-design/icons';
 import { createFileRoute } from '@tanstack/react-router';
-import { Col, Row, Space, Typography } from 'antd';
-import { useState } from 'react';
+import { Col, FloatButton, Row, Space, Typography } from 'antd';
+import { useEffect, useState } from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
 import styled from 'styled-components';
 
 import useApp from '@/hooks/use-app';
+import { useAppStore } from '@/modules/app/app.zustand';
 import {
   BaseDashboardItem,
   EditableDashboardItem,
 } from '@/modules/projects/components/dashboard-item';
 import {
+  FULL_ATTRIBUTES_WIDGETS,
   TDashboardItem,
   TWidgetCommon,
-  listWidgetCommon,
+  TWidgetType,
 } from '@/modules/projects/components/widgets';
+import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
 import { TST } from '@/shared/types/tst.type';
 
 export const Route = createFileRoute('/_app/projects/_$projectId/dashboard')({
@@ -24,10 +27,27 @@ export const Route = createFileRoute('/_app/projects/_$projectId/dashboard')({
 const GridLayout = WidthProvider(RGL);
 
 function ProjectIdDashboard() {
-  const { t, token } = useApp();
+  const { projectId } = Route.useParams();
+
+  const { token } = useApp();
+
+  const setLoading = useAppStore((state) => state.setLoading);
+
+  const { project, datastreams, projectQuery } = useGetProjectDetail(projectId);
+  const webDashboard = project?.webDashboard;
 
   const [items, setItems] = useState<TDashboardItem[]>([]);
   const [droppingItem, setDroppingItem] = useState<TWidgetCommon>();
+
+  useEffect(() => {
+    projectQuery.isFetching ? setLoading(true) : setLoading(false);
+  }, [projectQuery.isFetching, setLoading]);
+
+  useEffect(() => {
+    if (webDashboard) {
+      setItems(webDashboard);
+    }
+  }, [webDashboard]);
 
   return (
     <Row gutter={token.size}>
@@ -40,12 +60,14 @@ function ProjectIdDashboard() {
             </Typography.Text>
           </Space>
 
-          {listWidgetCommon.map((widget) => {
+          {Object.keys(FULL_ATTRIBUTES_WIDGETS).map((widgetType) => {
+            const widget = FULL_ATTRIBUTES_WIDGETS[widgetType as TWidgetType];
+
             return (
               <BaseDashboardItem
                 token={token}
                 className="droppable-element"
-                key={widget.type}
+                key={widgetType}
                 draggable
                 onDragStart={() => setDroppingItem(widget)}
                 onDragEnd={() => setDroppingItem(undefined)}
@@ -76,7 +98,7 @@ function ProjectIdDashboard() {
             cols={24}
             rowHeight={96}
             isDroppable={true}
-            droppingItem={droppingItem?.layout}
+            droppingItem={droppingItem?.layoutSettings}
             margin={[8, 8]}
             onDrop={(_layout, item) => {
               if (!droppingItem) return;
@@ -84,22 +106,22 @@ function ProjectIdDashboard() {
               setItems((prev) => [
                 {
                   type: droppingItem.type,
+                  properties: {
+                    title: `${droppingItem?.type}-${prev.length}`,
+                  },
                   layout: {
                     ...item,
                     i: `${droppingItem?.type}-${prev.length}`,
                   },
-                  title: `${droppingItem?.type}-${prev.length}`,
                 },
                 ...prev,
               ]);
             }}
           >
             {items.map((item) => {
-              const widgetCommon = listWidgetCommon.find(
-                (x) => x.type === item.type,
-              );
+              const widget = FULL_ATTRIBUTES_WIDGETS[item.type];
 
-              if (!widgetCommon) return null;
+              if (!widget) return null;
 
               return (
                 <BaseDashboardItem
@@ -107,24 +129,24 @@ function ProjectIdDashboard() {
                   token={token}
                   className="droppable-element"
                   data-grid={{
-                    x: item.layout.x,
-                    y: item.layout.y,
-                    w: item.layout.w,
-                    h: item.layout.h,
-                    minW: widgetCommon.layout.minW,
-                    maxW: widgetCommon.layout.maxW,
-                    minH: widgetCommon.layout.minH,
-                    maxH: widgetCommon.layout.maxH,
+                    ...item.layout,
                   }}
                 >
-                  <EditableDashboardItem>
-                    <widgetCommon.Widget title={item.title} />
+                  <EditableDashboardItem
+                    webDashboard={items}
+                    dashboardItem={item}
+                    datastreams={datastreams}
+                    onSave={setItems}
+                  >
+                    <widget.Widget properties={item.properties} />
                   </EditableDashboardItem>
                 </BaseDashboardItem>
               );
             })}
           </GridLayout>
         </DashboardLayout>
+
+        <FloatButton icon={<SaveOutlined />} type="primary" />
       </Col>
     </Row>
   );

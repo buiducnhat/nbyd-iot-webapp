@@ -1,37 +1,43 @@
 import React from 'react';
 import RGL from 'react-grid-layout';
 
-import InputNumberWidget from './input-number-widget';
-import SwitchWidget from './switch-widget';
-import SliderWidget from './switch/slider-widget';
-import ValueBoxWidget from './value-box-widget';
+import { TDatastream } from '@/modules/datastreams/datastream.model';
+import { TFormField } from '@/shared/types/form-field';
+
+import InputNumberWidget from './input-number';
+import SliderWidget from './slider';
+import SwitchWidget from './switch';
+import ValueBoxWidget from './value-box';
 
 export type TWidgetType = 'SWITCH' | 'VALUE_BOX' | 'SLIDER' | 'INPUT_NUMBER';
 
-export type TWidgetProps = {
-  title?: string;
-  properties?: any;
+export type TWidgetProps<TProperties = any, TValue = any> = {
+  value?: TValue;
+  onChange?: (value: TValue) => void;
+  properties?: TProperties;
+  datastream?: TDatastream;
 };
 
 export type TWidgetCommon = {
   Widget: React.FC<TWidgetProps>;
   type: TWidgetType;
-  layout: RGL.Layout;
+  layoutSettings: RGL.Layout;
   properties?: any;
+  propertiesFields: TFormField[];
+  defaultProperties?: any;
 };
 
 export type TDashboardItem = {
-  title: string;
   type: TWidgetType;
   layout: RGL.Layout;
   properties?: any;
 };
 
-export const listWidgetCommon: TWidgetCommon[] = [
-  {
-    Widget: SwitchWidget,
+export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
+  SWITCH: {
     type: 'SWITCH',
-    layout: {
+    Widget: SwitchWidget,
+    layoutSettings: {
       i: 'SWITCH',
       w: 4,
       h: 1,
@@ -42,11 +48,32 @@ export const listWidgetCommon: TWidgetCommon[] = [
       minH: 1,
       maxH: 2,
     },
+    propertiesFields: [
+      {
+        name: 'onValue',
+        label: 'On value',
+        type: 'input-number',
+        required: true,
+      },
+      {
+        name: 'offValue',
+        label: 'Off value',
+        type: 'input-number',
+        required: true,
+      },
+      { name: 'onTitle', label: 'On title', type: 'input' },
+      { name: 'offTitle', label: 'Off title', type: 'input' },
+    ],
+    defaultProperties: {
+      value: 0,
+      onValue: 1,
+      offValue: 0,
+    },
   },
-  {
-    Widget: ValueBoxWidget,
+  VALUE_BOX: {
     type: 'VALUE_BOX',
-    layout: {
+    Widget: ValueBoxWidget,
+    layoutSettings: {
       i: 'VALUE_BOX',
       w: 3,
       h: 1,
@@ -57,11 +84,15 @@ export const listWidgetCommon: TWidgetCommon[] = [
       minH: 1,
       maxH: 2,
     },
+    propertiesFields: [],
+    defaultProperties: {
+      value: 0,
+    },
   },
-  {
-    Widget: SliderWidget,
+  SLIDER: {
     type: 'SLIDER',
-    layout: {
+    Widget: SliderWidget,
+    layoutSettings: {
       i: 'SLIDER',
       w: 5,
       h: 1,
@@ -72,12 +103,21 @@ export const listWidgetCommon: TWidgetCommon[] = [
       minH: 1,
       maxH: 2,
     },
+    propertiesFields: [
+      { name: 'step', label: 'Step', type: 'input-number', required: true },
+    ],
+    defaultProperties: {
+      value: 0,
+      min: 0,
+      max: 100,
+      step: 1,
+    },
   },
-  {
-    Widget: InputNumberWidget,
+  INPUT_NUMBER: {
     type: 'INPUT_NUMBER',
-    layout: {
-      i: 'SLIDER',
+    Widget: InputNumberWidget,
+    layoutSettings: {
+      i: 'INPUT_NUMBER',
       w: 4,
       h: 1,
       x: 0,
@@ -87,5 +127,9 @@ export const listWidgetCommon: TWidgetCommon[] = [
       minH: 1,
       maxH: 2,
     },
+    propertiesFields: [],
+    defaultProperties: {
+      value: 0,
+    },
   },
-];
+};

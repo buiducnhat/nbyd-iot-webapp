@@ -1,5 +1,6 @@
 import { TDevice } from '../devices/device.model';
 import { TFileBasicDto } from '../files/file.model';
+import { TDashboardItem } from './components/widgets';
 
 export enum EProjectStatus {
   ACTIVE = 'ACTIVE',
@@ -21,7 +22,7 @@ export type TProjectBasic = {
 export type TProjectDetail = TProjectBasic & {
   devices: TDevice[];
   metaData?: any;
-  webDashboard?: any;
+  webDashboard?: TDashboardItem[];
   mobileDashboard?: any;
   updatedAt: string;
 };

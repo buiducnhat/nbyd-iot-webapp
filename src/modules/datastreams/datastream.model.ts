@@ -1,3 +1,5 @@
+import { TDevice } from '../devices/device.model';
+
 export enum EDatastreamType {
   DIGITAL = 'DIGITAL',
   ANALOG = 'ANALOG',
@@ -58,4 +60,6 @@ export type TDatastream = {
   enabledHistory: boolean;
   createdAt: string;
   updatedAt: string;
+
+  device?: TDevice;
 };

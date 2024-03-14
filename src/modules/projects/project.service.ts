@@ -2,6 +2,7 @@ import httpService from '@/shared/http-service';
 
 import { TCreateProjectDto } from './dto/create-project.dto';
 import { TGetListProjectDto } from './dto/get-list-project.dto';
+import { TUpdateProjectWebDashboardDto } from './dto/update-project-web-dashboard.dto';
 import { TProjectBasic, TProjectDetail } from './project.model';
 
 class ProjectService {
@@ -40,6 +41,16 @@ class ProjectService {
     return httpService.request<void>({
       url: `/api/projects/${id}`,
       method: 'DELETE',
+    });
+  }
+
+  updateWebDashboard(id: string, data: TUpdateProjectWebDashboardDto) {
+    console.log(data);
+
+    return httpService.request<void>({
+      url: `/api/projects/${id}/web-dashboard`,
+      method: 'PATCH',
+      data,
     });
   }
 }
