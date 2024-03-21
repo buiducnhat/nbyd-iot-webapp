@@ -1,4 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { EditOutlined } from '@ant-design/icons';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { FloatButton } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
 import styled from 'styled-components';
@@ -26,6 +28,7 @@ const MARGIN_DASHBOARD = 8;
 
 function ProjectIdDashboard() {
   const { projectId } = Route.useParams();
+  const navigate = useNavigate();
 
   const { t, token } = useApp();
 
@@ -56,43 +59,62 @@ function ProjectIdDashboard() {
   }, [webDashboard]);
 
   return (
-    <DashboardLayout
-      $token={token}
-      style={{
-        height: maxY * ITEM_UNIT_HEIGHT + MARGIN_DASHBOARD * (maxY + 1.5),
-      }}
-    >
-      <GridLayout
-        className="layout"
-        compactType={null}
-        cols={NUMBER_OF_COLUMNS}
-        rowHeight={ITEM_UNIT_HEIGHT}
-        margin={[MARGIN_DASHBOARD, MARGIN_DASHBOARD]}
+    <>
+      <DashboardLayout
+        $token={token}
+        style={{
+          height: maxY * ITEM_UNIT_HEIGHT + MARGIN_DASHBOARD * (maxY + 1.5),
+        }}
       >
-        {items.map((item) => {
-          const widget = FULL_ATTRIBUTES_WIDGETS[item.type];
+        <GridLayout
+          className="layout"
+          compactType={null}
+          cols={NUMBER_OF_COLUMNS}
+          rowHeight={ITEM_UNIT_HEIGHT}
+          margin={[MARGIN_DASHBOARD, MARGIN_DASHBOARD]}
+        >
+          {items.map((item) => {
+            const widget = FULL_ATTRIBUTES_WIDGETS[item.type];
 
-          if (!widget) return null;
+            if (!widget) return null;
 
-          return (
-            <BaseDashboardItem
-              key={item.layout.i}
-              $token={token}
-              className="droppable-element"
-              data-grid={{
-                ...item.layout,
-                static: true,
-                isDraggable: false,
-                isResizable: false,
-              }}
-              draggable={false}
-            >
-              <widget.Widget properties={item.properties} />
-            </BaseDashboardItem>
-          );
-        })}
-      </GridLayout>
-    </DashboardLayout>
+            return (
+              <BaseDashboardItem
+                key={item.layout.i}
+                $token={token}
+                className="droppable-element"
+                data-grid={{
+                  ...item.layout,
+                  static: true,
+                  isDraggable: false,
+                  isResizable: false,
+                }}
+                draggable={false}
+              >
+                <widget.Widget
+                  properties={item.properties}
+                  datastream={datastreams.find(
+                    (x) => x.id === item.properties.datastreamId,
+                  )}
+                />
+              </BaseDashboardItem>
+            );
+          })}
+        </GridLayout>
+      </DashboardLayout>
+
+      <FloatButton
+        icon={<EditOutlined />}
+        tooltip={t('Edit') + ' ' + t('Dashboard')}
+        type="primary"
+        onClick={() =>
+          navigate({
+            to: '/projects/$projectId/dashboard/edit',
+            params: { projectId },
+          })
+        }
+      />
+    </>
   );
 }
 

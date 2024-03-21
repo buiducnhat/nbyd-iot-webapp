@@ -126,7 +126,12 @@ function ProjectDetailPage() {
               defaultActiveKey="home"
               onChange={(key) => {
                 navigate({
-                  to: `/projects/${projectId}/${key}` as string,
+                  to:
+                    key === 'home'
+                      ? '/projects/$projectId/'
+                      : key === 'datastreams'
+                        ? '/projects/$projectId/datastreams'
+                        : '/projects/$projectId/dashboard',
                   params: { projectId },
                 });
               }}
@@ -141,7 +146,10 @@ function ProjectDetailPage() {
                   label: t('Datastreams'),
                 },
                 {
-                  key: 'dashboard',
+                  key:
+                    location.pathname?.split('/').pop() === 'dashboard'
+                      ? 'dashboard'
+                      : 'edit',
                   label: t('Dashboard'),
                 },
               ]}

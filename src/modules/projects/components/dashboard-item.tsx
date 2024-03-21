@@ -10,15 +10,15 @@ import { TST } from '@/shared/types/tst.type';
 import { TDashboardItem } from './widgets';
 import BaseWidgetSettingsModal from './widgets/base-widget-settings-form';
 
-export const BaseDashboardItem = styled.div<TST & { $editing?: any }>`
-  cursor: ${({ $editing }) => ($editing === 'true' ? 'move' : 'default')};
+export const BaseDashboardItem = styled.div<TST & { $editing?: boolean }>`
+  cursor: ${({ $editing }) => ($editing ? 'move' : 'default')};
   min-height: 96px;
   border-radius: ${({ $token }) => $token.borderRadius}px;
   background-color: ${({ $token }) => $token.colorBgElevated};
-  box-shadow: 0px 0px 12px 0px #00000030;
+  box-shadow: 0px 0px 15px 0px #00000025;
 `;
 
-type TEditableDashboardItemProps = {
+type TTopLayerEditProps = {
   webDashboard: TDashboardItem[];
   dashboardItem: TDashboardItem;
   datastreams: TDatastream[];
@@ -26,13 +26,13 @@ type TEditableDashboardItemProps = {
   onSave: (webDashboard: TDashboardItem[]) => void;
 };
 
-export function EditableDashboardItem({
+export function TopLayerEdit({
   webDashboard,
   dashboardItem,
   datastreams,
   onSave,
   children,
-}: TEditableDashboardItemProps) {
+}: TTopLayerEditProps) {
   const { token } = useApp();
 
   const [hover, setHover] = useState(false);
@@ -95,6 +95,13 @@ export function EditableDashboardItem({
           <Button
             style={{ borderColor: token.colorError }}
             icon={<DeleteOutlined style={{ color: token.colorError }} />}
+            onClick={() => {
+              onSave(
+                webDashboard.filter(
+                  (item) => item.layout.i !== dashboardItem.layout.i,
+                ),
+              );
+            }}
           />
         </Space.Compact>
       )}

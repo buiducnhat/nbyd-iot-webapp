@@ -1,6 +1,6 @@
-import { BlockOutlined, SaveOutlined } from '@ant-design/icons';
+import { BlockOutlined, LeftOutlined, SaveOutlined } from '@ant-design/icons';
 import { useMutation } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { Col, FloatButton, Row, Space, Typography } from 'antd';
 import { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
@@ -11,7 +11,7 @@ import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
 import {
   BaseDashboardItem,
-  EditableDashboardItem,
+  TopLayerEdit,
 } from '@/modules/projects/components/dashboard-item';
 import {
   FULL_ATTRIBUTES_WIDGETS,
@@ -40,6 +40,8 @@ const MARGIN_DASHBOARD = 8;
 
 function ProjectIdEditDashboard() {
   const { projectId } = Route.useParams();
+
+  const navigate = useNavigate();
 
   const { t, token, antdApp } = useApp();
 
@@ -85,139 +87,157 @@ function ProjectIdEditDashboard() {
   }, [webDashboard]);
 
   return (
-    <Row gutter={token.size}>
-      <Col span={4}>
-        <ListWidgetLayout $token={token} direction="vertical" size="middle">
-          <Space align="center" size="large">
-            <BlockOutlined style={{ fontSize: token.fontSizeHeading5 }} />
-            <Typography.Text style={{ fontSize: token.fontSizeHeading4 }}>
-              {t('Widgets')}
-            </Typography.Text>
-          </Space>
+    <>
+      <Row gutter={token.size}>
+        <Col span={4}>
+          <ListWidgetLayout $token={token} direction="vertical" size="middle">
+            <Space align="center" size="large">
+              <BlockOutlined style={{ fontSize: token.fontSizeHeading5 }} />
+              <Typography.Text style={{ fontSize: token.fontSizeHeading4 }}>
+                {t('Widgets')}
+              </Typography.Text>
+            </Space>
 
-          {Object.keys(FULL_ATTRIBUTES_WIDGETS).map((widgetType) => {
-            const widget = FULL_ATTRIBUTES_WIDGETS[widgetType as TWidgetType];
-
-            return (
-              <BaseDashboardItem
-                style={{ cursor: 'grab' }}
-                $token={token}
-                className="droppable-element"
-                key={widgetType}
-                draggable
-                onDragStart={() => setDroppingItem(widget)}
-                onDragEnd={() => setDroppingItem(undefined)}
-              >
-                <widget.Widget />
-              </BaseDashboardItem>
-            );
-          })}
-        </ListWidgetLayout>
-      </Col>
-
-      <Col span={20}>
-        <DashboardLayout
-          $token={token}
-          style={{
-            height:
-              curRowNum * ITEM_UNIT_HEIGHT +
-              MARGIN_DASHBOARD * (curRowNum + 1.5),
-          }}
-        >
-          <DashboardBoxRow $token={token}>
-            {new Array(24 * curRowNum).fill(0).map((_, index) => {
-              return (
-                <DashboardBoxCol key={index} $token={token}>
-                  <DashboardBox $token={token}></DashboardBox>
-                </DashboardBoxCol>
-              );
-            })}
-          </DashboardBoxRow>
-
-          <GridLayout
-            className="layout"
-            compactType={null}
-            cols={NUMBER_OF_COLUMNS}
-            rowHeight={ITEM_UNIT_HEIGHT}
-            isDroppable={true}
-            droppingItem={droppingItem?.layoutSettings}
-            margin={[MARGIN_DASHBOARD, MARGIN_DASHBOARD]}
-            onLayoutChange={(layout) => {
-              setItems((prev) =>
-                prev.map((item) => {
-                  const newItem = layout.find((l) => l.i === item.layout.i);
-
-                  if (!newItem) return item;
-
-                  return {
-                    ...item,
-                    layout: newItem,
-                  };
-                }),
-              );
-            }}
-            onDrop={(_layout, item) => {
-              if (!droppingItem) return;
-
-              if (item.y + droppingItem.layoutSettings.h > curRowNum) {
-                setCurRowNum(item.y + droppingItem.layoutSettings.h);
-              }
-
-              setItems((prev) => [
-                {
-                  type: droppingItem.type,
-                  properties: {
-                    title: `${droppingItem?.type}-${prev.length}`,
-                  },
-                  layout: {
-                    ...item,
-                    i: `${droppingItem?.type}-${prev.length}`,
-                  },
-                },
-                ...prev,
-              ]);
-            }}
-          >
-            {items.map((item) => {
-              const widget = FULL_ATTRIBUTES_WIDGETS[item.type];
-
-              if (!widget) return null;
+            {Object.keys(FULL_ATTRIBUTES_WIDGETS).map((widgetType) => {
+              const widget = FULL_ATTRIBUTES_WIDGETS[widgetType as TWidgetType];
 
               return (
                 <BaseDashboardItem
-                  key={item.layout.i}
-                  $editing="true"
+                  style={{ cursor: 'grab' }}
                   $token={token}
                   className="droppable-element"
-                  data-grid={{
-                    ...item.layout,
-                    minW: widget.layoutSettings.minW,
-                    maxW: widget.layoutSettings.maxW,
-                    minH: widget.layoutSettings.minH,
-                    maxH: widget.layoutSettings.maxH,
-                  }}
+                  key={widgetType}
+                  draggable
+                  onDragStart={() => setDroppingItem(widget)}
+                  onDragEnd={() => setDroppingItem(undefined)}
                 >
-                  <EditableDashboardItem
-                    webDashboard={items}
-                    dashboardItem={item}
-                    datastreams={datastreams}
-                    onSave={(webDashboard) => console.log(webDashboard)}
-                  >
-                    <widget.Widget properties={item.properties} />
-                  </EditableDashboardItem>
+                  <widget.Widget />
                 </BaseDashboardItem>
               );
             })}
-          </GridLayout>
-        </DashboardLayout>
+          </ListWidgetLayout>
+        </Col>
+
+        <Col span={20}>
+          <DashboardLayout
+            $token={token}
+            style={{
+              height:
+                curRowNum * ITEM_UNIT_HEIGHT +
+                MARGIN_DASHBOARD * (curRowNum + 1.5),
+            }}
+          >
+            <DashboardBoxRow $token={token}>
+              {new Array(24 * curRowNum).fill(0).map((_, index) => {
+                return (
+                  <DashboardBoxCol key={index} $token={token}>
+                    <DashboardBox $token={token}></DashboardBox>
+                  </DashboardBoxCol>
+                );
+              })}
+            </DashboardBoxRow>
+
+            <GridLayout
+              className="layout"
+              compactType={null}
+              cols={NUMBER_OF_COLUMNS}
+              rowHeight={ITEM_UNIT_HEIGHT}
+              isDroppable={true}
+              droppingItem={droppingItem?.layoutSettings}
+              margin={[MARGIN_DASHBOARD, MARGIN_DASHBOARD]}
+              onLayoutChange={(layout) => {
+                setItems((prev) =>
+                  prev.map((item) => {
+                    const newItem = layout.find((l) => l.i === item.layout.i);
+
+                    if (!newItem) return item;
+
+                    return {
+                      ...item,
+                      layout: newItem,
+                    };
+                  }),
+                );
+              }}
+              onDrop={(_layout, item) => {
+                if (!droppingItem) return;
+
+                if (item.y + droppingItem.layoutSettings.h > curRowNum) {
+                  setCurRowNum(item.y + droppingItem.layoutSettings.h);
+                }
+
+                setItems((prev) => [
+                  {
+                    type: droppingItem.type,
+                    properties: {
+                      title: `${droppingItem?.type}-${prev.length}`,
+                    },
+                    layout: {
+                      ...item,
+                      i: `${droppingItem?.type}-${prev.length}`,
+                    },
+                  },
+                  ...prev,
+                ]);
+              }}
+            >
+              {items.map((item) => {
+                const widget = FULL_ATTRIBUTES_WIDGETS[item.type];
+
+                if (!widget) return null;
+
+                return (
+                  <BaseDashboardItem
+                    key={item.layout.i}
+                    $editing
+                    $token={token}
+                    className="droppable-element"
+                    data-grid={{
+                      ...item.layout,
+                      minW: widget.layoutSettings.minW,
+                      maxW: widget.layoutSettings.maxW,
+                      minH: widget.layoutSettings.minH,
+                      maxH: widget.layoutSettings.maxH,
+                    }}
+                  >
+                    <TopLayerEdit
+                      webDashboard={items}
+                      dashboardItem={item}
+                      datastreams={datastreams}
+                      onSave={(webDashboard) => {
+                        setItems(webDashboard);
+                      }}
+                    >
+                      <widget.Widget properties={item.properties} />
+                    </TopLayerEdit>
+                  </BaseDashboardItem>
+                );
+              })}
+            </GridLayout>
+          </DashboardLayout>
+        </Col>
+      </Row>
+
+      <FloatButton.Group>
+        <FloatButton
+          icon={<LeftOutlined />}
+          tooltip={t('Go back')}
+          onClick={() =>
+            navigate({
+              to: '/projects/$projectId/dashboard',
+              params: { projectId },
+            })
+          }
+        />
 
         <FloatButton
           icon={<SaveOutlined />}
+          tooltip={t('Save')}
           type="primary"
           onClick={() => updateWebDashboard.mutate(items)}
         />
-      </Col>
-    </Row>
+      </FloatButton.Group>
+    </>
   );
 }
 
