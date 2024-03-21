@@ -130,7 +130,7 @@ function ProjectIdDatastreams() {
           </Space>
 
           <SoftButton
-            token={token}
+            $token={token}
             type="primary"
             size="small"
             icon={<PlusOutlined />}

@@ -34,7 +34,7 @@ function AppLayout() {
       <Layout>
         <MainTopBar collapsed={collapsed} setCollapse={setCollapsed} />
 
-        <SContent token={token} className="main-content">
+        <SContent $token={token} className="main-content">
           <Outlet />
         </SContent>
       </Layout>
@@ -47,11 +47,11 @@ function AppLayout() {
 // export default MainTemplate;
 
 const SContent = styled(Layout.Content)<TST>`
-  margin: ${({ token }) => token.margin}px;
-  padding: ${({ token }) => token.padding}px;
-  background-color: ${({ token }) => token.colorBgContainer};
-  border-radius: ${({ token }) => token.borderRadius}px;
-  height: calc(100vh - 64px - 2 * ${({ token }) => token.margin}px);
+  margin: ${({ $token }) => $token.margin}px;
+  padding: ${({ $token }) => $token.padding}px;
+  background-color: ${({ $token }) => $token.colorBgContainer};
+  border-radius: ${({ $token }) => $token.borderRadius}px;
+  height: calc(100vh - 64px - 2 * ${({ $token }) => $token.margin}px);
   overflow-y: scroll;
   overflow: -moz-scrollbars-none;
   -ms-overflow-style: none;

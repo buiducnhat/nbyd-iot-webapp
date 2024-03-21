@@ -25,13 +25,20 @@ import { THttpResponse } from '@/shared/http-service';
 import { TST } from '@/shared/types/tst.type';
 import { transApiResDataCode } from '@/shared/utils';
 
-export const Route = createFileRoute('/_app/projects/_$projectId/dashboard')({
-  component: ProjectIdDashboard,
-});
-
 const GridLayout = WidthProvider(RGL);
 
-function ProjectIdDashboard() {
+export const Route = createFileRoute(
+  '/_app/projects/_$projectId/dashboard/edit',
+)({
+  component: ProjectIdEditDashboard,
+});
+
+const DEFAULT_ROW_NUM = 5;
+const NUMBER_OF_COLUMNS = 24;
+const ITEM_UNIT_HEIGHT = 96;
+const MARGIN_DASHBOARD = 8;
+
+function ProjectIdEditDashboard() {
   const { projectId } = Route.useParams();
 
   const { t, token, antdApp } = useApp();
@@ -43,6 +50,7 @@ function ProjectIdDashboard() {
 
   const [items, setItems] = useState<TDashboardItem[]>([]);
   const [droppingItem, setDroppingItem] = useState<TWidgetCommon>();
+  const [curRowNum, setCurRowNum] = useState<number>(DEFAULT_ROW_NUM);
 
   const updateWebDashboard = useMutation({
     mutationFn: (webDashboard: TDashboardItem[]) =>
@@ -58,6 +66,15 @@ function ProjectIdDashboard() {
   });
 
   useEffect(() => {
+    setCurRowNum(() =>
+      Math.max(
+        DEFAULT_ROW_NUM,
+        ...items.map((item) => item.layout.y + item.layout.h),
+      ),
+    );
+  }, [items]);
+
+  useEffect(() => {
     projectQuery.isFetching ? setLoading(true) : setLoading(false);
   }, [projectQuery.isFetching, setLoading]);
 
@@ -70,11 +87,11 @@ function ProjectIdDashboard() {
   return (
     <Row gutter={token.size}>
       <Col span={4}>
-        <ListWidgetLayout token={token} direction="vertical" size="middle">
+        <ListWidgetLayout $token={token} direction="vertical" size="middle">
           <Space align="center" size="large">
             <BlockOutlined style={{ fontSize: token.fontSizeHeading5 }} />
             <Typography.Text style={{ fontSize: token.fontSizeHeading4 }}>
-              {'Widgets'}
+              {t('Widgets')}
             </Typography.Text>
           </Space>
 
@@ -83,7 +100,8 @@ function ProjectIdDashboard() {
 
             return (
               <BaseDashboardItem
-                token={token}
+                style={{ cursor: 'grab' }}
+                $token={token}
                 className="droppable-element"
                 key={widgetType}
                 draggable
@@ -98,12 +116,19 @@ function ProjectIdDashboard() {
       </Col>
 
       <Col span={20}>
-        <DashboardLayout token={token}>
-          <DashboardBoxRow token={token}>
-            {new Array(24 * 10).fill(0).map((_, index) => {
+        <DashboardLayout
+          $token={token}
+          style={{
+            height:
+              curRowNum * ITEM_UNIT_HEIGHT +
+              MARGIN_DASHBOARD * (curRowNum + 1.5),
+          }}
+        >
+          <DashboardBoxRow $token={token}>
+            {new Array(24 * curRowNum).fill(0).map((_, index) => {
               return (
-                <DashboardBoxCol key={index} token={token}>
-                  <DashboardBox token={token}></DashboardBox>
+                <DashboardBoxCol key={index} $token={token}>
+                  <DashboardBox $token={token}></DashboardBox>
                 </DashboardBoxCol>
               );
             })}
@@ -111,15 +136,32 @@ function ProjectIdDashboard() {
 
           <GridLayout
             className="layout"
-            style={{ height: '100%' }}
             compactType={null}
-            cols={24}
-            rowHeight={96}
+            cols={NUMBER_OF_COLUMNS}
+            rowHeight={ITEM_UNIT_HEIGHT}
             isDroppable={true}
             droppingItem={droppingItem?.layoutSettings}
-            margin={[8, 8]}
+            margin={[MARGIN_DASHBOARD, MARGIN_DASHBOARD]}
+            onLayoutChange={(layout) => {
+              setItems((prev) =>
+                prev.map((item) => {
+                  const newItem = layout.find((l) => l.i === item.layout.i);
+
+                  if (!newItem) return item;
+
+                  return {
+                    ...item,
+                    layout: newItem,
+                  };
+                }),
+              );
+            }}
             onDrop={(_layout, item) => {
               if (!droppingItem) return;
+
+              if (item.y + droppingItem.layoutSettings.h > curRowNum) {
+                setCurRowNum(item.y + droppingItem.layoutSettings.h);
+              }
 
               setItems((prev) => [
                 {
@@ -144,10 +186,15 @@ function ProjectIdDashboard() {
               return (
                 <BaseDashboardItem
                   key={item.layout.i}
-                  token={token}
+                  $editing="true"
+                  $token={token}
                   className="droppable-element"
                   data-grid={{
                     ...item.layout,
+                    minW: widget.layoutSettings.minW,
+                    maxW: widget.layoutSettings.maxW,
+                    minH: widget.layoutSettings.minH,
+                    maxH: widget.layoutSettings.maxH,
                   }}
                 >
                   <EditableDashboardItem
@@ -175,33 +222,33 @@ function ProjectIdDashboard() {
 }
 
 const ListWidgetLayout = styled(Space)<TST>`
-  padding: ${({ token }) => token.paddingXS}px;
-  border-radius: ${({ token }) => token.borderRadius}px;
-  background-color: ${({ token }) => token.colorBgLayout};
-  height: 100%;
+  padding: ${({ $token }) => $token.paddingXS}px;
+  border-radius: ${({ $token }) => $token.borderRadius}px;
+  background-color: ${({ $token }) => $token.colorBgLayout};
+  height: calc(100vh - 275px);
   width: 100%;
 `;
 
 const DashboardLayout = styled.div<TST>`
-  background-color: ${({ token }) => token.colorBgContainer};
-  border-radius: ${({ token }) => token.borderRadius}px;
-  border: 1px dashed ${({ token }) => token.colorBorder};
+  background-color: ${({ $token }) => $token.colorBgContainer};
+  border-radius: ${({ $token }) => $token.borderRadius}px;
+  border: 1px dashed ${({ $token }) => $token.colorBorder};
   position: relative;
-  overflow: hidden;
-  height: 528px;
+  overflow-y: hidden;
+  max-height: calc(100vh - 275px);
+  overflow-y: scroll;
   width: '100%';
 `;
 
 const DashboardBoxRow = styled.div<TST>`
-  padding: ${({ token }) => token.paddingXS}px;
+  padding: ${({ $token }) => $token.paddingXS}px;
   margin: 0 !important;
-  border-radius: ${({ token }) => token.borderRadius}px;
+  border-radius: ${({ $token }) => $token.borderRadius}px;
   position: absolute;
   left: 0;
   top: 0;
   right: 0;
   width: 100%;
-  height: 100%;
   overflow: hidden;
   display: grid;
   grid-template-columns: repeat(24, 1fr);
@@ -209,14 +256,14 @@ const DashboardBoxRow = styled.div<TST>`
 `;
 
 const DashboardBoxCol = styled.div<TST>`
-  border-radius: ${({ token }) => token.borderRadius}px;
-  padding: ${({ token }) => token.sizeXXS};
+  border-radius: ${({ $token }) => $token.borderRadius}px;
+  padding: ${({ $token }) => $token.sizeXXS};
   height: 96px;
 `;
 
 const DashboardBox = styled.div<TST>`
-  background-color: ${({ token }) => token.colorBgLayout};
+  background-color: ${({ $token }) => $token.colorBgLayout};
   height: 100%;
   width: 100%;
-  border-radius: ${({ token }) => token.borderRadius}px;
+  border-radius: ${({ $token }) => $token.borderRadius}px;
 `;

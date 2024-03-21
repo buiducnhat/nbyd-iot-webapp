@@ -39,7 +39,7 @@ const MainSideNav = ({ collapsed, setCollapsed }: TMainSideNavProps) => {
   );
 
   const onClick: MenuProps['onClick'] = (e) => {
-    navigate({ to: e.key as any });
+    navigate({ to: e.key } as any);
   };
 
   return (
@@ -51,7 +51,7 @@ const MainSideNav = ({ collapsed, setCollapsed }: TMainSideNavProps) => {
       onCollapse={setCollapsed}
       theme={isDark ? 'light' : 'dark'}
     >
-      <LogoWrapper token={token} onClick={() => navigate({ to: '/' })}>
+      <LogoWrapper $token={token} onClick={() => navigate({ to: '/' })}>
         <img
           src="/assets/images/logo.png"
           alt="logo"
@@ -95,7 +95,7 @@ export default MainSideNav;
 const LogoWrapper = styled.div<TST>`
   cursor: pointer;
   width: 100%;
-  padding: ${(props) => props.token.padding / 2}px;
+  padding: ${(props) => props.$token.padding / 2}px;
   display: flex;
   align-items: center;
 `;

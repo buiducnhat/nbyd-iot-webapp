@@ -26,8 +26,8 @@ export const EDeviceConnectionOptions = [
 export type TDevice = {
   id: string;
   name: string;
-  imageId?: string;
-  imageUrl?: string;
+  imageFileId?: string;
+  imageFileUrl?: string;
   authToken: string;
   hardware: EDeviceHardware;
   connection: EDeviceConnection;

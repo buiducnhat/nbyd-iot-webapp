@@ -1,7 +1,15 @@
 import { DeleteOutlined } from '@ant-design/icons';
 import { useMutation } from '@tanstack/react-query';
 import { Outlet, createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Dropdown, Image, Space, Tabs, Typography } from 'antd';
+import {
+  ConfigProvider,
+  Dropdown,
+  Flex,
+  Image,
+  Space,
+  Tabs,
+  Typography,
+} from 'antd';
 import { useState } from 'react';
 import { useLocation } from 'react-use';
 
@@ -12,7 +20,6 @@ import projectService from '@/modules/projects/project.service';
 
 export const Route = createFileRoute('/_app/projects/_$projectId')({
   component: ProjectDetailPage,
-  notFoundComponent: () => <Typography.Text>Not found</Typography.Text>,
 });
 
 function ProjectDetailPage() {
@@ -49,25 +56,34 @@ function ProjectDetailPage() {
       />
 
       <Space size="large" direction="vertical" style={{ width: '100%' }}>
-        <Space align="start" size="large">
+        <Flex gap="large">
           <Image
             width={120}
             height={120}
-            src={project?.imageUrl || '/assets/images/project-placeholder.jpeg'}
+            src={
+              project?.imageFileUrl || '/assets/images/project-placeholder.jpeg'
+            }
             style={{
               border: `1px solid ${token.colorBorder}`,
               borderRadius: token.borderRadius,
             }}
           />
 
-          <Space direction="vertical" style={{ display: 'flex' }}>
-            <Typography.Title level={3} style={{ margin: 0 }}>
-              {project?.name}
-            </Typography.Title>
-            <Typography.Text type="secondary">
-              {project?.description}
-            </Typography.Text>
+          <Flex
+            vertical
+            style={{ height: 120, width: 150, justifyContent: 'space-between' }}
+          >
+            <Space direction="vertical">
+              <Typography.Title level={3} style={{ margin: 0 }}>
+                {project?.name}
+              </Typography.Title>
+              <Typography.Text type="secondary">
+                {project?.description}
+              </Typography.Text>
+            </Space>
+
             <Dropdown.Button
+              style={{ justifySelf: 'flex-end' }}
               trigger={['click']}
               type="primary"
               menu={{
@@ -99,37 +115,41 @@ function ProjectDetailPage() {
             >
               {t('Edit')}
             </Dropdown.Button>
-          </Space>
-        </Space>
+          </Flex>
 
-        <Tabs
-          size="large"
-          defaultActiveKey="home"
-          onChange={(key) => {
-            navigate({
-              to: `/projects/${projectId}/${key}` as string,
-              params: { projectId },
-            });
-          }}
-          activeKey={location.pathname?.split('/').pop()}
-          items={[
-            {
-              key: 'home',
-              label: t('Home'),
-              children: <Outlet />,
-            },
-            {
-              key: 'datastreams',
-              label: t('Datastreams'),
-              children: <Outlet />,
-            },
-            {
-              key: 'dashboard',
-              label: t('Dashboard'),
-              children: <Outlet />,
-            },
-          ]}
-        />
+          <ConfigProvider
+            theme={{ components: { Tabs: { horizontalMargin: '0px' } } }}
+          >
+            <Tabs
+              style={{ alignSelf: 'flex-end' }}
+              size="large"
+              defaultActiveKey="home"
+              onChange={(key) => {
+                navigate({
+                  to: `/projects/${projectId}/${key}` as string,
+                  params: { projectId },
+                });
+              }}
+              activeKey={location.pathname?.split('/').pop()}
+              items={[
+                {
+                  key: 'home',
+                  label: t('Home'),
+                },
+                {
+                  key: 'datastreams',
+                  label: t('Datastreams'),
+                },
+                {
+                  key: 'dashboard',
+                  label: t('Dashboard'),
+                },
+              ]}
+            />
+          </ConfigProvider>
+        </Flex>
+
+        <Outlet />
       </Space>
     </>
   );

@@ -93,7 +93,7 @@ function ProjectIdHome() {
               </Typography.Text>
 
               <SoftButton
-                token={token}
+                $token={token}
                 type="primary"
                 size="small"
                 icon={<PlusOutlined />}
@@ -127,7 +127,7 @@ function ProjectIdHome() {
                         style={{ borderRadius: token.borderRadius }}
                         width={50}
                         src={
-                          record.imageUrl ||
+                          record.imageFileUrl ||
                           '/assets/images/device-placeholder.jpeg'
                         }
                       />
@@ -279,7 +279,7 @@ function ProjectIdHome() {
 
             <div style={{ height: token.size }} />
 
-            <CodeContainer token={token}>
+            <CodeContainer $token={token}>
               <SyntaxHighlighter
                 customStyle={{
                   background: 'transparent',
@@ -320,9 +320,9 @@ function ProjectIdHome() {
 }
 
 const CodeContainer = styled.div<TST>`
-  background: ${({ token }) => token.colorBgBase};
+  background: ${({ $token }) => $token.colorBgBase};
   position: relative;
-  border-radius: ${({ token }) => token.borderRadius}px;
-  border: 1px solid ${({ token }) => token.colorBorder};
+  border-radius: ${({ $token }) => $token.borderRadius}px;
+  border: 1px solid ${({ $token }) => $token.colorBorder};
   overflow: hidden;
 `;

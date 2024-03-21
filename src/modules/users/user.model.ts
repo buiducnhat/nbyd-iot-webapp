@@ -17,8 +17,8 @@ export type TUser = {
   phoneNumber?: string;
   roles: EUserRole[];
   gender?: EUserGender;
-  avatarImageId?: string;
-  avatarImageUrl?: string;
+  avatarImageFileId?: string;
+  avatarImageFileUrl?: string;
   userLogin: {
     username: string;
     email: string;

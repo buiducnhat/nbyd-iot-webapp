@@ -11,8 +11,8 @@ export type TProjectBasic = {
   name: string;
   description?: string;
   status: EProjectStatus;
-  imageId?: string;
-  imageUrl?: string;
+  imageFileId?: string;
+  imageFileUrl?: string;
   _count: {
     devices: number;
   };

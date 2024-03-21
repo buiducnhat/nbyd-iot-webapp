@@ -10,12 +10,12 @@ import { TST } from '@/shared/types/tst.type';
 import { TDashboardItem } from './widgets';
 import BaseWidgetSettingsModal from './widgets/base-widget-settings-form';
 
-export const BaseDashboardItem = styled.div<TST>`
-  cursor: move;
+export const BaseDashboardItem = styled.div<TST & { $editing?: any }>`
+  cursor: ${({ $editing }) => ($editing === 'true' ? 'move' : 'default')};
   min-height: 96px;
-  border-radius: ${({ token }) => token.borderRadius}px;
-  background-color: ${({ token }) => token.colorBgElevated};
-  box-shadow: ${({ token }) => token.boxShadow};
+  border-radius: ${({ $token }) => $token.borderRadius}px;
+  background-color: ${({ $token }) => $token.colorBgElevated};
+  box-shadow: 0px 0px 12px 0px #00000030;
 `;
 
 type TEditableDashboardItemProps = {
@@ -37,6 +37,7 @@ export function EditableDashboardItem({
 
   const [hover, setHover] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);
+
   return (
     <div
       style={{

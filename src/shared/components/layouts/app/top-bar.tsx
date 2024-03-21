@@ -108,10 +108,10 @@ const MainTopBar = ({ collapsed, setCollapse }: TMainTopBarProps) => {
           menu={{ items: dropItems }}
           placement="bottomRight"
         >
-          {user?.avatarImageUrl ? (
-            <SAvatar token={token} size={48} src={user?.avatarImageUrl} />
+          {user?.avatarImageFileUrl ? (
+            <SAvatar $token={token} size={48} src={user?.avatarImageFileUrl} />
           ) : (
-            <SAvatar token={token} size={48}>
+            <SAvatar $token={token} size={48}>
               {user?.firstName.charAt(0)}
             </SAvatar>
           )}
@@ -135,7 +135,7 @@ const SHeader = styled(Layout.Header)`
 
 const SAvatar = styled(Avatar)<TST>`
   cursor: pointer;
-  border: 2px solid ${({ token }) => token.colorBorder};
+  border: 2px solid ${({ $token }) => $token.colorBorder};
 `;
 
 const SFlexGrowMax = styled.div`
