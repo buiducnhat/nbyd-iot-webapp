@@ -38,6 +38,7 @@ function ProjectIdDashboard() {
   const webDashboard = project?.webDashboard;
 
   const [items, setItems] = useState<TDashboardItem[]>([]);
+  const [dsMockValues, setDsMockValues] = useState<Map<string, any>>();
 
   const maxY = useMemo(
     () =>
@@ -96,6 +97,15 @@ function ProjectIdDashboard() {
                   datastream={datastreams.find(
                     (x) => x.id === item.properties.datastreamId,
                   )}
+                  value={dsMockValues?.get(item.properties.datastreamId)}
+                  onChange={(value) => {
+                    setDsMockValues(
+                      new Map(dsMockValues).set(
+                        item.properties.datastreamId,
+                        value,
+                      ),
+                    );
+                  }}
                 />
               </BaseDashboardItem>
             );
