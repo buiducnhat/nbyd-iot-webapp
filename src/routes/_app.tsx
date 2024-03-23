@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { useAuth } from '@/hooks/use-auth';
+import { useAppStore } from '@/modules/app/app.zustand';
+import { socket } from '@/modules/app/socket-io';
+import { useAuthStore } from '@/modules/auth/auth.zustand';
 import MainSideNav from '@/shared/components/layouts/app/side-nav';
 import MainTopBar from '@/shared/components/layouts/app/top-bar';
 import { TST } from '@/shared/types/tst.type';
@@ -19,13 +22,28 @@ function AppLayout() {
 
   const { token } = theme.useToken();
 
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const setConnectedSocket = useAppStore((state) => state.setConnectedSocket);
+
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     if (authQuery.isError) {
       navigate({ from: '/projects', to: '/auth/login' });
+    } else {
+      socket.auth = { token: accessToken };
+      socket.connect();
+
+      socket.on('connect', () => setConnectedSocket(true));
+      socket.on('disconnect', () => setConnectedSocket(false));
+
+      return () => {
+        socket.disconnect();
+        socket.off('connect', () => setConnectedSocket(true));
+        socket.off('disconnect', () => setConnectedSocket(false));
+      };
     }
-  }, [authQuery.isError, navigate]);
+  }, [accessToken, authQuery.isError, navigate, setConnectedSocket]);
 
   return authQuery.isSuccess ? (
     <Layout hasSider style={{ minHeight: '100vh' }}>
@@ -43,8 +61,6 @@ function AppLayout() {
     <></>
   );
 }
-
-// export default MainTemplate;
 
 const SContent = styled(Layout.Content)<TST>`
   margin: ${({ $token }) => $token.margin}px;

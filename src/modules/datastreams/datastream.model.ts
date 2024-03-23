@@ -58,6 +58,7 @@ export type TDatastream = {
   unit?: string;
   enabled: boolean;
   enabledHistory: boolean;
+  lastValue: string;
   createdAt: string;
   updatedAt: string;
 

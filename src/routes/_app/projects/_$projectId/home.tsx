@@ -108,6 +108,7 @@ function ProjectIdHome() {
 
             <Table
               dataSource={project?.devices}
+              rowKey={(record) => record.id}
               pagination={false}
               bordered
               columns={[

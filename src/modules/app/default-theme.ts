@@ -1,6 +1,8 @@
-import { ThemeConfig, theme } from 'antd';
+import { theme } from 'antd';
 
-export const defaultTheme: ThemeConfig = {
+import { TTheme } from './app.zustand';
+
+export const defaultTheme: TTheme = {
   token: {
     fontFamily: 'Noto Sans Display, sans-serif',
     fontFamilyCode: 'Chivo Mono, monospace',

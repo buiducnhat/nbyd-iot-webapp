@@ -3,24 +3,28 @@ import { create } from 'zustand';
 
 import { defaultTheme } from './default-theme';
 
-type TTheme = ThemeConfig & {
+export type TTheme = ThemeConfig & {
   algorithm: MappingAlgorithm[];
 };
 
 export type TAppState = {
   theme: TTheme;
   loading: boolean;
+  connectedSocket: boolean;
 };
 
 type TAppActions = {
   setLoading: (loading: boolean) => void;
   setTheme: (theme: TTheme) => void;
   toggleTheme: () => void;
+  setConnectedSocket: (connected: boolean) => void;
 };
 
 export const useAppStore = create<TAppState & TAppActions>((set) => ({
   theme: defaultTheme,
   loading: false,
+  connectedSocket: false,
+
   setLoading: (loading) => set({ loading }),
   setTheme: (theme) => set({ theme }),
   toggleTheme: () =>
@@ -37,4 +41,5 @@ export const useAppStore = create<TAppState & TAppActions>((set) => ({
         }),
       },
     })),
+  setConnectedSocket: (connected) => set({ connectedSocket: connected }),
 }));

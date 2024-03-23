@@ -161,9 +161,14 @@ function ProjectIdDatastreams() {
               title: t('Datastream'),
               dataIndex: 'name',
               key: 'name',
-              render: (name: string) => (
-                <Space direction="vertical" align="center">
-                  <Typography.Text strong>{name}</Typography.Text>
+              render: (_id: string, record: TDatastream) => (
+                <Space direction="vertical">
+                  <Typography.Text strong style={{ color: token.colorPrimary }}>
+                    {record.name}
+                  </Typography.Text>
+                  <Typography.Text type="secondary">
+                    {record.device?.name}
+                  </Typography.Text>
                 </Space>
               ),
             },

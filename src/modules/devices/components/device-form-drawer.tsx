@@ -77,6 +77,7 @@ const DeviceFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
       open={open}
       onClose={() => setOpen(false)}
       width={600}
+      forceRender
       extra={
         <Space>
           <Button onClick={() => setOpen(false)}>{t('Cancel')}</Button>

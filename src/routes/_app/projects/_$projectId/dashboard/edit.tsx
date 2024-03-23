@@ -138,6 +138,7 @@ function ProjectIdEditDashboard() {
             </DashboardBoxRow>
 
             <GridLayout
+              style={{ height: '100%' }}
               className="layout"
               compactType={null}
               cols={NUMBER_OF_COLUMNS}

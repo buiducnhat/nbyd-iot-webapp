@@ -21,6 +21,7 @@ export type TWidgetProps<TProperties = any, TValue = any> = {
 export type TWidgetCommon = {
   Widget: React.FC<TWidgetProps>;
   type: TWidgetType;
+  dataType?: 'number' | 'string';
   layoutSettings: RGL.Layout;
   properties?: any;
   propertiesFields: TFormField[];
@@ -37,6 +38,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
   SWITCH: {
     type: 'SWITCH',
     Widget: SwitchWidget,
+    dataType: 'number',
     layoutSettings: {
       i: 'SWITCH',
       w: 4,
@@ -73,6 +75,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
   VALUE_BOX: {
     type: 'VALUE_BOX',
     Widget: ValueBoxWidget,
+    dataType: 'number',
     layoutSettings: {
       i: 'VALUE_BOX',
       w: 3,
@@ -86,12 +89,13 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
     },
     propertiesFields: [],
     defaultProperties: {
-      value: 0,
+      value: '0',
     },
   },
   SLIDER: {
     type: 'SLIDER',
     Widget: SliderWidget,
+    dataType: 'number',
     layoutSettings: {
       i: 'SLIDER',
       w: 4,
@@ -116,6 +120,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
   INPUT_NUMBER: {
     type: 'INPUT_NUMBER',
     Widget: InputNumberWidget,
+    dataType: 'number',
     layoutSettings: {
       i: 'INPUT_NUMBER',
       w: 4,

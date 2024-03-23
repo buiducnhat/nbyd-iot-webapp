@@ -7,6 +7,7 @@ import styled from 'styled-components';
 
 import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
+import { socket } from '@/modules/app/socket-io';
 import { BaseDashboardItem } from '@/modules/projects/components/dashboard-item';
 import {
   FULL_ATTRIBUTES_WIDGETS,
@@ -33,12 +34,16 @@ function ProjectIdDashboard() {
   const { t, token } = useApp();
 
   const setLoading = useAppStore((state) => state.setLoading);
+  const connectedSocket = useAppStore((state) => state.connectedSocket);
 
   const { project, datastreams, projectQuery } = useGetProjectDetail(projectId);
-  const webDashboard = project?.webDashboard;
 
   const [items, setItems] = useState<TDashboardItem[]>([]);
-  const [dsMockValues, setDsMockValues] = useState<Map<string, any>>();
+  const [dsValues, setDsValues] = useState<{ [datastreamId: string]: string }>(
+    {},
+  );
+
+  const webDashboard = project?.webDashboard;
 
   const maxY = useMemo(
     () =>
@@ -50,6 +55,18 @@ function ProjectIdDashboard() {
   );
 
   useEffect(() => {
+    if (datastreams) {
+      setDsValues(
+        datastreams.reduce((prev: { [datastreamId: string]: string }, curr) => {
+          prev[curr.id] = curr.lastValue;
+          return prev;
+        }, {}),
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(datastreams)]);
+
+  useEffect(() => {
     projectQuery.isFetching ? setLoading(true) : setLoading(false);
   }, [projectQuery.isFetching, setLoading]);
 
@@ -58,6 +75,29 @@ function ProjectIdDashboard() {
       setItems(webDashboard);
     }
   }, [webDashboard]);
+
+  useEffect(() => {
+    if (connectedSocket) {
+      socket.emit('/ws-room/projects/join', {
+        projectId,
+      });
+
+      socket.on(
+        '/devices/data',
+        (data: { datastreamId: string; value: string }) => {
+          setDsValues((prev) => ({ ...prev, [data.datastreamId]: data.value }));
+        },
+      );
+
+      return () => {
+        socket.emit('/ws-room/projects/leave', {
+          projectId,
+        });
+
+        socket.off('/devices/data');
+      };
+    }
+  }, [projectId, connectedSocket]);
 
   return (
     <>
@@ -68,6 +108,7 @@ function ProjectIdDashboard() {
         }}
       >
         <GridLayout
+          style={{ height: '100%' }}
           className="layout"
           compactType={null}
           cols={NUMBER_OF_COLUMNS}
@@ -97,14 +138,22 @@ function ProjectIdDashboard() {
                   datastream={datastreams.find(
                     (x) => x.id === item.properties.datastreamId,
                   )}
-                  value={dsMockValues?.get(item.properties.datastreamId)}
+                  value={
+                    widget.dataType === 'number'
+                      ? Number(dsValues[item.properties.datastreamId])
+                      : String(dsValues[item.properties.datastreamId])
+                  }
                   onChange={(value) => {
-                    setDsMockValues(
-                      new Map(dsMockValues).set(
-                        item.properties.datastreamId,
-                        value,
-                      ),
-                    );
+                    if (connectedSocket) {
+                      socket.emit('/devices/command', {
+                        datastreamId: item.properties.datastreamId,
+                        value: String(value),
+                      });
+                    }
+                    setDsValues((prev) => ({
+                      ...prev,
+                      [item.properties.datastreamId]: String(value),
+                    }));
                   }}
                 />
               </BaseDashboardItem>
