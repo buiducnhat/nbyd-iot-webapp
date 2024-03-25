@@ -34,6 +34,7 @@ import styled from 'styled-components';
 
 import useApp from '@/hooks/use-app';
 import DeviceFormDrawer from '@/modules/devices/components/device-form-drawer';
+import DevicePreviewDrawer from '@/modules/devices/components/device-preview-drawer';
 import {
   EDeviceHardware,
   EDeviceStatus,
@@ -59,6 +60,7 @@ function ProjectIdHome() {
   );
   const [selectedDevice, setSelectedDevice] = useState<TDevice>();
   const [openDeviceFormDrawer, setOpenDeviceFormDrawer] = useState(false);
+  const [openPreviewDrawer, setOpenPreviewDrawer] = useState(false);
 
   const { project, projectQuery } = useGetProjectDetail(projectId);
 
@@ -83,6 +85,15 @@ function ProjectIdHome() {
         device={selectedDevice}
         refetch={() => projectQuery.refetch()}
       />
+
+      {selectedDevice?.id && (
+        <DevicePreviewDrawer
+          projectId={projectId}
+          id={selectedDevice.id}
+          open={openPreviewDrawer}
+          setOpen={setOpenPreviewDrawer}
+        />
+      )}
 
       <Row gutter={token.sizeLG}>
         <Col span={12}>
@@ -151,7 +162,7 @@ function ProjectIdHome() {
                   render: (status: EDeviceStatus) => (
                     <Tag
                       color={
-                        status == EDeviceStatus.OFFLINE ? 'warning' : 'success'
+                        status == EDeviceStatus.OFFLINE ? 'orange' : 'green'
                       }
                     >
                       {status}
@@ -202,7 +213,7 @@ function ProjectIdHome() {
                             icon: <EyeOutlined />,
                             onClick: () => {
                               setSelectedDevice(record);
-                              // setOpenPreviewDrawer(true);
+                              setOpenPreviewDrawer(true);
                             },
                           },
                           {

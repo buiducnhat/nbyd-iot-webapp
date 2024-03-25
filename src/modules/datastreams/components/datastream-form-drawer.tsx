@@ -323,6 +323,7 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
   useEffect(() => {
     if (isUpdate && datastream) {
       form.setFieldsValue(datastream);
+      setDeviceId(datastream.deviceId);
     }
   }, [datastream, form, isUpdate]);
 

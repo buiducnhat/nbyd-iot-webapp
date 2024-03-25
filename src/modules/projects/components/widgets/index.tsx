@@ -90,6 +90,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
     propertiesFields: [],
     defaultProperties: {
       value: '0',
+      unit: '',
     },
   },
   SLIDER: {

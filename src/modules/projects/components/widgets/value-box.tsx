@@ -5,7 +5,11 @@ import useApp from '@/hooks/use-app';
 import { TWidgetProps } from '.';
 import { BaseWidgetTitle } from './base-widget-title';
 
-function ValueBoxWidget({ properties }: TWidgetProps<any>) {
+function ValueBoxWidget({
+  value,
+  properties,
+  datastream,
+}: TWidgetProps<{ title: string }, string>) {
   const { t, token } = useApp();
 
   return (
@@ -19,11 +23,19 @@ function ValueBoxWidget({ properties }: TWidgetProps<any>) {
     >
       <BaseWidgetTitle>{properties?.title || t('Value box')}</BaseWidgetTitle>
 
-      <Typography.Text
-        style={{ fontSize: token.fontSizeHeading4, fontFamily: 'Chivo Mono' }}
-      >
-        {properties?.value || '--'}
-      </Typography.Text>
+      <Space>
+        <Typography.Text
+          style={{ fontSize: token.fontSizeHeading4, fontFamily: 'Chivo Mono' }}
+        >
+          {value !== undefined ? value : '--'}
+        </Typography.Text>
+
+        {datastream?.unit ? (
+          <Typography.Text type="secondary">
+            ({datastream.unit})
+          </Typography.Text>
+        ) : null}
+      </Space>
     </Space>
   );
 }

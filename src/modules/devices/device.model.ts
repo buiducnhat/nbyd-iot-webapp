@@ -36,4 +36,5 @@ export type TDevice = {
   description?: string;
   createdAt: string | Date;
   datastreams: TDatastream[];
+  metaData: Record<string, any>;
 };
