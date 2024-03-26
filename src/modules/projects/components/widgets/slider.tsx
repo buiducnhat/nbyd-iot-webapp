@@ -1,5 +1,6 @@
 import { Col, Row, Slider, Space, Typography, theme } from 'antd';
-import { useTranslation } from 'react-i18next';
+
+import useApp from '@/hooks/use-app';
 
 import { TWidgetProps } from '.';
 import { BaseWidgetTitle } from './base-widget-title';
@@ -18,7 +19,7 @@ function SliderWidget({
   },
   number
 >) {
-  const { t } = useTranslation();
+  const { t } = useApp();
 
   const { token } = theme.useToken();
 

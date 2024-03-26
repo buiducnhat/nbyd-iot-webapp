@@ -33,6 +33,17 @@ class DeviceService {
       method: 'DELETE',
     });
   }
+
+  uploadImage(projectId: string, id: string, file: Blob) {
+    return httpService.request<TDevice>({
+      url: `/api/projects/${projectId}/devices/${id}/images`,
+      method: 'PATCH',
+      contentType: 'multipart/form-data',
+      data: {
+        file,
+      },
+    });
+  }
 }
 
 export default new DeviceService();

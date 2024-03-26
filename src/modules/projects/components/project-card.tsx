@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { Card } from 'antd';
-import { useTranslation } from 'react-i18next';
+
+import useApp from '@/hooks/use-app';
 
 import { TProjectBasic } from '../project.model';
 
@@ -9,12 +10,13 @@ type TProjectCardProps = {
 };
 
 const ProjectCard = ({ project }: TProjectCardProps) => {
-  const { t } = useTranslation();
+  const { t, token } = useApp();
 
   return (
     <Link to="/projects/$projectId/home" params={{ projectId: project.id }}>
       <Card
         hoverable
+        bordered={false}
         cover={
           <img
             alt={project.name}
@@ -23,6 +25,7 @@ const ProjectCard = ({ project }: TProjectCardProps) => {
             }
           />
         }
+        style={{ backgroundColor: token.colorBgLayout }}
       >
         <Card.Meta
           title={project.name}

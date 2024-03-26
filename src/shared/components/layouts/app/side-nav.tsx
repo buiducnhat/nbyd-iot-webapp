@@ -3,11 +3,11 @@ import { useNavigate } from '@tanstack/react-router';
 import type { MenuProps } from 'antd';
 import { Layout, Menu, Typography, theme } from 'antd';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-use';
 import styled from 'styled-components';
 
 import { APP_NAME, SIDE_NAV_WIDTH } from '@/configs/constants';
+import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
 import { TST } from '@/shared/types/tst.type';
 
@@ -17,7 +17,7 @@ type TMainSideNavProps = {
 };
 
 const MainSideNav = ({ collapsed, setCollapsed }: TMainSideNavProps) => {
-  const { t } = useTranslation();
+  const { t } = useApp();
 
   const navigate = useNavigate();
   const location = useLocation();

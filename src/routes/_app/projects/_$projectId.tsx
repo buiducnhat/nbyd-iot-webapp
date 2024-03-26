@@ -6,6 +6,7 @@ import {
   Dropdown,
   Flex,
   Image,
+  Skeleton,
   Space,
   Tabs,
   Typography,
@@ -57,65 +58,84 @@ function ProjectDetailPage() {
 
       <Space size="large" direction="vertical" style={{ width: '100%' }}>
         <Flex gap="large">
-          <Image
-            width={120}
-            height={120}
-            src={
-              project?.imageFileUrl || '/assets/images/project-placeholder.jpeg'
-            }
-            style={{
-              border: `1px solid ${token.colorBorder}`,
-              borderRadius: token.borderRadius,
-            }}
-          />
-
-          <Flex
-            vertical
-            style={{ height: 120, width: 150, justifyContent: 'space-between' }}
-          >
-            <Space direction="vertical">
-              <Typography.Title level={3} style={{ margin: 0 }}>
-                {project?.name}
-              </Typography.Title>
-              <Typography.Text type="secondary">
-                {project?.description}
-              </Typography.Text>
+          {!project ? (
+            <Space>
+              <Skeleton.Image active />
+              <Space direction="vertical">
+                <Skeleton.Input active />
+                <Skeleton.Button active />
+              </Space>
             </Space>
+          ) : (
+            <>
+              <Image
+                width={120}
+                height={120}
+                src={
+                  project?.imageFileUrl ||
+                  '/assets/images/project-placeholder.jpeg'
+                }
+                style={{
+                  border: `1px solid ${token.colorBorder}`,
+                  borderRadius: token.borderRadius,
+                }}
+              />
 
-            <Dropdown.Button
-              style={{ justifySelf: 'flex-end' }}
-              trigger={['click']}
-              type="primary"
-              menu={{
-                items: [
-                  {
-                    label: t('Delete'),
-                    key: 'delete',
-                    icon: <DeleteOutlined />,
-                    danger: true,
-                  },
-                ],
-                onClick: (item) => {
-                  if (item.key === 'delete') {
-                    antdApp.modal.confirm({
-                      title: t('Delete confirmation'),
-                      content: t('Are you sure you want to delete this item?'),
-                      okText: t('Yes'),
-                      cancelText: t('No'),
-                      onOk: async () => {
-                        await deleteProjectMutation.mutateAsync(projectId);
+              <Flex
+                vertical
+                style={{
+                  height: 120,
+                  width: 150,
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Space direction="vertical">
+                  <Typography.Title level={3} style={{ margin: 0 }}>
+                    {project?.name}
+                  </Typography.Title>
+                  <Typography.Text type="secondary">
+                    {project?.description}
+                  </Typography.Text>
+                </Space>
+
+                <Dropdown.Button
+                  style={{ justifySelf: 'flex-end' }}
+                  trigger={['click']}
+                  type="primary"
+                  menu={{
+                    items: [
+                      {
+                        label: t('Delete'),
+                        key: 'delete',
+                        icon: <DeleteOutlined />,
+                        danger: true,
                       },
-                    });
-                  }
-                },
-              }}
-              onClick={() => {
-                setOpenFormDrawer(true);
-              }}
-            >
-              {t('Edit')}
-            </Dropdown.Button>
-          </Flex>
+                    ],
+                    onClick: (item) => {
+                      if (item.key === 'delete') {
+                        antdApp.modal.confirm({
+                          title: t('Delete confirmation'),
+                          content: t(
+                            'Are you sure you want to delete this item?',
+                          ),
+                          okText: t('Yes'),
+                          cancelText: t('No'),
+                          onOk: async () => {
+                            await deleteProjectMutation.mutateAsync(projectId);
+                          },
+                        });
+                      }
+                    },
+                  }}
+                  onClick={() => {
+                    setOpenFormDrawer(true);
+                  }}
+                >
+                  {t('Edit')}
+                </Dropdown.Button>
+              </Flex>
+            </>
+          )}
 
           <ConfigProvider
             theme={{ components: { Tabs: { horizontalMargin: '0px' } } }}

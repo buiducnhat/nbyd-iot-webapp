@@ -18,9 +18,9 @@ import {
   theme,
 } from 'antd';
 import { useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
+import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
 import authService from '@/modules/auth/auth.service';
 import { useAuthStore } from '@/modules/auth/auth.zustand';
@@ -32,7 +32,7 @@ type TMainTopBarProps = {
 };
 
 const MainTopBar = ({ collapsed, setCollapse }: TMainTopBarProps) => {
-  const { t } = useTranslation();
+  const { t } = useApp();
 
   const gTheme = useAppStore((state) => state.theme);
   const toggleTheme = useAppStore((state) => state.toggleTheme);

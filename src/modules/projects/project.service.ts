@@ -51,6 +51,17 @@ class ProjectService {
       data,
     });
   }
+
+  uploadImage(id: string, file: Blob) {
+    return httpService.request<TProjectBasic>({
+      url: `/api/projects/${id}/images`,
+      method: 'PATCH',
+      contentType: 'multipart/form-data',
+      data: {
+        file,
+      },
+    });
+  }
 }
 
 export default new ProjectService();

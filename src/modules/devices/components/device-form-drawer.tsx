@@ -1,8 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
-import { Button, Drawer, Form, Input, Select, Space } from 'antd';
+import { Button, Drawer, Form, Input, Select, Skeleton, Space } from 'antd';
+import * as _ from 'ramda';
 import { useEffect } from 'react';
 
 import useApp from '@/hooks/use-app';
+import UploadImage from '@/shared/components/upload-image';
 
 import {
   EDeviceConnectionOptions,
@@ -32,9 +34,11 @@ const DeviceFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
   const { t, antdApp } = useApp();
 
   const [form] = Form.useForm<TCreateDeviceDto>();
+  const formValues = Form.useWatch([], form);
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => deviceService.create(projectId, data),
+    mutationFn: (data: TCreateDeviceDto) =>
+      deviceService.create(projectId, data),
     onSuccess: async () => {
       refetch && (await refetch());
       antdApp.message.success(t('Created successfully'));
@@ -47,7 +51,7 @@ const DeviceFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: any) =>
+    mutationFn: (data: TCreateDeviceDto) =>
       device ? deviceService.update(projectId, device.id, data) : (null as any),
     onSuccess: async () => {
       refetch && (await refetch());
@@ -85,7 +89,16 @@ const DeviceFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
           <Button
             type="primary"
             loading={createMutation.isPending || updateMutation.isPending}
-            disabled={createMutation.isPending || updateMutation.isPending}
+            disabled={
+              createMutation.isPending ||
+              updateMutation.isPending ||
+              _.equals(formValues, {
+                name: device?.name,
+                hardware: device?.hardware,
+                connection: device?.connection,
+                description: device?.description,
+              } as TCreateDeviceDto)
+            }
             onClick={() => {
               form.submit();
             }}
@@ -95,50 +108,88 @@ const DeviceFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
         </Space>
       }
     >
-      <Form
-        form={form}
-        name="devices"
-        autoComplete="off"
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 18 }}
-        onFinish={(values) => {
-          action === 'create'
-            ? createMutation.mutate({
-                ...values,
-              })
-            : updateMutation.mutate({
-                ...values,
-              });
-        }}
-      >
-        <Form.Item name="name" label={t('Name')} required>
-          <Input />
-        </Form.Item>
+      {!device ? (
+        <Skeleton />
+      ) : (
+        <Form
+          form={form}
+          name="devices"
+          autoComplete="off"
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 18 }}
+          onFinish={(values) => {
+            action === 'create'
+              ? createMutation.mutate({
+                  ...values,
+                })
+              : updateMutation.mutate({
+                  ...values,
+                });
+          }}
+        >
+          <Form.Item<TCreateDeviceDto> name="name" label={t('Name')} required>
+            <Input />
+          </Form.Item>
 
-        <Form.Item name="hardware" label={t('Hardware')} required>
-          <Select disabled={action === 'update'}>
-            {EDeviceHardwareOptions.map((option) => (
-              <Select.Option key={option.value} value={option.value}>
-                {option.label}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
+          <Form.Item<TCreateDeviceDto>
+            name="hardware"
+            label={t('Hardware')}
+            required
+          >
+            <Select disabled={action === 'update'}>
+              {EDeviceHardwareOptions.map((option) => (
+                <Select.Option key={option.value} value={option.value}>
+                  {option.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
 
-        <Form.Item name="connection" label={t('Connection')} required>
-          <Select disabled={action === 'update'}>
-            {EDeviceConnectionOptions.map((option) => (
-              <Select.Option key={option.value} value={option.value}>
-                {option.label}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
+          <Form.Item<TCreateDeviceDto>
+            name="connection"
+            label={t('Connection')}
+            required
+          >
+            <Select disabled={action === 'update'}>
+              {EDeviceConnectionOptions.map((option) => (
+                <Select.Option key={option.value} value={option.value}>
+                  {option.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
 
-        <Form.Item name="description" label={t('Description')}>
-          <Input.TextArea />
-        </Form.Item>
-      </Form>
+          <Form.Item<TCreateDeviceDto>
+            name="description"
+            label={t('Description')}
+          >
+            <Input.TextArea />
+          </Form.Item>
+
+          <Form.Item label={t('Image')}>
+            <UploadImage
+              initialImageUrl={device?.imageFileUrl}
+              onUpload={async (file) => {
+                if (!device?.id) return;
+
+                const uploaded = await deviceService.uploadImage(
+                  projectId,
+                  device.id,
+                  file,
+                );
+                if (uploaded.data.imageFileUrl) {
+                  return uploaded.data.imageFileUrl;
+                }
+
+                return;
+              }}
+              onUploadSuccess={async () => {
+                refetch && (await refetch());
+              }}
+            />
+          </Form.Item>
+        </Form>
+      )}
     </Drawer>
   );
 };
