@@ -8,6 +8,7 @@ function useGetProjectDetail(projectId: string) {
   const projectQuery = useQuery({
     queryKey: ['/projects/detail', projectId],
     queryFn: async () => projectService.getDetail(projectId),
+    enabled: !!projectId,
   });
 
   const project = projectQuery.data?.data;

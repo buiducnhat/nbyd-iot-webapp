@@ -1,12 +1,19 @@
+import { useMutation } from '@tanstack/react-query';
 import { Outlet, createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Layout, theme } from 'antd';
+import { Image, Layout, Space, Spin } from 'antd';
+import { onMessage } from 'firebase/messaging';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import useApp from '@/hooks/use-app';
 import { useAuth } from '@/hooks/use-auth';
 import { useAppStore } from '@/modules/app/app.zustand';
 import { socket } from '@/modules/app/socket-io';
 import { useAuthStore } from '@/modules/auth/auth.zustand';
+import { messaging } from '@/modules/firebase';
+import { EAppType } from '@/modules/firebase/dto/fcm-token.dto';
+import firebaseService from '@/modules/firebase/firebase.service';
+import { requestFcmPermission } from '@/modules/firebase/request-permission';
 import MainSideNav from '@/shared/components/layouts/app/side-nav';
 import MainTopBar from '@/shared/components/layouts/app/top-bar';
 import { TST } from '@/shared/types/tst.type';
@@ -20,17 +27,35 @@ function AppLayout() {
 
   const authQuery = useAuth();
 
-  const { token } = theme.useToken();
+  const { token, antdApp } = useApp();
 
   const accessToken = useAuthStore((state) => state.accessToken);
   const setConnectedSocket = useAppStore((state) => state.setConnectedSocket);
 
   const [collapsed, setCollapsed] = useState(false);
 
+  // On message of fcm
+  onMessage(messaging, (payload) => {
+    antdApp.notification.open({
+      message: payload.notification?.title,
+      description: (
+        <Space>
+          {payload.notification?.body}
+          <Image src={payload.notification?.image} width={64} />
+        </Space>
+      ),
+      onClick: () => {},
+    });
+  });
+
   useEffect(() => {
     if (authQuery.isError) {
       navigate({ from: '/projects', to: '/auth/login' });
-    } else {
+    }
+  }, [authQuery.isError, navigate]);
+
+  useEffect(() => {
+    if (authQuery.isSuccess) {
       socket.auth = { token: accessToken };
       socket.connect();
 
@@ -43,7 +68,23 @@ function AppLayout() {
         socket.off('disconnect', () => setConnectedSocket(false));
       };
     }
-  }, [accessToken, authQuery.isError, navigate, setConnectedSocket]);
+  }, [accessToken, authQuery.isSuccess, navigate, setConnectedSocket]);
+
+  const sendTokenMutation = useMutation({
+    mutationFn: (token: string) =>
+      firebaseService.createFcmToken({ token, appType: EAppType.NBYD_WEBAPP }),
+  });
+
+  useEffect(() => {
+    if (authQuery.isSuccess) {
+      requestFcmPermission().then((token) => {
+        if (token) {
+          sendTokenMutation.mutate(token);
+        }
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authQuery.isSuccess]);
 
   return authQuery.isSuccess ? (
     <Layout hasSider style={{ minHeight: '100vh' }}>
@@ -58,7 +99,16 @@ function AppLayout() {
       </Layout>
     </Layout>
   ) : (
-    <></>
+    <Layout
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Spin size="large" />
+    </Layout>
   );
 }
 
