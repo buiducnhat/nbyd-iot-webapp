@@ -1,16 +1,29 @@
 import { Space, Switch, Typography } from 'antd';
 import { useMemo } from 'react';
+import styled from 'styled-components';
 
 import useApp from '@/hooks/use-app';
 import { TWidgetProps } from '@/modules/projects/components/widgets';
+import { TST } from '@/shared/types/tst.type';
 
 import { BaseWidgetTitle } from './base-widget-title';
+
+const SSwitch = styled(Switch)<TST & { $color?: string }>`
+  &.ant-switch-checked {
+    background-color: ${({ $color, $token }) => $color || $token.colorPrimary};
+  }
+
+  &.ant-switch-checked:hover:not(.ant-switch-disabled) {
+    background-color: ${({ $color, $token }) => $color || $token.colorPrimary};
+  }
+`;
 
 function SwitchWidget({
   value,
   onChange,
   properties,
   defaultProperties,
+  datastream,
 }: TWidgetProps<
   {
     title: string;
@@ -23,7 +36,7 @@ function SwitchWidget({
 >) {
   value = Number(value);
 
-  const { t } = useApp();
+  const { t, token } = useApp();
 
   const onValue = useMemo(
     () => properties?.onValue || defaultProperties?.onValue || 1,
@@ -50,7 +63,9 @@ function SwitchWidget({
       <BaseWidgetTitle>{properties?.title || t('Switch')}</BaseWidgetTitle>
 
       <Space>
-        <Switch
+        <SSwitch
+          $token={token}
+          $color={datastream?.color}
           checked={checked}
           onChange={(checked) => {
             if (checked === undefined) {

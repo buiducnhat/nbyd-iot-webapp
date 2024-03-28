@@ -151,7 +151,9 @@ function BaseWidgetSettingsModal({
                     FULL_ATTRIBUTES_WIDGETS[
                       dashboardItem.type
                     ].validDatastreamTypes.includes(
-                      `${x.type}_${x.dataType}` as TValidDatastreamType,
+                      `${x.type}_${x.mode || ''}_${
+                        x.dataType
+                      }` as TValidDatastreamType,
                     ),
                   )
                   .map((datastream) => (

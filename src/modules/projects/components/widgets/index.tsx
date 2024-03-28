@@ -28,13 +28,13 @@ export type TWidgetProps<TProperties = any, TValue = any> = {
 };
 
 export type TValidDatastreamType =
-  | 'DIGITAL_INPUT'
-  | 'DIGITAL_OUTPUT'
-  | 'ANALOG_INPUT'
-  | 'ANALOG_OUTPUT'
-  | 'VIRTUAL_INTEGER'
-  | 'VIRTUAL_FLOAT'
-  | 'VIRTUAL_STRING';
+  | 'DIGITAL_INPUT_INTEGER'
+  | 'DIGITAL_OUTPUT_INTEGER'
+  | 'ANALOG_INPUT_INTEGER'
+  | 'ANALOG_OUTPUT_INTEGER'
+  | 'VIRTUAL__INTEGER'
+  | 'VIRTUAL__FLOAT'
+  | 'VIRTUAL__STRING';
 
 export type TWidgetCommon = {
   Widget: React.FC<TWidgetProps>;
@@ -67,7 +67,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       minH: 1,
       maxH: 2,
     },
-    validDatastreamTypes: ['DIGITAL_OUTPUT', 'VIRTUAL_INTEGER'],
+    validDatastreamTypes: ['DIGITAL_OUTPUT_INTEGER', 'VIRTUAL__INTEGER'],
     propertiesFields: [
       {
         name: 'onValue',
@@ -105,13 +105,13 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       maxH: 2,
     },
     validDatastreamTypes: [
-      'DIGITAL_INPUT',
-      'DIGITAL_OUTPUT',
-      'ANALOG_INPUT',
-      'ANALOG_OUTPUT',
-      'VIRTUAL_INTEGER',
-      'VIRTUAL_FLOAT',
-      'VIRTUAL_STRING',
+      'DIGITAL_INPUT_INTEGER',
+      'DIGITAL_OUTPUT_INTEGER',
+      'ANALOG_INPUT_INTEGER',
+      'ANALOG_OUTPUT_INTEGER',
+      'VIRTUAL__INTEGER',
+      'VIRTUAL__FLOAT',
+      'VIRTUAL__STRING',
     ],
     propertiesFields: [],
     defaultProperties: {
@@ -134,13 +134,13 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       maxH: 2,
     },
     validDatastreamTypes: [
-      'DIGITAL_INPUT',
-      'DIGITAL_OUTPUT',
-      'ANALOG_INPUT',
-      'ANALOG_OUTPUT',
-      'VIRTUAL_INTEGER',
-      'VIRTUAL_FLOAT',
-      'VIRTUAL_STRING',
+      'DIGITAL_INPUT_INTEGER',
+      'DIGITAL_OUTPUT_INTEGER',
+      'ANALOG_INPUT_INTEGER',
+      'ANALOG_OUTPUT_INTEGER',
+      'VIRTUAL__INTEGER',
+      'VIRTUAL__FLOAT',
+      'VIRTUAL__STRING',
     ],
     propertiesFields: [
       { label: 'On color', name: 'onColor', type: 'color-picker' },
@@ -165,9 +165,9 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       maxH: 2,
     },
     validDatastreamTypes: [
-      'DIGITAL_OUTPUT',
-      'ANALOG_OUTPUT',
-      'VIRTUAL_INTEGER',
+      'DIGITAL_OUTPUT_INTEGER',
+      'ANALOG_OUTPUT_INTEGER',
+      'VIRTUAL__INTEGER',
     ],
     propertiesFields: [
       { name: 'step', label: 'Step', type: 'input-number', required: true },
@@ -194,10 +194,10 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       maxH: 2,
     },
     validDatastreamTypes: [
-      'DIGITAL_OUTPUT',
-      'ANALOG_OUTPUT',
-      'VIRTUAL_INTEGER',
-      'VIRTUAL_FLOAT',
+      'DIGITAL_OUTPUT_INTEGER',
+      'ANALOG_OUTPUT_INTEGER',
+      'VIRTUAL__INTEGER',
+      'VIRTUAL__FLOAT',
     ],
     propertiesFields: [],
     defaultProperties: {
@@ -218,7 +218,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       minH: 1,
       maxH: 2,
     },
-    validDatastreamTypes: ['VIRTUAL_STRING'],
+    validDatastreamTypes: ['VIRTUAL__STRING'],
     propertiesFields: [],
     defaultProperties: {
       value: '',
