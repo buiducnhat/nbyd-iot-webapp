@@ -1,6 +1,6 @@
 import { EDatastreamDataType, EDatastreamMode } from '../datastream.model';
 
-export type UpdateDatastreamDto = {
+export type TUpdateDatastreamDto = {
   name?: string;
   iconId?: number;
   color?: string;

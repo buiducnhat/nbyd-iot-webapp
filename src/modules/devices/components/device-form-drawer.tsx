@@ -108,8 +108,8 @@ const DeviceFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
         </Space>
       }
     >
-      {!device ? (
-        <Skeleton />
+      {action === 'update' && !device ? (
+        <Skeleton active />
       ) : (
         <Form
           form={form}

@@ -90,9 +90,15 @@ function ProjectIdEditDashboard() {
     <>
       <Row gutter={token.size}>
         <Col span={4}>
-          <ListWidgetLayout $token={token} direction="vertical" size="middle">
+          <ListWidgetLayout
+            $token={token}
+            direction="vertical"
+            size="middle"
+            style={{ overflowY: 'scroll' }}
+          >
             <Space align="center" size="large">
               <BlockOutlined style={{ fontSize: token.fontSizeHeading5 }} />
+
               <Typography.Text style={{ fontSize: token.fontSizeHeading4 }}>
                 {t('Widgets')}
               </Typography.Text>

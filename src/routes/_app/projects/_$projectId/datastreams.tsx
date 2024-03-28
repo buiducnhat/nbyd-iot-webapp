@@ -22,6 +22,11 @@ import { useState } from 'react';
 import useApp from '@/hooks/use-app';
 import DatastreamFormDrawer from '@/modules/datastreams/components/datastream-form-drawer';
 import {
+  DatastreamDataTypeTag,
+  DatastreamModeTag,
+  DatastreamTypeTag,
+} from '@/modules/datastreams/components/datastream-tags';
+import {
   EDatastreamDataType,
   EDatastreamMode,
   EDatastreamType,
@@ -82,6 +87,7 @@ function ProjectIdDatastreams() {
             setOpen={setOpenCreateForm}
             project={project}
             refetch={projectQuery.refetch}
+            datastreams={datastreams}
           />
 
           <DatastreamFormDrawer
@@ -90,6 +96,7 @@ function ProjectIdDatastreams() {
             project={project}
             refetch={projectQuery.refetch}
             isUpdate
+            datastreams={datastreams}
             datastream={selectedDatastream}
           />
         </>
@@ -183,7 +190,7 @@ function ProjectIdDatastreams() {
               dataIndex: 'type',
               key: 'type',
               render: (type: EDatastreamType) => (
-                <Tag color="magenta">{type}</Tag>
+                <DatastreamTypeTag type={type} />
               ),
             },
             {
@@ -195,13 +202,17 @@ function ProjectIdDatastreams() {
               title: t('Mode'),
               dataIndex: 'mode',
               key: 'mode',
-              render: (mode: EDatastreamMode) => <Tag color="cyan">{mode}</Tag>,
+              render: (mode: EDatastreamMode) => (
+                <DatastreamModeTag mode={mode} />
+              ),
             },
             {
               title: t('Data type'),
               dataIndex: 'dataType',
               key: 'dataType',
-              render: (dataType: EDatastreamDataType) => <Tag>{dataType}</Tag>,
+              render: (dataType: EDatastreamDataType) => (
+                <DatastreamDataTypeTag dataType={dataType} />
+              ),
             },
             {
               title: t('Unit'),

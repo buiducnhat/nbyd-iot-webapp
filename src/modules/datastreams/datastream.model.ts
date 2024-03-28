@@ -29,14 +29,12 @@ export const EDatastreamModeOptions = [
 ];
 
 export enum EDatastreamDataType {
-  BOOLEAN = 'BOOLEAN',
   INTEGER = 'INTEGER',
   FLOAT = 'FLOAT',
   STRING = 'STRING',
 }
 
 export const EDatastreamDataTypeOptions = [
-  { value: EDatastreamDataType.BOOLEAN, label: 'Boolean' },
   { value: EDatastreamDataType.INTEGER, label: 'Integer' },
   { value: EDatastreamDataType.FLOAT, label: 'Float' },
   { value: EDatastreamDataType.STRING, label: 'String' },

@@ -1,5 +1,6 @@
 import {
   Col,
+  ColorPicker,
   Divider,
   Flex,
   Form,
@@ -15,13 +16,14 @@ import { DevTool } from 'antd-form-devtools';
 import { useEffect, useMemo, useState } from 'react';
 
 import useApp from '@/hooks/use-app';
-import {
-  EDatastreamMode,
-  EDatastreamType,
-  TDatastream,
-} from '@/modules/datastreams/datastream.model';
+import { TDatastream } from '@/modules/datastreams/datastream.model';
 
-import { FULL_ATTRIBUTES_WIDGETS, TDashboardItem, TWidgetType } from '.';
+import {
+  FULL_ATTRIBUTES_WIDGETS,
+  TDashboardItem,
+  TValidDatastreamType,
+} from '.';
+import { BaseDashboardItem } from '../dashboard-item';
 
 type TBaseWidgetSettingsFormProps = {
   open: boolean;
@@ -42,23 +44,6 @@ function BaseWidgetSettingsModal({
   datastreams,
   onSave,
 }: TBaseWidgetSettingsFormProps) {
-  datastreams = datastreams.filter((datastream) => {
-    if ((['VALUE_BOX'] as TWidgetType[]).includes(dashboardItem.type)) {
-      return true;
-    } else if (
-      (['INPUT_NUMBER', 'SLIDER', 'SWITCH'] as TWidgetType[]).includes(
-        dashboardItem.type,
-      )
-    ) {
-      return (
-        datastream.mode === EDatastreamMode.OUTPUT ||
-        datastream.type === EDatastreamType.VIRTUAL
-      );
-    } else {
-      return false;
-    }
-  });
-
   const { t, token } = useApp();
 
   const [form] = Form.useForm();
@@ -161,22 +146,30 @@ function BaseWidgetSettingsModal({
 
             <Form.Item name="datastreamId" label={t('Datastream')} required>
               <Select>
-                {datastreams.map((datastream) => (
-                  <Select.Option key={datastream.id} value={datastream.id}>
-                    <Flex justify="space-between">
-                      <span style={{ fontWeight: token.fontWeightStrong }}>
-                        {datastream.name}
-                      </span>
-                      <div>
-                        ({datastream.device?.name}/
+                {datastreams
+                  .filter((x) =>
+                    FULL_ATTRIBUTES_WIDGETS[
+                      dashboardItem.type
+                    ].validDatastreamTypes.includes(
+                      `${x.type}_${x.dataType}` as TValidDatastreamType,
+                    ),
+                  )
+                  .map((datastream) => (
+                    <Select.Option key={datastream.id} value={datastream.id}>
+                      <Flex justify="space-between">
                         <span style={{ fontWeight: token.fontWeightStrong }}>
-                          {datastream.pin}
+                          {datastream.name}
                         </span>
-                        )
-                      </div>
-                    </Flex>
-                  </Select.Option>
-                ))}
+                        <div>
+                          ({datastream.device?.name}/
+                          <span style={{ fontWeight: token.fontWeightStrong }}>
+                            {datastream.pin}
+                          </span>
+                          )
+                        </div>
+                      </Flex>
+                    </Select.Option>
+                  ))}
               </Select>
             </Form.Item>
 
@@ -198,6 +191,13 @@ function BaseWidgetSettingsModal({
                     <Slider />
                   ) : field.type === 'switch' ? (
                     <Switch />
+                  ) : field.type === 'color-picker' ? (
+                    <ColorPicker
+                      value={formValues?.[field.name]}
+                      onChangeComplete={(color) => {
+                        form.setFieldValue(field.name, color.toHexString());
+                      }}
+                    />
                   ) : null}
                 </Form.Item>
               ),
@@ -220,22 +220,16 @@ function BaseWidgetSettingsModal({
             alignItems: 'center',
           }}
         >
-          <div
-            style={{
-              backgroundColor: token.colorBgElevated,
-              minWidth: 200,
-              maxWidth: '100%',
-              borderRadius: token.borderRadius,
-              boxShadow: token.boxShadow,
-            }}
-          >
-            <previewWidget.Widget
-              value={previewValue}
-              onChange={setPreviewValue}
-              properties={previewWidget.properties}
-              datastream={selectedDatastream}
-            />
-          </div>
+          <Flex justify="center" style={{ minWidth: 200 }}>
+            <BaseDashboardItem $token={token} style={{ width: '100%' }}>
+              <previewWidget.Widget
+                value={previewValue}
+                onChange={setPreviewValue}
+                properties={previewWidget.properties}
+                datastream={selectedDatastream}
+              />
+            </BaseDashboardItem>
+          </Flex>
         </Col>
       </Row>
     </Modal>

@@ -13,14 +13,17 @@ function InputNumberWidget({
   value,
   onChange,
   datastream,
-}: TWidgetProps<{ title: string }>) {
-  const { t, token } = useApp();
+}: TWidgetProps<{ title: string }, number>) {
+  value = Number(value);
+
+  const { t } = useApp();
 
   const [inputValue, setInputValue] = useState(value);
   const [fromButton, setFromButton] = useState(false);
+
   useDebounce(
     () => {
-      if (!fromButton) {
+      if (!fromButton && inputValue !== value) {
         onChange?.(inputValue);
       }
     },
@@ -32,7 +35,6 @@ function InputNumberWidget({
     <Space
       direction="vertical"
       style={{
-        padding: token.padding,
         height: '100%',
         width: '100%',
       }}
@@ -46,19 +48,21 @@ function InputNumberWidget({
           type="text"
           icon={<MinusOutlined />}
           disabled={
-            datastream?.minValue ? value <= datastream?.minValue : false
+            typeof value === 'number' && datastream?.minValue
+              ? value <= datastream?.minValue
+              : false
           }
           onClick={() => {
             setFromButton(true);
-            setInputValue(value - 1);
-            onChange?.(value - 1);
+            setInputValue(typeof value === 'number' ? value - 1 : 0);
+            onChange?.(typeof value === 'number' ? value - 1 : 0);
           }}
         />
         <InputNumber
           value={inputValue}
           onChange={(val) => {
             setFromButton(false);
-            setInputValue(val);
+            setInputValue(typeof val === 'number' ? val : 0);
           }}
           min={datastream?.minValue}
           max={datastream?.maxValue}
@@ -67,12 +71,14 @@ function InputNumberWidget({
           type="text"
           icon={<PlusOutlined />}
           disabled={
-            datastream?.maxValue ? value >= datastream?.maxValue : false
+            typeof value === 'number' && datastream?.maxValue
+              ? value >= datastream?.maxValue
+              : false
           }
           onClick={() => {
             setFromButton(true);
-            setInputValue(value + 1);
-            onChange?.(value + 1);
+            setInputValue(typeof value === 'number' ? value + 1 : 0);
+            onChange?.(typeof value === 'number' ? value + 1 : 0);
           }}
         />
       </Flex>

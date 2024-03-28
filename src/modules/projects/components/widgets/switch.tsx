@@ -9,7 +9,8 @@ import { BaseWidgetTitle } from './base-widget-title';
 function SwitchWidget({
   value,
   onChange,
-  properties = { title: '', onValue: 1, offValue: 0 },
+  properties,
+  defaultProperties,
 }: TWidgetProps<
   {
     title: string;
@@ -20,18 +21,28 @@ function SwitchWidget({
   },
   number
 >) {
-  const { t, token } = useApp();
+  value = Number(value);
+
+  const { t } = useApp();
+
+  const onValue = useMemo(
+    () => properties?.onValue || defaultProperties?.onValue || 1,
+    [defaultProperties?.onValue, properties?.onValue],
+  );
+  const offValue = useMemo(
+    () => properties?.offValue || defaultProperties?.offValue || 0,
+    [defaultProperties?.offValue, properties?.offValue],
+  );
 
   const checked = useMemo(
-    () => (value === undefined ? undefined : properties.onValue === value),
-    [properties.onValue, value],
+    () => (value === undefined ? undefined : onValue === value),
+    [onValue, value],
   );
 
   return (
     <Space
       direction="vertical"
       style={{
-        padding: token.padding,
         height: '100%',
         width: '100%',
       }}
@@ -45,7 +56,7 @@ function SwitchWidget({
             if (checked === undefined) {
               return;
             } else {
-              onChange?.(checked ? properties.onValue : properties.offValue);
+              onChange?.(checked ? onValue : offValue);
             }
           }}
         />

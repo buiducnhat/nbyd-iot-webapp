@@ -4,7 +4,7 @@ import {
   EDatastreamType,
 } from '../datastream.model';
 
-export type CreateDatastreamDto = {
+export type TCreateDatastreamDto = {
   name: string;
   iconId?: number;
   color?: string;

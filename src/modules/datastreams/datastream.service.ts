@@ -1,11 +1,11 @@
 import httpService from '@/shared/http-service';
 
 import { EDatastreamType, TDatastream } from './datastream.model';
-import { CreateDatastreamDto } from './dto/create-datastream.dto';
-import { UpdateDatastreamDto } from './dto/update-datastream.dto';
+import { TCreateDatastreamDto } from './dto/create-datastream.dto';
+import { TUpdateDatastreamDto } from './dto/update-datastream.dto';
 
 class DatastreamService {
-  create(projectId: string, deviceId: string, data: CreateDatastreamDto) {
+  create(projectId: string, deviceId: string, data: TCreateDatastreamDto) {
     return httpService.request<TDatastream>({
       url: `/api/projects/${projectId}/devices/${deviceId}/datastreams`,
       method: 'POST',
@@ -17,7 +17,7 @@ class DatastreamService {
     projectId: string,
     deviceId: string,
     id: string,
-    data: UpdateDatastreamDto,
+    data: TUpdateDatastreamDto,
   ) {
     return httpService.request<TDatastream>({
       url: `/api/projects/${projectId}/devices/${deviceId}/datastreams/${id}`,
@@ -41,26 +41,37 @@ class DatastreamService {
     });
   }
 
-  getListPinOptions(type: EDatastreamType) {
+  getListPinOptions(type: EDatastreamType, excludes?: string[]) {
+    let result: Array<{ label: string; value: string; disabled?: boolean }> =
+      [];
+
     switch (type) {
       case EDatastreamType.DIGITAL:
-        return Array.from({ length: 14 }, (_, i) => i).map((i) => ({
+        result = Array.from({ length: 14 }, (_, i) => i).map((i) => ({
           label: `D${i}`,
           value: `D${i}`,
         }));
+        break;
       case EDatastreamType.ANALOG:
-        return Array.from({ length: 6 }, (_, i) => i).map((i) => ({
+        result = Array.from({ length: 6 }, (_, i) => i).map((i) => ({
           label: `A${i}`,
           value: `A${i}`,
         }));
+        break;
       case EDatastreamType.VIRTUAL:
-        return Array.from({ length: 256 }, (_, i) => i).map((i) => ({
+        result = Array.from({ length: 256 }, (_, i) => i).map((i) => ({
           label: `V${i}`,
           value: `V${i}`,
         }));
+        break;
       default:
         return [];
     }
+
+    return result.map((item) => ({
+      ...item,
+      disabled: excludes?.includes(item.value),
+    }));
   }
 }
 

@@ -16,6 +16,7 @@ export const BaseDashboardItem = styled.div<TST & { $editing?: boolean }>`
   border-radius: ${({ $token }) => $token.borderRadius}px;
   background-color: ${({ $token }) => $token.colorBgElevated};
   box-shadow: 0px 0px 15px 0px #00000025;
+  padding: ${({ $token }) => $token.padding}px;
 `;
 
 type TTopLayerEditProps = {

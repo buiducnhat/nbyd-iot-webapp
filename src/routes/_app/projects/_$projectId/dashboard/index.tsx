@@ -15,6 +15,7 @@ import {
 } from '@/modules/projects/components/widgets';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
 import { TST } from '@/shared/types/tst.type';
+import { isDefined } from '@/shared/utils';
 
 const GridLayout = WidthProvider(RGL);
 
@@ -135,16 +136,13 @@ function ProjectIdDashboard() {
               >
                 <widget.Widget
                   properties={item.properties}
+                  defaultProperties={widget.defaultProperties}
                   datastream={datastreams.find(
                     (x) => x.id === item.properties.datastreamId,
                   )}
-                  value={
-                    widget.dataType === 'number'
-                      ? Number(dsValues[item.properties.datastreamId])
-                      : String(dsValues[item.properties.datastreamId])
-                  }
+                  value={dsValues[item.properties.datastreamId]}
                   onChange={(value) => {
-                    if (connectedSocket) {
+                    if (connectedSocket && isDefined(value)) {
                       socket.emit('/devices/command', {
                         datastreamId: item.properties.datastreamId,
                         value: String(value),

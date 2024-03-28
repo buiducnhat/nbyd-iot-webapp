@@ -130,6 +130,11 @@
   "Meta data": "",
   "IP Address": "",
   "MAC Address": "",
+  "LED": "",
+  "On color": "",
+  "Off color": "",
+  "Input text": "",
+  "Used": "",
 
   "ApiResCode": {
     "1": "An error occurred",

@@ -1,4 +1,4 @@
-import { Col, Row, Slider, Space, Typography, theme } from 'antd';
+import { Col, Row, Slider, Space, Typography } from 'antd';
 
 import useApp from '@/hooks/use-app';
 
@@ -19,15 +19,14 @@ function SliderWidget({
   },
   number
 >) {
-  const { t } = useApp();
+  const { t, token } = useApp();
 
-  const { token } = theme.useToken();
+  value = Number(value);
 
   return (
     <Space
       direction="vertical"
       style={{
-        padding: token.padding,
         height: '100%',
         width: '100%',
       }}
@@ -52,7 +51,7 @@ function SliderWidget({
               fontFamily: 'Chivo Mono',
             }}
           >
-            {value === undefined ? '--' : value}
+            {!value ? '--' : value}
           </Typography.Text>
         </Col>
       </Row>

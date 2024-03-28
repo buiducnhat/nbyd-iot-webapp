@@ -10,13 +10,14 @@ function ValueBoxWidget({
   properties,
   datastream,
 }: TWidgetProps<{ title: string }, string>) {
+  value = String(value || '--');
+
   const { t, token } = useApp();
 
   return (
     <Space
       direction="vertical"
       style={{
-        padding: token.padding,
         height: '100%',
         width: '100%',
       }}

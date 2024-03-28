@@ -1,11 +1,13 @@
 import { useMutation } from '@tanstack/react-query';
 import {
   Button,
+  Col,
   ColorPicker,
   Drawer,
   Form,
   Input,
   InputNumber,
+  Row,
   Select,
   Space,
   Steps,
@@ -15,6 +17,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import useApp from '@/hooks/use-app';
 import { TProjectDetail } from '@/modules/projects/project.model';
+import { isDefined } from '@/shared/utils';
 
 import {
   EDatastreamDataType,
@@ -25,8 +28,8 @@ import {
   TDatastream,
 } from '../datastream.model';
 import datastreamService from '../datastream.service';
-import { CreateDatastreamDto } from '../dto/create-datastream.dto';
-import { UpdateDatastreamDto } from '../dto/update-datastream.dto';
+import { TCreateDatastreamDto } from '../dto/create-datastream.dto';
+import { TUpdateDatastreamDto } from '../dto/update-datastream.dto';
 
 type TDeviceFormDrawerProps = {
   open: boolean;
@@ -35,6 +38,7 @@ type TDeviceFormDrawerProps = {
   project: TProjectDetail;
   refetch?: () => Promise<any>;
   datastream?: TDatastream;
+  datastreams: TDatastream[];
 };
 
 const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
@@ -44,23 +48,25 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
   project,
   refetch,
   datastream,
+  datastreams,
 }: TDeviceFormDrawerProps) => {
   const { t, antdApp } = useApp();
 
-  const [form] = Form.useForm<TDatastream>();
-  const formValues = Form.useWatch<TDatastream>([], form);
+  const [form] = Form.useForm<TCreateDatastreamDto>();
+  const formValues = Form.useWatch<TCreateDatastreamDto>([], form);
 
   const [currentStep, setCurrentStep] = useState(isUpdate ? 2 : 0);
   const [deviceId, setDeviceId] = useState<string>(project.devices[0]?.id);
 
   const createMutation = useMutation({
-    mutationFn: (data: CreateDatastreamDto) =>
+    mutationFn: (data: TCreateDatastreamDto) =>
       datastreamService.create(project.id, deviceId, data),
     onSuccess: async () => {
       refetch && (await refetch());
       antdApp.message.success(t('Created successfully'));
       setOpen(false);
       form.resetFields();
+      setCurrentStep(0);
     },
     onError: (error) => {
       antdApp.message.error(error.message);
@@ -68,7 +74,7 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: UpdateDatastreamDto) =>
+    mutationFn: (data: TUpdateDatastreamDto) =>
       datastream?.id
         ? datastreamService.update(project.id, deviceId, datastream.id, data)
         : Promise.reject(new Error('Datastream not found')),
@@ -77,6 +83,7 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
       antdApp.message.success(t('Updated successfully'));
       setOpen(false);
       form.resetFields();
+      setCurrentStep(0);
     },
     onError: (error) => {
       antdApp.message.error(error.message);
@@ -117,7 +124,7 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
         title: t('Select') + ' ' + t('Type'),
         content: (
           <>
-            <Form.Item<CreateDatastreamDto>
+            <Form.Item<TCreateDatastreamDto>
               name="type"
               label={t('Type')}
               required
@@ -159,7 +166,7 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
         title: t('Complete'),
         content: (
           <>
-            <Form.Item<CreateDatastreamDto>
+            <Form.Item<TCreateDatastreamDto>
               name="name"
               label={t('Name')}
               required
@@ -168,7 +175,7 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
               <Input />
             </Form.Item>
 
-            <Form.Item<CreateDatastreamDto> name="color" label={t('Color')}>
+            <Form.Item<TCreateDatastreamDto> name="color" label={t('Color')}>
               <ColorPicker
                 value={formValues?.color}
                 onChangeComplete={(_color) =>
@@ -179,7 +186,7 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
 
             {(formValues?.type === EDatastreamType.DIGITAL ||
               formValues?.type === EDatastreamType.ANALOG) && (
-              <Form.Item<CreateDatastreamDto>
+              <Form.Item<TCreateDatastreamDto>
                 name="mode"
                 label={t('Mode')}
                 required
@@ -196,7 +203,7 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
             )}
 
             {formValues?.type === EDatastreamType.VIRTUAL && (
-              <Form.Item<CreateDatastreamDto>
+              <Form.Item<TCreateDatastreamDto>
                 name="dataType"
                 label={t('Data type')}
                 required
@@ -212,7 +219,7 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
               </Form.Item>
             )}
 
-            <Form.Item<CreateDatastreamDto>
+            <Form.Item<TCreateDatastreamDto>
               name="pin"
               label={t('Pin')}
               required={formValues?.type !== EDatastreamType.ZIGBEE}
@@ -224,9 +231,18 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
             >
               <Select>
                 {datastreamService
-                  .getListPinOptions(formValues?.type)
+                  .getListPinOptions(
+                    formValues?.type,
+                    datastreams
+                      .filter((x) => x.deviceId === deviceId)
+                      .map((x) => x.pin as string),
+                  )
                   .map((option) => (
-                    <Select.Option key={option.value} value={option.value}>
+                    <Select.Option
+                      key={option.value}
+                      value={option.value}
+                      disabled={option.disabled}
+                    >
                       {option.label}
                     </Select.Option>
                   ))}
@@ -234,45 +250,65 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
             </Form.Item>
 
             {
-              // Analog/Virtual
-              formValues?.type !== EDatastreamType.DIGITAL &&
-                formValues?.type !== EDatastreamType.ZIGBEE && (
-                  <Form.Item<CreateDatastreamDto> name="unit" label={t('Unit')}>
+              // Analog/Virtual (integer/float)
+              (formValues?.type === EDatastreamType.ANALOG ||
+                (formValues?.type === EDatastreamType.VIRTUAL &&
+                  (formValues.dataType === EDatastreamDataType.INTEGER ||
+                    formValues.dataType === EDatastreamDataType.FLOAT))) && (
+                <>
+                  <Form.Item<TCreateDatastreamDto>
+                    name="unit"
+                    label={t('Unit')}
+                  >
                     <Input />
                   </Form.Item>
-                )
-            }
 
-            {
-              // Analog/Virtual(only integer/float)
-              (formValues?.dataType === EDatastreamDataType.INTEGER ||
-                formValues?.dataType === EDatastreamDataType.FLOAT) && (
-                <Form.Item label={t('Extra')}>
-                  <Space.Compact>
-                    <Form.Item<CreateDatastreamDto> name="minValue" noStyle>
-                      <InputNumber placeholder={t('Min')} defaultValue={0} />
-                    </Form.Item>
+                  <Row>
+                    <Col span={8}>
+                      <Form.Item<TCreateDatastreamDto>
+                        labelCol={{ span: 12 }}
+                        name="minValue"
+                        label={t('Min')}
+                      >
+                        <InputNumber />
+                      </Form.Item>
+                    </Col>
 
-                    <Form.Item<CreateDatastreamDto> name="maxValue" noStyle>
-                      <InputNumber placeholder={t('Max')} defaultValue={1} />
-                    </Form.Item>
+                    <Col span={8}>
+                      <Form.Item<TCreateDatastreamDto>
+                        name="maxValue"
+                        label={t('Max')}
+                        labelCol={{ span: 12 }}
+                      >
+                        <InputNumber />
+                      </Form.Item>
+                    </Col>
 
-                    <Form.Item<CreateDatastreamDto> name="defaultValue" noStyle>
-                      <InputNumber placeholder={t('Default')} />
-                    </Form.Item>
-                  </Space.Compact>
-                </Form.Item>
+                    <Col span={8}>
+                      <Form.Item<TCreateDatastreamDto>
+                        name="defaultValue"
+                        label={t('Default')}
+                        labelCol={{ span: 12 }}
+                      >
+                        <InputNumber />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </>
               )
             }
 
-            {formValues?.dataType === EDatastreamDataType.STRING && (
-              <Form.Item<CreateDatastreamDto>
-                name="defaultValue"
-                label={t('Default value')}
-              >
-                <Input />
-              </Form.Item>
-            )}
+            {
+              // String
+              formValues?.dataType === EDatastreamDataType.STRING && (
+                <Form.Item<TCreateDatastreamDto>
+                  name="defaultValue"
+                  label={t('Default')}
+                >
+                  <Input />
+                </Form.Item>
+              )
+            }
 
             {!isUpdate && (
               <Form.Item wrapperCol={{ span: 20, offset: 4 }}>
@@ -299,6 +335,7 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
       },
     ],
     [
+      datastreams,
       deviceId,
       form,
       formValues?.color,
@@ -374,6 +411,16 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }}
         onFinish={(values) => {
+          if (values.type === EDatastreamType.DIGITAL) {
+            values.dataType = EDatastreamDataType.INTEGER;
+            values.minValue = 0;
+            values.maxValue = 1;
+          }
+
+          if (isDefined(values.defaultValue)) {
+            values.defaultValue = String(values.defaultValue);
+          }
+
           isUpdate
             ? updateMutation.mutate({
                 ...values,
@@ -384,12 +431,6 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
         }}
         initialValues={datastream}
       >
-        <div style={{ display: 'none' }}>
-          <Form.Item name="minValue" />
-          <Form.Item name="maxValue" />
-          <Form.Item name="defaultValue" />
-        </div>
-
         {steps.map((step, index) => (
           <div
             key={step.title}
