@@ -1,9 +1,12 @@
 import { Flex } from 'antd';
+import { useEffect, useRef, useState } from 'react';
 
 import useApp from '@/hooks/use-app';
 
 import { TWidgetProps } from '.';
 import { BaseWidgetTitle } from './base-widget-title';
+
+const MIN_SIZE = 40;
 
 function LedWidget({
   value,
@@ -13,6 +16,29 @@ function LedWidget({
   value = String(value);
 
   const { t, token } = useApp();
+
+  const [ledSize, setLedSize] = useState(MIN_SIZE);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      setLedSize(
+        Math.max(
+          Math.min(
+            containerRef.current?.offsetHeight || MIN_SIZE,
+            containerRef.current?.offsetWidth || MIN_SIZE,
+          ),
+          MIN_SIZE,
+        ) * 0.8,
+      );
+    });
+    resizeObserver.observe(containerRef.current);
+
+    return () => resizeObserver.disconnect();
+  }, []);
 
   return (
     <Flex
@@ -25,7 +51,12 @@ function LedWidget({
     >
       <BaseWidgetTitle>{properties?.title || t('LED')}</BaseWidgetTitle>
 
-      <Flex justify="center" align="center" style={{ flex: 1 }}>
+      <Flex
+        ref={containerRef}
+        justify="center"
+        align="center"
+        style={{ flex: 1 }}
+      >
         <div
           style={{
             backgroundColor:
@@ -36,8 +67,8 @@ function LedWidget({
             borderWidth: 1,
             borderStyle: 'solid',
             borderRadius: '100%',
-            width: 32,
-            height: 32,
+            width: ledSize,
+            height: ledSize,
           }}
         ></div>
       </Flex>
