@@ -62,3 +62,11 @@ export const getEsp32TemplateCode = (
 export const isDefined = (value?: any) => {
   return value !== undefined && value !== null;
 };
+
+export const isNumberString = (value: string) => {
+  return !isNaN(Number(value));
+};
+
+export const randomHexColor = () => {
+  return '#' + Math.floor(Math.random() * 16777215).toString(16);
+};

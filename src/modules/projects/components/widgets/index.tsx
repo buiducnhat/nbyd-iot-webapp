@@ -65,10 +65,11 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       minW: 4,
       maxW: 6,
       minH: 1,
-      maxH: 2,
+      maxH: 1,
     },
     validDatastreamTypes: ['DIGITAL_OUTPUT_INTEGER', 'VIRTUAL__INTEGER'],
     propertiesFields: [
+      { label: 'Color', name: 'color', type: 'color-picker' },
       {
         name: 'onValue',
         label: 'On value',
@@ -113,10 +114,13 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       'VIRTUAL__FLOAT',
       'VIRTUAL__STRING',
     ],
-    propertiesFields: [],
+    propertiesFields: [
+      { name: 'decimalPlaces', label: 'Decimal places', type: 'input-number' },
+    ],
     defaultProperties: {
       value: '0',
       unit: '',
+      decimalPlaces: 4,
     },
   },
   LED: {
@@ -142,10 +146,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       'VIRTUAL__FLOAT',
       'VIRTUAL__STRING',
     ],
-    propertiesFields: [
-      { label: 'On color', name: 'onColor', type: 'color-picker' },
-      { label: 'Off color', name: 'offColor', type: 'color-picker' },
-    ],
+    propertiesFields: [{ label: 'Color', name: 'color', type: 'color-picker' }],
     defaultProperties: {
       value: 0,
     },
@@ -162,7 +163,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       minW: 4,
       maxW: 6,
       minH: 1,
-      maxH: 2,
+      maxH: 1,
     },
     validDatastreamTypes: [
       'DIGITAL_OUTPUT_INTEGER',
@@ -170,6 +171,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       'VIRTUAL__INTEGER',
     ],
     propertiesFields: [
+      { label: 'Color', name: 'color', type: 'color-picker' },
       { name: 'step', label: 'Step', type: 'input-number', required: true },
     ],
     defaultProperties: {
@@ -191,7 +193,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       minW: 4,
       maxW: 6,
       minH: 1,
-      maxH: 2,
+      maxH: 1,
     },
     validDatastreamTypes: [
       'DIGITAL_OUTPUT_INTEGER',
@@ -216,7 +218,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       minW: 4,
       maxW: 6,
       minH: 1,
-      maxH: 2,
+      maxH: 1,
     },
     validDatastreamTypes: ['VIRTUAL__STRING'],
     propertiesFields: [],

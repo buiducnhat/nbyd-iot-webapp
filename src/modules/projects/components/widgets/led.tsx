@@ -8,10 +8,8 @@ import { BaseWidgetTitle } from './base-widget-title';
 function LedWidget({
   value,
   properties,
-}: TWidgetProps<
-  { title: string; onColor?: string; offColor?: string },
-  string
->) {
+  datastream,
+}: TWidgetProps<{ title: string; color?: string }, string>) {
   value = String(value);
 
   const { t, token } = useApp();
@@ -32,8 +30,8 @@ function LedWidget({
           style={{
             backgroundColor:
               value === '0'
-                ? properties?.offColor || token.colorBgContainer
-                : properties?.onColor || token.green,
+                ? token.colorBgLayout
+                : properties?.color || datastream?.color || token.colorSuccess,
             borderColor: token.colorBorder,
             borderWidth: 1,
             borderStyle: 'solid',

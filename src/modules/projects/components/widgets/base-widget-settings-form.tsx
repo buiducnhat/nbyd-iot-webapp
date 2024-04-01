@@ -88,7 +88,8 @@ function BaseWidgetSettingsModal({
       (x) => x.id === formValues?.datastreamId,
     );
     setSelectedDatastream(datastream);
-  }, [dashboardItem.type, datastreams, formValues?.datastreamId]);
+    form.setFieldValue('color', datastream?.color || '#ffffffff');
+  }, [dashboardItem.type, datastreams, form, formValues?.datastreamId]);
 
   useEffect(() => {
     setPreviewValue(

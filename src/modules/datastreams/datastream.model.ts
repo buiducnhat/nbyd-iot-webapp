@@ -54,7 +54,6 @@ export type TDatastream = {
   maxValue?: number;
   defaultValue?: string;
   unit?: string;
-  enabled: boolean;
   enabledHistory: boolean;
   lastValue: string;
   createdAt: string;

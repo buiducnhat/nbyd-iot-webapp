@@ -3843,6 +3843,11 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
+mac-scrollbar@^0.13.6:
+  version "0.13.6"
+  resolved "https://registry.yarnpkg.com/mac-scrollbar/-/mac-scrollbar-0.13.6.tgz#059348858fbaff7d98ba65c7cf46da3efd99178a"
+  integrity sha512-P0eNiCTExlmWBQ0FXalfXVh42eo9b0obnZIo1khZzyZX99frTsCmZwcbH0RWZZtNYtBZVd5f/7k4iLPou+skzg==
+
 map-obj@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
@@ -4613,7 +4618,7 @@ rc-select@~14.11.0, rc-select@~14.11.0-0:
     rc-util "^5.16.1"
     rc-virtual-list "^3.5.2"
 
-rc-slider@~10.5.0:
+rc-slider@^10.5.0, rc-slider@~10.5.0:
   version "10.5.0"
   resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-10.5.0.tgz#1bd4853d114cb3403b67c485125887adb6a2a117"
   integrity sha512-xiYght50cvoODZYI43v3Ylsqiw14+D7ELsgzR40boDZaya1HFa1Etnv9MDkQE8X/UrXAffwv2AcNAhslgYuDTw==

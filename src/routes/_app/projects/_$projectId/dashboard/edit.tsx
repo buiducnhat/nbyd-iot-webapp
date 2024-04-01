@@ -33,7 +33,7 @@ export const Route = createFileRoute(
   component: ProjectIdEditDashboard,
 });
 
-const DEFAULT_ROW_NUM = 5;
+const DEFAULT_ROW_NUM = 7;
 const NUMBER_OF_COLUMNS = 24;
 const ITEM_UNIT_HEIGHT = 96;
 const MARGIN_DASHBOARD = 8;
@@ -94,7 +94,7 @@ function ProjectIdEditDashboard() {
             $token={token}
             direction="vertical"
             size="middle"
-            style={{ overflowY: 'scroll' }}
+            style={{ overflowY: 'auto' }}
           >
             <Space align="center" size="large">
               <BlockOutlined style={{ fontSize: token.fontSizeHeading5 }} />
@@ -215,7 +215,13 @@ function ProjectIdEditDashboard() {
                         setItems(webDashboard);
                       }}
                     >
-                      <widget.Widget properties={item.properties} />
+                      <widget.Widget
+                        properties={item.properties}
+                        defaultProperties={widget.defaultProperties}
+                        datastream={datastreams.find(
+                          (x) => x.id === item.properties.datastreamId,
+                        )}
+                      />
                     </TopLayerEdit>
                   </BaseDashboardItem>
                 );
@@ -263,7 +269,7 @@ const DashboardLayout = styled.div<TST>`
   position: relative;
   overflow-y: hidden;
   max-height: calc(100vh - 275px);
-  overflow-y: scroll;
+  overflow-y: auto;
   width: '100%';
 `;
 

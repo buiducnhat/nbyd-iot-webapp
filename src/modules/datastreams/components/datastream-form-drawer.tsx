@@ -17,7 +17,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import useApp from '@/hooks/use-app';
 import { TProjectDetail } from '@/modules/projects/project.model';
-import { isDefined } from '@/shared/utils';
+import { isDefined, randomHexColor } from '@/shared/utils';
 
 import {
   EDatastreamDataType,
@@ -166,23 +166,34 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
         title: t('Complete'),
         content: (
           <>
-            <Form.Item<TCreateDatastreamDto>
-              name="name"
-              label={t('Name')}
-              required
-              rules={[{ required: true }]}
-            >
-              <Input />
-            </Form.Item>
+            <Row>
+              <Col span={16}>
+                <Form.Item<TCreateDatastreamDto>
+                  name="name"
+                  label={t('Name')}
+                  labelCol={{ span: 6 }}
+                  required
+                  rules={[{ required: true }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
 
-            <Form.Item<TCreateDatastreamDto> name="color" label={t('Color')}>
-              <ColorPicker
-                value={formValues?.color}
-                onChangeComplete={(_color) =>
-                  form.setFieldsValue({ color: _color.toHexString() })
-                }
-              />
-            </Form.Item>
+              <Col span={8}>
+                <Form.Item<TCreateDatastreamDto>
+                  name="color"
+                  label={t('Color')}
+                  labelCol={{ span: 20 }}
+                >
+                  <ColorPicker
+                    value={formValues?.color}
+                    onChangeComplete={(_color) =>
+                      form.setFieldsValue({ color: _color.toHexString() })
+                    }
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
 
             {(formValues?.type === EDatastreamType.DIGITAL ||
               formValues?.type === EDatastreamType.ANALOG) && (
@@ -382,7 +393,7 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
       title={isUpdate ? t('Update') : t('Create new') + ' ' + t('Datastream')}
       open={open}
       onClose={() => setOpen(false)}
-      width={600}
+      width={720}
       extra={
         <Space>
           <Button onClick={() => setOpen(false)}>{t('Cancel')}</Button>
@@ -406,7 +417,7 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
 
       <Form
         form={form}
-        name="datastreams-form"
+        name={'datastream-form' + (isUpdate ? '-update' : '-create')}
         autoComplete="off"
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }}
@@ -429,7 +440,7 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
                 ...values,
               });
         }}
-        initialValues={datastream}
+        initialValues={isUpdate ? datastream : { color: randomHexColor() }}
       >
         {steps.map((step, index) => (
           <div

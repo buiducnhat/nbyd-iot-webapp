@@ -16,7 +16,7 @@ export const BaseDashboardItem = styled.div<TST & { $editing?: boolean }>`
   border-radius: ${({ $token }) => $token.borderRadius}px;
   background-color: ${({ $token }) => $token.colorBgElevated};
   box-shadow: 0px 0px 15px 0px #00000025;
-  padding: ${({ $token }) => $token.padding}px;
+  padding: ${({ $token, $editing }) => ($editing ? 0 : $token.padding)}px;
 `;
 
 type TTopLayerEditProps = {
@@ -40,12 +40,8 @@ export function TopLayerEdit({
   const [openSettings, setOpenSettings] = useState(false);
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        height: '100%',
-        width: '100%',
-      }}
+    <TopLayer
+      $token={token}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
@@ -68,8 +64,8 @@ export function TopLayerEdit({
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: `${token.colorBgElevated}75`,
-            zIndex: 1,
+            backgroundColor: `${token.colorBgElevated}bf`,
+            zIndex: 10,
           }}
         />
       )}
@@ -80,7 +76,7 @@ export function TopLayerEdit({
             position: 'absolute',
             top: 0,
             right: 0,
-            zIndex: 3,
+            zIndex: 11,
             padding: token.sizeXS,
             transition: token.motionEaseInOut,
           }}
@@ -108,6 +104,13 @@ export function TopLayerEdit({
       )}
 
       {children}
-    </div>
+    </TopLayer>
   );
 }
+
+const TopLayer = styled.div<TST>`
+  position: relative;
+  height: 100%;
+  width: 100%;
+  padding: ${({ $token }) => $token.padding}px;
+`;

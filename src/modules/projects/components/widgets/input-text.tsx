@@ -1,6 +1,6 @@
-import { Input, Space } from 'antd';
+import { SendOutlined } from '@ant-design/icons';
+import { Button, Input, Space } from 'antd';
 import { useState } from 'react';
-import { useDebounce } from 'react-use';
 
 import useApp from '@/hooks/use-app';
 
@@ -17,17 +17,6 @@ function InputTextWidget({
   const { t } = useApp();
 
   const [inputValue, setInputValue] = useState(value);
-  const [fromButton, setFromButton] = useState(false);
-
-  useDebounce(
-    () => {
-      if (!fromButton) {
-        onChange?.(inputValue);
-      }
-    },
-    1000,
-    [inputValue],
-  );
 
   return (
     <Space
@@ -39,13 +28,20 @@ function InputTextWidget({
     >
       <BaseWidgetTitle>{properties?.title || t('Input text')}</BaseWidgetTitle>
 
-      <Input
-        value={inputValue}
-        onChange={(e) => {
-          setFromButton(false);
-          setInputValue(e.target.value);
-        }}
-      />
+      <Space.Compact>
+        <Input
+          value={inputValue}
+          onChange={(e) => {
+            setInputValue(e.target.value);
+          }}
+        />
+        <Button
+          icon={<SendOutlined />}
+          onClick={() => {
+            onChange?.(inputValue);
+          }}
+        />
+      </Space.Compact>
     </Space>
   );
 }

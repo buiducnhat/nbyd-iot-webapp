@@ -14,7 +14,7 @@ body {
 .react-grid-item > .react-resizable-handle.react-resizable-handle-se {
   bottom: 0.5rem !important;
   right: 0.5rem !important;
-  z-index: 2;
+  z-index: 12;
 }
 
 .react-grid-item.react-grid-placeholder {

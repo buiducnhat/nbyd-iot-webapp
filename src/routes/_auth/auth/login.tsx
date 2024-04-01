@@ -59,11 +59,11 @@ function LoginPage() {
     <>
       <Layout.Content
         style={{
-          height: '100vh',
+          height: '100dvh',
         }}
       >
         <Flex
-          style={{ height: '100vh' }}
+          style={{ height: '100dvh' }}
           vertical
           gap={24}
           align="center"

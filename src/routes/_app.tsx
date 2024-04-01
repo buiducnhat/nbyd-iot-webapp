@@ -87,7 +87,7 @@ function AppLayout() {
   }, [authQuery.isSuccess]);
 
   return authQuery.isSuccess ? (
-    <Layout hasSider style={{ minHeight: '100vh' }}>
+    <Layout hasSider style={{ minHeight: '100dvh' }}>
       <MainSideNav collapsed={collapsed} setCollapsed={setCollapsed} />
 
       <Layout>
@@ -101,7 +101,7 @@ function AppLayout() {
   ) : (
     <Layout
       style={{
-        minHeight: '100vh',
+        minHeight: '100dvh',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -117,8 +117,8 @@ const SContent = styled(Layout.Content)<TST>`
   padding: ${({ $token }) => $token.padding}px;
   background-color: ${({ $token }) => $token.colorBgContainer};
   border-radius: ${({ $token }) => $token.borderRadius}px;
-  height: calc(100vh - 64px - 2 * ${({ $token }) => $token.margin}px);
-  overflow-y: scroll;
+  height: calc(100dvh - 64px - 2 * ${({ $token }) => $token.margin}px);
+  overflow-y: auto;
   overflow: -moz-scrollbars-none;
   -ms-overflow-style: none;
 `;

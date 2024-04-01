@@ -1,6 +1,7 @@
 import { EditOutlined } from '@ant-design/icons';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { FloatButton } from 'antd';
+import { MacScrollbar } from 'mac-scrollbar';
 import { useEffect, useMemo, useState } from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
 import styled from 'styled-components';
@@ -23,7 +24,7 @@ export const Route = createFileRoute('/_app/projects/_$projectId/dashboard/')({
   component: ProjectIdDashboard,
 });
 
-const DEFAULT_ROW_NUM = 5;
+const DEFAULT_ROW_NUM = 7;
 const NUMBER_OF_COLUMNS = 24;
 const ITEM_UNIT_HEIGHT = 96;
 const MARGIN_DASHBOARD = 8;
@@ -102,63 +103,65 @@ function ProjectIdDashboard() {
 
   return (
     <>
-      <DashboardLayout
-        $token={token}
-        style={{
-          height: maxY * ITEM_UNIT_HEIGHT + MARGIN_DASHBOARD * (maxY + 1.5),
-        }}
-      >
-        <GridLayout
-          style={{ height: '100%' }}
-          className="layout"
-          compactType={null}
-          cols={NUMBER_OF_COLUMNS}
-          rowHeight={ITEM_UNIT_HEIGHT}
-          margin={[MARGIN_DASHBOARD, MARGIN_DASHBOARD]}
+      <MacScrollbar>
+        <DashboardLayout
+          $token={token}
+          style={{
+            height: maxY * ITEM_UNIT_HEIGHT + MARGIN_DASHBOARD * (maxY + 1.5),
+          }}
         >
-          {items.map((item) => {
-            const widget = FULL_ATTRIBUTES_WIDGETS[item.type];
+          <GridLayout
+            style={{ height: '100%' }}
+            className="layout"
+            compactType={null}
+            cols={NUMBER_OF_COLUMNS}
+            rowHeight={ITEM_UNIT_HEIGHT}
+            margin={[MARGIN_DASHBOARD, MARGIN_DASHBOARD]}
+          >
+            {items.map((item) => {
+              const widget = FULL_ATTRIBUTES_WIDGETS[item.type];
 
-            if (!widget) return null;
+              if (!widget) return null;
 
-            return (
-              <BaseDashboardItem
-                key={item.layout.i}
-                $token={token}
-                className="droppable-element"
-                data-grid={{
-                  ...item.layout,
-                  static: true,
-                  isDraggable: false,
-                  isResizable: false,
-                }}
-                draggable={false}
-              >
-                <widget.Widget
-                  properties={item.properties}
-                  defaultProperties={widget.defaultProperties}
-                  datastream={datastreams.find(
-                    (x) => x.id === item.properties.datastreamId,
-                  )}
-                  value={dsValues[item.properties.datastreamId]}
-                  onChange={(value) => {
-                    if (connectedSocket && isDefined(value)) {
-                      socket.emit('/devices/command', {
-                        datastreamId: item.properties.datastreamId,
-                        value: String(value),
-                      });
-                    }
-                    setDsValues((prev) => ({
-                      ...prev,
-                      [item.properties.datastreamId]: String(value),
-                    }));
+              return (
+                <BaseDashboardItem
+                  key={item.layout.i}
+                  $token={token}
+                  className="droppable-element"
+                  data-grid={{
+                    ...item.layout,
+                    static: true,
+                    isDraggable: false,
+                    isResizable: false,
                   }}
-                />
-              </BaseDashboardItem>
-            );
-          })}
-        </GridLayout>
-      </DashboardLayout>
+                  draggable={false}
+                >
+                  <widget.Widget
+                    properties={item.properties}
+                    defaultProperties={widget.defaultProperties}
+                    datastream={datastreams.find(
+                      (x) => x.id === item.properties.datastreamId,
+                    )}
+                    value={dsValues[item.properties.datastreamId]}
+                    onChange={(value) => {
+                      if (connectedSocket && isDefined(value)) {
+                        socket.emit('/devices/command', {
+                          datastreamId: item.properties.datastreamId,
+                          value: String(value),
+                        });
+                      }
+                      setDsValues((prev) => ({
+                        ...prev,
+                        [item.properties.datastreamId]: String(value),
+                      }));
+                    }}
+                  />
+                </BaseDashboardItem>
+              );
+            })}
+          </GridLayout>
+        </DashboardLayout>
+      </MacScrollbar>
 
       <FloatButton
         icon={<EditOutlined />}
@@ -180,7 +183,7 @@ const DashboardLayout = styled.div<TST>`
   border-radius: ${({ $token }) => $token.borderRadius}px;
   border: 1px dashed ${({ $token }) => $token.colorBorder};
   position: relative;
-  max-height: calc(100vh - 275px);
-  overflow-y: scroll;
+  max-height: calc(100dvh - 275px);
+  overflow-y: auto;
   width: 100%;
 `;
