@@ -61,7 +61,6 @@ export function TopLayerEdit({
 
       {hover && (
         <div
-          // eslint-disable-next-line react/no-unknown-property
           css={css`
             position: absolute;
             top: 0;
