@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
 import { Outlet, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { Image, Layout, Space, Spin } from 'antd';
@@ -16,7 +16,6 @@ import firebaseService from '@/modules/firebase/firebase.service';
 import { requestFcmPermission } from '@/modules/firebase/request-permission';
 import MainSideNav from '@/shared/components/layouts/app/side-nav';
 import MainTopBar from '@/shared/components/layouts/app/top-bar';
-import { TAntdToken } from '@/shared/types/tst.type';
 
 export const Route = createFileRoute('/_app')({
   component: AppLayout,
@@ -87,38 +86,44 @@ function AppLayout() {
   }, [authQuery.isSuccess]);
 
   return authQuery.isSuccess ? (
-    <Layout hasSider style={{ minHeight: '100dvh' }}>
+    <Layout
+      hasSider
+      css={css`
+        min-height: 100dvh;
+      `}
+    >
       <MainSideNav collapsed={collapsed} setCollapsed={setCollapsed} />
 
       <Layout>
         <MainTopBar collapsed={collapsed} setCollapse={setCollapsed} />
 
-        <SContent $token={token} className="main-content">
+        <Layout.Content
+          className="main-content"
+          css={css`
+            margin: ${token.margin}px;
+            padding: ${token.padding}px;
+            background-color: ${token.colorBgContainer};
+            border-radius: ${token.borderRadius}px;
+            height: calc(100dvh - 64px - 2 * ${token.margin}px);
+            overflow-y: auto;
+            overflow: -moz-scrollbars-none;
+            -ms-overflow-style: none;
+          `}
+        >
           <Outlet />
-        </SContent>
+        </Layout.Content>
       </Layout>
     </Layout>
   ) : (
     <Layout
-      style={{
-        minHeight: '100dvh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
+      css={css`
+        min-height: 100dvh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      `}
     >
       <Spin size="large" />
     </Layout>
   );
 }
-
-const SContent = styled(Layout.Content)<TAntdToken>`
-  margin: ${({ $token }) => $token.margin}px;
-  padding: ${({ $token }) => $token.padding}px;
-  background-color: ${({ $token }) => $token.colorBgContainer};
-  border-radius: ${({ $token }) => $token.borderRadius}px;
-  height: calc(100dvh - 64px - 2 * ${({ $token }) => $token.margin}px);
-  overflow-y: auto;
-  overflow: -moz-scrollbars-none;
-  -ms-overflow-style: none;
-`;

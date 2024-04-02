@@ -1,4 +1,5 @@
 import { EditOutlined } from '@ant-design/icons';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { FloatButton } from 'antd';
@@ -106,12 +107,15 @@ function ProjectIdDashboard() {
       <MacScrollbar>
         <DashboardLayout
           $token={token}
-          style={{
-            height: maxY * ITEM_UNIT_HEIGHT + MARGIN_DASHBOARD * (maxY + 1.5),
-          }}
+          css={css`
+            height: ${maxY * ITEM_UNIT_HEIGHT +
+            MARGIN_DASHBOARD * (maxY + 1.5)}px;
+          `}
         >
           <GridLayout
-            style={{ height: '100%' }}
+            css={css`
+              height: 100%;
+            `}
             className="layout"
             compactType={null}
             cols={NUMBER_OF_COLUMNS}

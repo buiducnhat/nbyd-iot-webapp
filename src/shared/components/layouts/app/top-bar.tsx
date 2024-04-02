@@ -5,6 +5,7 @@ import {
   SunOutlined,
   UnlockFilled,
 } from '@ant-design/icons';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
@@ -32,7 +33,7 @@ type TMainTopBarProps = {
 };
 
 const MainTopBar = ({ collapsed, setCollapse }: TMainTopBarProps) => {
-  const { t } = useApp();
+  const { t, token } = useApp();
 
   const gTheme = useAppStore((state) => state.theme);
   const toggleTheme = useAppStore((state) => state.toggleTheme);
@@ -41,8 +42,6 @@ const MainTopBar = ({ collapsed, setCollapse }: TMainTopBarProps) => {
   const logout = useAuthStore((state) => state.logout);
 
   const navigate = useNavigate();
-
-  const { token } = theme.useToken();
 
   const logoutMutation = useMutation({
     mutationFn: () => authService.logout(),
@@ -76,26 +75,25 @@ const MainTopBar = ({ collapsed, setCollapse }: TMainTopBarProps) => {
   );
 
   return (
-    <SHeader
-      className={`flex p-0 top-0 z-1 sticky w-full items-center `}
-      style={{
-        background: token.colorBgContainer,
-      }}
-    >
+    <SHeader $token={token}>
       <Button
         type="text"
         icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         onClick={() => setCollapse(!collapsed)}
-        style={{
-          fontSize: '16px',
-          width: 64,
-          height: 64,
-        }}
+        css={css`
+          font-size: 16px !important;
+          width: 64px !important;
+          height: 64px !important;
+        `}
       />
 
       <SFlexGrowMax />
 
-      <Space style={{ marginRight: token.margin }}>
+      <Space
+        css={css`
+          margin-right: ${token.margin}px;
+        `}
+      >
         <Switch
           checkedChildren={<MoonOutlined />}
           unCheckedChildren={<SunOutlined />}
@@ -123,7 +121,8 @@ const MainTopBar = ({ collapsed, setCollapse }: TMainTopBarProps) => {
 
 export default MainTopBar;
 
-const SHeader = styled(Layout.Header)`
+const SHeader = styled(Layout.Header)<TAntdToken>`
+  background: ${({ $token }) => $token.colorBgContainer};
   display: flex;
   padding: 0;
   top: 0;

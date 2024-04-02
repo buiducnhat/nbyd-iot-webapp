@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Col, Flex, Row, Typography } from 'antd';
 import Slider from 'rc-slider';
@@ -54,20 +55,25 @@ function SliderWidget({
     <Flex
       vertical
       gap={token.sizeUnit}
-      style={{
-        height: '100%',
-        width: '100%',
-      }}
+      css={css`
+        height: 100%;
+        width: 100%;
+      `}
     >
       <BaseWidgetTitle>{properties?.title || t('Slider')}</BaseWidgetTitle>
 
-      <Row gutter={token.sizeXS} style={{ flex: 1 }}>
+      <Row
+        gutter={token.sizeXS}
+        css={css`
+          flex: 1;
+        `}
+      >
         <Col
           span={18}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-          }}
+          css={css`
+            display: flex;
+            align-items: center;
+          `}
         >
           <SSlider
             $token={token}
@@ -97,17 +103,17 @@ function SliderWidget({
 
         <Col
           span={6}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'end',
-          }}
+          css={css`
+            display: flex;
+            align-items: center;
+            justify-content: end;
+          `}
         >
           <Typography.Text
-            style={{
-              fontSize: token.fontSizeHeading4,
-              fontFamily: 'Chivo Mono',
-            }}
+            css={css`
+              font-size: ${token.fontSizeHeading4};
+              font-family: 'Chivo Mono';
+            `}
           >
             {isNaN(localValue) ? '--' : localValue}
           </Typography.Text>

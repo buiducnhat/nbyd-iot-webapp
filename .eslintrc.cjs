@@ -32,6 +32,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'no-undef': 'off',
     'react-hooks/exhaustive-deps': 'error',
+    'react/no-unknown-property': ['error', { ignore: ['css'] }],
   },
   settings: {
     react: {

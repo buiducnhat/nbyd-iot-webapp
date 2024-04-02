@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import {
   Col,
   ColorPicker,
@@ -128,7 +129,11 @@ function BaseWidgetSettingsModal({
         disabled: !isValid,
       }}
     >
-      <Row style={{ marginTop: token.marginXL }}>
+      <Row
+        css={css`
+          margin-top: ${token.marginXL}px;
+        `}
+      >
         <Col span={12}>
           <Form
             form={form}
@@ -160,12 +165,20 @@ function BaseWidgetSettingsModal({
                   .map((datastream) => (
                     <Select.Option key={datastream.id} value={datastream.id}>
                       <Flex justify="space-between">
-                        <span style={{ fontWeight: token.fontWeightStrong }}>
+                        <span
+                          css={css`
+                            font-weight: ${token.fontWeightStrong};
+                          `}
+                        >
                           {datastream.name}
                         </span>
                         <div>
                           ({datastream.device?.name}/
-                          <span style={{ fontWeight: token.fontWeightStrong }}>
+                          <span
+                            css={css`
+                              font-weight: ${token.fontWeightStrong};
+                            `}
+                          >
                             {datastream.pin}
                           </span>
                           )
@@ -214,17 +227,27 @@ function BaseWidgetSettingsModal({
 
         <Col
           span={11}
-          style={{
-            backgroundColor: token.colorBgLayout,
-            padding: token.padding,
-            borderRadius: token.borderRadius,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
+          css={css`
+            background-color: ${token.colorBgLayout};
+            padding: ${token.padding}px;
+            border-radius: ${token.borderRadius}px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          `}
         >
-          <Flex justify="center" style={{ minWidth: 200 }}>
-            <BaseDashboardItem $token={token} style={{ width: '100%' }}>
+          <Flex
+            justify="center"
+            css={css`
+              min-width: 200px;
+            `}
+          >
+            <BaseDashboardItem
+              $token={token}
+              css={css`
+                width: 100%;
+              `}
+            >
               <previewWidget.Widget
                 value={previewValue}
                 onChange={setPreviewValue}

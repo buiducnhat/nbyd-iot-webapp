@@ -1,4 +1,5 @@
 import { LockFilled, UserOutlined } from '@ant-design/icons';
+import { css } from '@emotion/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { Button, Flex, Form, Input, Layout, Typography } from 'antd';
@@ -58,12 +59,14 @@ function LoginPage() {
   return (
     <>
       <Layout.Content
-        style={{
-          height: '100dvh',
-        }}
+        css={css`
+          height: 100dvh;
+        `}
       >
         <Flex
-          style={{ height: '100dvh' }}
+          css={css`
+            height: 100dvh;
+          `}
           vertical
           gap={24}
           align="center"
@@ -77,7 +80,9 @@ function LoginPage() {
             form={form}
             layout="vertical"
             size="large"
-            style={{ width: '30%' }}
+            css={css`
+              width: 30%;
+            `}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
           >
@@ -113,7 +118,9 @@ function LoginPage() {
 
             <Form.Item>
               <Button
-                style={{ width: '100%' }}
+                css={css`
+                  width: 100%;
+                `}
                 type="primary"
                 htmlType="submit"
               >

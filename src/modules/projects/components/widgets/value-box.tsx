@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import { Space, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 
@@ -43,16 +44,19 @@ function ValueBoxWidget({
   return (
     <Space
       direction="vertical"
-      style={{
-        height: '100%',
-        width: '100%',
-      }}
+      css={css`
+        height: 100%;
+        width: 100%;
+      `}
     >
       <BaseWidgetTitle>{properties?.title || t('Value box')}</BaseWidgetTitle>
 
       <Space>
         <Typography.Text
-          style={{ fontSize: token.fontSizeHeading4, fontFamily: 'Chivo Mono' }}
+          css={css`
+            font-size: ${token.fontSizeHeading4};
+            font-family: 'Chivo Mono';
+          `}
         >
           {localValue}
         </Typography.Text>

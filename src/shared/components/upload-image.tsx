@@ -1,4 +1,5 @@
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
 import { Upload } from 'antd';
 import ImgCrop from 'antd-img-crop';
@@ -76,9 +77,21 @@ const UploadImage = ({
   };
 
   const uploadButton = (
-    <button style={{ border: 0, background: 'none' }} type="button">
+    <button
+      css={css`
+        border: 0;
+        background: none;
+      `}
+      type="button"
+    >
       {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>{t('Upload')}</div>
+      <div
+        css={css`
+          margin-top: 8px;
+        `}
+      >
+        {t('Upload')}
+      </div>
     </button>
   );
 
@@ -94,7 +107,13 @@ const UploadImage = ({
         onPreview={onPreview}
       >
         {!loading && imageUrl ? (
-          <img src={imageUrl} alt="image" style={{ width: '100%' }} />
+          <img
+            src={imageUrl}
+            alt="image"
+            css={css`
+              width: 100%;
+            `}
+          />
         ) : (
           uploadButton
         )}

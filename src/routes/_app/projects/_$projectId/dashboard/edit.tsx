@@ -1,4 +1,5 @@
 import { BlockOutlined, LeftOutlined, SaveOutlined } from '@ant-design/icons';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
@@ -94,12 +95,22 @@ function ProjectIdEditDashboard() {
             $token={token}
             direction="vertical"
             size="middle"
-            style={{ overflowY: 'auto' }}
+            css={css`
+              overflow-y: auto;
+            `}
           >
             <Space align="center" size="large">
-              <BlockOutlined style={{ fontSize: token.fontSizeHeading5 }} />
+              <BlockOutlined
+                css={css`
+                  font-size: ${token.fontSizeHeading5}px;
+                `}
+              />
 
-              <Typography.Text style={{ fontSize: token.fontSizeHeading4 }}>
+              <Typography.Text
+                css={css`
+                  font-size: ${token.fontSizeHeading4}px;
+                `}
+              >
                 {t('Widgets')}
               </Typography.Text>
             </Space>
@@ -109,7 +120,9 @@ function ProjectIdEditDashboard() {
 
               return (
                 <BaseDashboardItem
-                  style={{ cursor: 'grab' }}
+                  css={css`
+                    cursor: grab;
+                  `}
                   $token={token}
                   className="droppable-element"
                   key={widgetType}
@@ -127,11 +140,10 @@ function ProjectIdEditDashboard() {
         <Col span={20}>
           <DashboardLayout
             $token={token}
-            style={{
-              height:
-                curRowNum * ITEM_UNIT_HEIGHT +
-                MARGIN_DASHBOARD * (curRowNum + 1.5),
-            }}
+            css={css`
+              height: ${curRowNum * ITEM_UNIT_HEIGHT +
+              MARGIN_DASHBOARD * (curRowNum + 1.5)}px;
+            `}
           >
             <DashboardBoxRow $token={token}>
               {new Array(24 * curRowNum).fill(0).map((_, index) => {
@@ -144,7 +156,9 @@ function ProjectIdEditDashboard() {
             </DashboardBoxRow>
 
             <GridLayout
-              style={{ height: '100%' }}
+              css={css`
+                height: 100%;
+              `}
               className="layout"
               compactType={null}
               cols={NUMBER_OF_COLUMNS}

@@ -1,4 +1,5 @@
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { css } from '@emotion/react';
 import { Button, Flex, InputNumber, Space } from 'antd';
 import { useState } from 'react';
 import { useDebounce } from 'react-use';
@@ -34,10 +35,10 @@ function InputNumberWidget({
   return (
     <Space
       direction="vertical"
-      style={{
-        height: '100%',
-        width: '100%',
-      }}
+      css={css`
+        height: 100%;
+        width: 100%;
+      `}
     >
       <BaseWidgetTitle>
         {properties?.title || t('Input number')}

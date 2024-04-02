@@ -1,4 +1,5 @@
 import { DeleteOutlined, SettingOutlined } from '@ant-design/icons';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Button, Space } from 'antd';
 import { ReactNode, useState } from 'react';
@@ -60,40 +61,55 @@ export function TopLayerEdit({
 
       {hover && (
         <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: `${token.colorBgElevated}bf`,
-            zIndex: 10,
-          }}
+          // eslint-disable-next-line react/no-unknown-property
+          css={css`
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: ${token.colorBgElevated}bf;
+            z-index: 10;
+          `}
         />
       )}
 
       {hover && (
         <Space.Compact
-          style={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            zIndex: 11,
-            padding: token.sizeXS,
-            transition: token.motionEaseInOut,
-          }}
+          css={css`
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 11;
+            padding: ${token.sizeXS}px;
+            transition: ${token.motionEaseInOut};
+          `}
           onMouseDown={(e) => e.stopPropagation()}
         >
           <Button
-            style={{ borderColor: token.colorPrimary }}
-            icon={<SettingOutlined style={{ color: token.colorPrimary }} />}
+            css={css`
+              border-color: ${token.colorPrimary};
+            `}
+            icon={
+              <SettingOutlined
+                css={css`
+                  color: ${token.colorPrimary};
+                `}
+              />
+            }
             onClick={() => {
               setOpenSettings(true);
             }}
           />
           <Button
-            style={{ borderColor: token.colorError }}
-            icon={<DeleteOutlined style={{ color: token.colorError }} />}
+            danger
+            icon={
+              <DeleteOutlined
+                css={css`
+                  color: ${token.colorError};
+                `}
+              />
+            }
             onClick={() => {
               onSave(
                 webDashboard.filter(

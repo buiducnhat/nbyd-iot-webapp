@@ -6,6 +6,7 @@ import {
   MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
@@ -97,9 +98,20 @@ function ProjectIdHome() {
 
       <Row gutter={token.sizeLG}>
         <Col span={12}>
-          <Space size="large" direction="vertical" style={{ width: '100%' }}>
+          <Space
+            size="large"
+            direction="vertical"
+            css={css`
+              width: 100%;
+            `}
+          >
             <Flex justify="space-between">
-              <Typography.Text strong style={{ fontSize: token.fontSizeLG }}>
+              <Typography.Text
+                strong
+                css={css`
+                  font-size: ${token.fontSizeLG}px;
+                `}
+              >
                 {t('deviceWithCount', { count: project?.devices.length })}
               </Typography.Text>
 
@@ -136,7 +148,9 @@ function ProjectIdHome() {
                   render: (name: string, record) => (
                     <Space direction="vertical" align="center">
                       <Image
-                        style={{ borderRadius: token.borderRadius }}
+                        css={css`
+                          border-radius: ${token.borderRadius}px;
+                        `}
                         width={50}
                         src={
                           record.imageFileUrl ||
@@ -190,7 +204,9 @@ function ProjectIdHome() {
                       <Typography.Text
                         copyable
                         ellipsis
-                        style={{ maxWidth: 110 }}
+                        css={css`
+                          max-width: 110px;
+                        `}
                       >
                         {authToken}
                       </Typography.Text>
@@ -265,18 +281,28 @@ function ProjectIdHome() {
 
         <Col
           span={1}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
+          css={css`
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          `}
         >
-          <Divider type="vertical" style={{ height: '100%' }} />
+          <Divider
+            type="vertical"
+            css={css`
+              height: 100%;
+            `}
+          />
         </Col>
 
         <Col span={11}>
           <Space direction="vertical">
-            <Typography.Text strong style={{ fontSize: token.fontSizeLG }}>
+            <Typography.Text
+              strong
+              css={css`
+                font-size: ${token.fontSizeLG}px;
+              `}
+            >
               {t('Instructions')}
             </Typography.Text>
 
@@ -289,7 +315,11 @@ function ProjectIdHome() {
               </Typography.Text>
             </Flex>
 
-            <div style={{ height: token.size }} />
+            <div
+              css={css`
+                height: ${token.size}px;
+              `}
+            />
 
             <CodeContainer $token={token}>
               <SyntaxHighlighter
@@ -307,11 +337,11 @@ function ProjectIdHome() {
               <Tooltip title={t('Copy')}>
                 <Button
                   type="text"
-                  style={{
-                    position: 'absolute',
-                    top: token.sizeXXS,
-                    right: token.sizeXXS,
-                  }}
+                  css={css`
+                    position: absolute;
+                    top: ${token.sizeXXS}px;
+                    right: ${token.sizeXXS}px;
+                  `}
                   icon={<CopyOutlined />}
                   onClick={() => {
                     navigator.clipboard.writeText(

@@ -1,4 +1,5 @@
 import { SendOutlined } from '@ant-design/icons';
+import { css } from '@emotion/react';
 import { Button, Input, Space } from 'antd';
 import { useState } from 'react';
 
@@ -21,10 +22,10 @@ function InputTextWidget({
   return (
     <Space
       direction="vertical"
-      style={{
-        height: '100%',
-        width: '100%',
-      }}
+      css={css`
+        height: 100%;
+        width: 100%;
+      `}
     >
       <BaseWidgetTitle>{properties?.title || t('Input text')}</BaseWidgetTitle>
 

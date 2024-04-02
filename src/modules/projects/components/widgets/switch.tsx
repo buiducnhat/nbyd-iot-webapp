@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Space, Switch, Typography } from 'antd';
 import { useMemo } from 'react';
@@ -7,16 +8,6 @@ import { TWidgetProps } from '@/modules/projects/components/widgets';
 import { TAntdToken } from '@/shared/types/tst.type';
 
 import { BaseWidgetTitle } from './base-widget-title';
-
-const SSwitch = styled(Switch)<TAntdToken & { $color?: string }>`
-  &.ant-switch-checked {
-    background-color: ${({ $color, $token }) => $color || $token.colorPrimary};
-  }
-
-  &.ant-switch-checked:hover:not(.ant-switch-disabled) {
-    background-color: ${({ $color, $token }) => $color || $token.colorPrimary};
-  }
-`;
 
 function SwitchWidget({
   value,
@@ -49,17 +40,17 @@ function SwitchWidget({
   );
 
   const checked = useMemo(
-    () => (value === undefined ? undefined : onValue === value),
+    () => (value === undefined || isNaN(value) ? undefined : onValue === value),
     [onValue, value],
   );
 
   return (
     <Space
       direction="vertical"
-      style={{
-        height: '100%',
-        width: '100%',
-      }}
+      css={css`
+        height: 100%;
+        width: 100%;
+      `}
     >
       <BaseWidgetTitle>{properties?.title || t('Switch')}</BaseWidgetTitle>
 
@@ -88,3 +79,13 @@ function SwitchWidget({
 }
 
 export default SwitchWidget;
+
+const SSwitch = styled(Switch)<TAntdToken & { $color?: string }>`
+  &.ant-switch-checked {
+    background-color: ${({ $color, $token }) => $color || $token.colorPrimary};
+  }
+
+  &.ant-switch-checked:hover:not(.ant-switch-disabled) {
+    background-color: ${({ $color, $token }) => $color || $token.colorPrimary};
+  }
+`;

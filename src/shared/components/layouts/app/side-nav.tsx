@@ -1,4 +1,5 @@
 import { AppstoreOutlined } from '@ant-design/icons';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import type { MenuProps } from 'antd';
@@ -56,22 +57,26 @@ const MainSideNav = ({ collapsed, setCollapsed }: TMainSideNavProps) => {
           src="/assets/images/logo.png"
           alt="logo"
           width={80 - token.padding}
-          style={{
-            background: `linear-gradient(45deg, ${token.colorPrimary}, ${token.colorWhite})`,
-            padding: collapsed ? token.padding : token.padding / 2,
-            borderRadius: token.borderRadius,
-            transition: 'ease-in-out 1s',
-            marginRight: collapsed ? 0 : token.margin / 2,
-          }}
+          css={css`
+            background: linear-gradient(
+              45deg,
+              ${token.colorPrimary},
+              ${token.colorWhite}
+            );
+            padding: ${collapsed ? token.padding : token.padding / 2}px;
+            border-radius: ${token.borderRadius}px;
+            transition: ease-in-out 1s;
+            margin-right: ${collapsed ? 0 : token.margin / 2}px;
+          `}
         />
 
         {!collapsed && (
           <Typography.Text
-            style={{
-              color: token.colorWhite,
-              fontSize: token.fontSizeHeading5,
-              fontWeight: token.fontWeightStrong,
-            }}
+            css={css`
+              color: ${token.colorWhite};
+              font-size: ${token.fontSizeHeading5}px;
+              font-weight: ${token.fontWeightStrong};
+            `}
           >
             {APP_NAME}
           </Typography.Text>
@@ -84,7 +89,9 @@ const MainSideNav = ({ collapsed, setCollapsed }: TMainSideNavProps) => {
         mode="inline"
         items={items}
         selectedKeys={['/' + location.pathname?.split('/')[1]]}
-        style={{ borderInlineEnd: 'none' }}
+        css={css`
+          border-inline-end: none;
+        `}
       />
     </Layout.Sider>
   );

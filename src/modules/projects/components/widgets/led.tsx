@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import { Flex } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 
@@ -44,10 +45,10 @@ function LedWidget({
     <Flex
       vertical
       gap={token.paddingXS}
-      style={{
-        height: '100%',
-        width: '100%',
-      }}
+      css={css`
+        height: 100%;
+        width: 100%;
+      `}
     >
       <BaseWidgetTitle>{properties?.title || t('LED')}</BaseWidgetTitle>
 
@@ -55,22 +56,21 @@ function LedWidget({
         ref={containerRef}
         justify="center"
         align="center"
-        style={{ flex: 1 }}
+        css={css`
+          flex: 1;
+        `}
       >
         <div
-          style={{
-            backgroundColor:
-              value === '0'
-                ? token.colorBgLayout
-                : properties?.color || datastream?.color || token.colorSuccess,
-            borderColor: token.colorBorder,
-            borderWidth: 1,
-            borderStyle: 'solid',
-            borderRadius: '100%',
-            width: ledSize,
-            height: ledSize,
-          }}
-        ></div>
+          css={css`
+            background-color: ${value === '0'
+              ? token.colorBgLayout
+              : properties?.color || datastream?.color || token.colorSuccess};
+            border: 1px solid ${token.colorBorder};
+            border-radius: 100%;
+            width: ${ledSize}px;
+            height: ${ledSize}px;
+          `}
+        />
       </Flex>
     </Flex>
   );

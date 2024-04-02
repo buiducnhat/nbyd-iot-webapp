@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
 import {
   Button,
@@ -413,7 +414,11 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
     >
       <Steps size="small" items={stepItems} current={currentStep} />
 
-      <div style={{ marginTop: 24 }} />
+      <div
+        css={css`
+          margin-top: 24px;
+        `}
+      />
 
       <Form
         form={form}
@@ -445,7 +450,9 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
         {steps.map((step, index) => (
           <div
             key={step.title}
-            style={{ display: index === currentStep ? 'block' : 'none' }}
+            css={css`
+              display: ${index === currentStep ? 'block' : 'none'};
+            `}
           >
             {step.content}
           </div>

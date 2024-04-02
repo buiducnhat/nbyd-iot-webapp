@@ -1,4 +1,5 @@
 import { DeleteOutlined } from '@ant-design/icons';
+import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
 import { Outlet, createFileRoute, useNavigate } from '@tanstack/react-router';
 import {
@@ -56,7 +57,13 @@ function ProjectDetailPage() {
         refetch={() => projectQuery.refetch()}
       />
 
-      <Space size="large" direction="vertical" style={{ width: '100%' }}>
+      <Space
+        size="large"
+        direction="vertical"
+        css={css`
+          width: 100%;
+        `}
+      >
         <Flex gap="large">
           {!project ? (
             <Space>
@@ -75,22 +82,27 @@ function ProjectDetailPage() {
                   project?.imageFileUrl ||
                   '/assets/images/project-placeholder.jpeg'
                 }
-                style={{
-                  border: `1px solid ${token.colorBorder}`,
-                  borderRadius: token.borderRadius,
-                }}
+                css={css`
+                  border: 1px solid ${token.colorBorder};
+                  border-radius: ${token.borderRadius}px;
+                `}
               />
 
               <Flex
                 vertical
-                style={{
-                  height: 120,
-                  width: 150,
-                  justifyContent: 'space-between',
-                }}
+                css={css`
+                  height: 120px;
+                  width: 150px;
+                  justify-content: space-between;
+                `}
               >
                 <Space direction="vertical">
-                  <Typography.Title level={3} style={{ margin: 0 }}>
+                  <Typography.Title
+                    level={3}
+                    css={css`
+                      margin: 0;
+                    `}
+                  >
                     {project?.name}
                   </Typography.Title>
                   <Typography.Text type="secondary">
@@ -99,7 +111,9 @@ function ProjectDetailPage() {
                 </Space>
 
                 <Dropdown.Button
-                  style={{ justifySelf: 'flex-end' }}
+                  css={css`
+                    justify-self: flex-end;
+                  `}
                   trigger={['click']}
                   type="primary"
                   menu={{
@@ -141,7 +155,9 @@ function ProjectDetailPage() {
             theme={{ components: { Tabs: { horizontalMargin: '0px' } } }}
           >
             <Tabs
-              style={{ alignSelf: 'flex-end' }}
+              css={css`
+                align-self: flex-end;
+              `}
               size="large"
               defaultActiveKey="home"
               onChange={(key) => {

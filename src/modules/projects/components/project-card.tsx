@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import { Link } from '@tanstack/react-router';
 import { Card } from 'antd';
 
@@ -25,7 +26,9 @@ const ProjectCard = ({ project }: TProjectCardProps) => {
             }
           />
         }
-        style={{ backgroundColor: token.colorBgLayout }}
+        css={css`
+          background-color: ${token.colorBgLayout};
+        `}
       >
         <Card.Meta
           title={project.name}

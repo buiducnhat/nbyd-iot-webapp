@@ -4,6 +4,7 @@ import {
   MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
+import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import {
@@ -102,10 +103,21 @@ function ProjectIdDatastreams() {
         </>
       )}
 
-      <Space size="large" direction="vertical" style={{ width: '100%' }}>
+      <Space
+        size="large"
+        direction="vertical"
+        css={css`
+          width: 100%;
+        `}
+      >
         <Flex justify="space-between">
           <Space size="large">
-            <Typography.Text strong style={{ fontSize: token.fontSizeLG }}>
+            <Typography.Text
+              strong
+              css={css`
+                font-size: ${token.fontSizeLG}px;
+              `}
+            >
               {t('datastreamWithCount', { count: datastreams?.length })}
             </Typography.Text>
 
@@ -170,7 +182,12 @@ function ProjectIdDatastreams() {
               key: 'name',
               render: (_id: string, record: TDatastream) => (
                 <Space direction="vertical">
-                  <Typography.Text strong style={{ color: token.colorPrimary }}>
+                  <Typography.Text
+                    strong
+                    css={css`
+                      color: ${token.colorPrimary};
+                    `}
+                  >
                     {record.name}
                   </Typography.Text>
                   <Typography.Text type="secondary">

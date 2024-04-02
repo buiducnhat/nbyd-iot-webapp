@@ -1,4 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
+import { css } from '@emotion/react';
 import { createFileRoute } from '@tanstack/react-router';
 import { Button, Col, Flex, Input, Row, Space, Typography } from 'antd';
 import { useState } from 'react';
@@ -28,7 +29,13 @@ function ProjectListPage() {
         refetch={() => listProjectQuery.refetch()}
       />
 
-      <Space size="large" direction="vertical" style={{ width: '100%' }}>
+      <Space
+        size="large"
+        direction="vertical"
+        css={css`
+          width: 100%;
+        `}
+      >
         <Flex align="center" justify="space-between">
           <Typography.Title level={3}>{t('Projects')}</Typography.Title>
 
@@ -41,7 +48,11 @@ function ProjectListPage() {
           </Button>
         </Flex>
 
-        <div style={{ maxWidth: 400 }}>
+        <div
+          css={css`
+            max-width: 400px;
+          `}
+        >
           <Input.Search placeholder={t('Search Projects')} />
         </div>
 
