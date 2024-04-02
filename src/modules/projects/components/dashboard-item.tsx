@@ -1,16 +1,18 @@
 import { DeleteOutlined, SettingOutlined } from '@ant-design/icons';
+import styled from '@emotion/styled';
 import { Button, Space } from 'antd';
 import { ReactNode, useState } from 'react';
-import styled from 'styled-components';
 
 import useApp from '@/hooks/use-app';
 import { TDatastream } from '@/modules/datastreams/datastream.model';
-import { TST } from '@/shared/types/tst.type';
+import { TAntdToken } from '@/shared/types/tst.type';
 
 import { TDashboardItem } from './widgets';
 import BaseWidgetSettingsModal from './widgets/base-widget-settings-form';
 
-export const BaseDashboardItem = styled.div<TST & { $editing?: boolean }>`
+export const BaseDashboardItem = styled.div<
+  TAntdToken & { $editing?: boolean }
+>`
   cursor: ${({ $editing }) => ($editing ? 'move' : 'default')};
   min-height: 96px;
   border-radius: ${({ $token }) => $token.borderRadius}px;
@@ -108,7 +110,7 @@ export function TopLayerEdit({
   );
 }
 
-const TopLayer = styled.div<TST>`
+const TopLayer = styled.div<TAntdToken>`
   position: relative;
   height: 100%;
   width: 100%;

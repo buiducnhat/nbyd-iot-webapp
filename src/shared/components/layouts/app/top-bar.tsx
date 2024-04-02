@@ -5,6 +5,7 @@ import {
   SunOutlined,
   UnlockFilled,
 } from '@ant-design/icons';
+import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import {
@@ -18,13 +19,12 @@ import {
   theme,
 } from 'antd';
 import { useCallback, useMemo } from 'react';
-import styled from 'styled-components';
 
 import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
 import authService from '@/modules/auth/auth.service';
 import { useAuthStore } from '@/modules/auth/auth.zustand';
-import { TST } from '@/shared/types/tst.type';
+import { TAntdToken } from '@/shared/types/tst.type';
 
 type TMainTopBarProps = {
   collapsed: boolean;
@@ -133,7 +133,7 @@ const SHeader = styled(Layout.Header)`
   align-items: center;
 `;
 
-const SAvatar = styled(Avatar)<TST>`
+const SAvatar = styled(Avatar)<TAntdToken>`
   cursor: pointer;
   border: 2px solid ${({ $token }) => $token.colorBorder};
 `;

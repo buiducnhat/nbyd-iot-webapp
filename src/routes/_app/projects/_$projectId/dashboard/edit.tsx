@@ -1,11 +1,11 @@
 import { BlockOutlined, LeftOutlined, SaveOutlined } from '@ant-design/icons';
+import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { Col, FloatButton, Row, Space, Typography } from 'antd';
 import { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
-import styled from 'styled-components';
 
 import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
@@ -22,7 +22,7 @@ import {
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
 import projectService from '@/modules/projects/project.service';
 import { THttpResponse } from '@/shared/http-service';
-import { TST } from '@/shared/types/tst.type';
+import { TAntdToken } from '@/shared/types/tst.type';
 import { transApiResDataCode } from '@/shared/utils';
 
 const GridLayout = WidthProvider(RGL);
@@ -254,7 +254,7 @@ function ProjectIdEditDashboard() {
   );
 }
 
-const ListWidgetLayout = styled(Space)<TST>`
+const ListWidgetLayout = styled(Space)<TAntdToken>`
   padding: ${({ $token }) => $token.paddingXS}px;
   border-radius: ${({ $token }) => $token.borderRadius}px;
   background-color: ${({ $token }) => $token.colorBgLayout};
@@ -262,7 +262,7 @@ const ListWidgetLayout = styled(Space)<TST>`
   width: 100%;
 `;
 
-const DashboardLayout = styled.div<TST>`
+const DashboardLayout = styled.div<TAntdToken>`
   background-color: ${({ $token }) => $token.colorBgContainer};
   border-radius: ${({ $token }) => $token.borderRadius}px;
   border: 1px dashed ${({ $token }) => $token.colorBorder};
@@ -273,7 +273,7 @@ const DashboardLayout = styled.div<TST>`
   width: '100%';
 `;
 
-const DashboardBoxRow = styled.div<TST>`
+const DashboardBoxRow = styled.div<TAntdToken>`
   padding: ${({ $token }) => $token.paddingXS}px;
   margin: 0 !important;
   border-radius: ${({ $token }) => $token.borderRadius}px;
@@ -288,13 +288,13 @@ const DashboardBoxRow = styled.div<TST>`
   gap: 8px;
 `;
 
-const DashboardBoxCol = styled.div<TST>`
+const DashboardBoxCol = styled.div<TAntdToken>`
   border-radius: ${({ $token }) => $token.borderRadius}px;
   padding: ${({ $token }) => $token.sizeXXS};
   height: 96px;
 `;
 
-const DashboardBox = styled.div<TST>`
+const DashboardBox = styled.div<TAntdToken>`
   background-color: ${({ $token }) => $token.colorBgLayout};
   height: 100%;
   width: 100%;

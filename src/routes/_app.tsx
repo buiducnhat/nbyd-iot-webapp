@@ -1,9 +1,9 @@
+import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { Outlet, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { Image, Layout, Space, Spin } from 'antd';
 import { onMessage } from 'firebase/messaging';
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
 
 import useApp from '@/hooks/use-app';
 import { useAuth } from '@/hooks/use-auth';
@@ -16,7 +16,7 @@ import firebaseService from '@/modules/firebase/firebase.service';
 import { requestFcmPermission } from '@/modules/firebase/request-permission';
 import MainSideNav from '@/shared/components/layouts/app/side-nav';
 import MainTopBar from '@/shared/components/layouts/app/top-bar';
-import { TST } from '@/shared/types/tst.type';
+import { TAntdToken } from '@/shared/types/tst.type';
 
 export const Route = createFileRoute('/_app')({
   component: AppLayout,
@@ -112,7 +112,7 @@ function AppLayout() {
   );
 }
 
-const SContent = styled(Layout.Content)<TST>`
+const SContent = styled(Layout.Content)<TAntdToken>`
   margin: ${({ $token }) => $token.margin}px;
   padding: ${({ $token }) => $token.padding}px;
   background-color: ${({ $token }) => $token.colorBgContainer};

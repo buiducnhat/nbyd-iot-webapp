@@ -1,10 +1,10 @@
 import { EditOutlined } from '@ant-design/icons';
+import styled from '@emotion/styled';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { FloatButton } from 'antd';
 import { MacScrollbar } from 'mac-scrollbar';
 import { useEffect, useMemo, useState } from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
-import styled from 'styled-components';
 
 import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
@@ -15,7 +15,7 @@ import {
   TDashboardItem,
 } from '@/modules/projects/components/widgets';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
-import { TST } from '@/shared/types/tst.type';
+import { TAntdToken } from '@/shared/types/tst.type';
 import { isDefined } from '@/shared/utils';
 
 const GridLayout = WidthProvider(RGL);
@@ -178,7 +178,7 @@ function ProjectIdDashboard() {
   );
 }
 
-const DashboardLayout = styled.div<TST>`
+const DashboardLayout = styled.div<TAntdToken>`
   background-color: ${({ $token }) => $token.colorBgContainer};
   border-radius: ${({ $token }) => $token.borderRadius}px;
   border: 1px dashed ${({ $token }) => $token.colorBorder};

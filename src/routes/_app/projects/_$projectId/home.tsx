@@ -6,6 +6,7 @@ import {
   MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
+import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import {
@@ -30,7 +31,6 @@ import {
   dracula as codeHighlightDarkTheme,
   prism as codeHighlightLightTheme,
 } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import styled from 'styled-components';
 
 import useApp from '@/hooks/use-app';
 import DeviceFormDrawer from '@/modules/devices/components/device-form-drawer';
@@ -43,7 +43,7 @@ import {
 import deviceService from '@/modules/devices/device.service';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
 import SoftButton from '@/shared/components/soft-button';
-import { TST } from '@/shared/types/tst.type';
+import { TAntdToken } from '@/shared/types/tst.type';
 import { getEsp32TemplateCode } from '@/shared/utils';
 
 export const Route = createFileRoute('/_app/projects/_$projectId/home')({
@@ -331,7 +331,7 @@ function ProjectIdHome() {
   );
 }
 
-const CodeContainer = styled.div<TST>`
+const CodeContainer = styled.div<TAntdToken>`
   background: ${({ $token }) => $token.colorBgBase};
   position: relative;
   border-radius: ${({ $token }) => $token.borderRadius}px;

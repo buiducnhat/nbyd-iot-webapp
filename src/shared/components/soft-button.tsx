@@ -1,9 +1,9 @@
+import styled from '@emotion/styled';
 import { Button } from 'antd';
-import styled from 'styled-components';
 
-import { TST } from '../types/tst.type';
+import { TAntdToken } from '../types/tst.type';
 
-const SoftButton = styled(Button)<TST>`
+const SoftButton = styled(Button)<TAntdToken>`
   background-color: ${({ $token }) => $token.colorPrimary}25;
   color: ${({ $token }) => $token.colorPrimary};
 `;

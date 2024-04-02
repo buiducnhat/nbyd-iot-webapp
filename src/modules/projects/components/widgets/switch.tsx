@@ -1,14 +1,14 @@
+import styled from '@emotion/styled';
 import { Space, Switch, Typography } from 'antd';
 import { useMemo } from 'react';
-import styled from 'styled-components';
 
 import useApp from '@/hooks/use-app';
 import { TWidgetProps } from '@/modules/projects/components/widgets';
-import { TST } from '@/shared/types/tst.type';
+import { TAntdToken } from '@/shared/types/tst.type';
 
 import { BaseWidgetTitle } from './base-widget-title';
 
-const SSwitch = styled(Switch)<TST & { $color?: string }>`
+const SSwitch = styled(Switch)<TAntdToken & { $color?: string }>`
   &.ant-switch-checked {
     background-color: ${({ $color, $token }) => $color || $token.colorPrimary};
   }

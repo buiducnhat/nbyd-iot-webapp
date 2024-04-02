@@ -1,15 +1,15 @@
 import { AppstoreOutlined } from '@ant-design/icons';
+import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import type { MenuProps } from 'antd';
 import { Layout, Menu, Typography, theme } from 'antd';
 import { useMemo } from 'react';
 import { useLocation } from 'react-use';
-import styled from 'styled-components';
 
 import { APP_NAME, SIDE_NAV_WIDTH } from '@/configs/constants';
 import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
-import { TST } from '@/shared/types/tst.type';
+import { TAntdToken } from '@/shared/types/tst.type';
 
 type TMainSideNavProps = {
   collapsed: boolean;
@@ -92,7 +92,7 @@ const MainSideNav = ({ collapsed, setCollapsed }: TMainSideNavProps) => {
 
 export default MainSideNav;
 
-const LogoWrapper = styled.div<TST>`
+const LogoWrapper = styled.div<TAntdToken>`
   cursor: pointer;
   width: 100%;
   padding: ${(props) => props.$token.padding / 2}px;

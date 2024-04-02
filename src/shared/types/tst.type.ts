@@ -1,5 +1,5 @@
 import { GlobalToken } from 'antd';
 
-export type TST = {
+export type TAntdToken = {
   $token: GlobalToken;
 };

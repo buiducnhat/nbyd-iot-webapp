@@ -1,15 +1,15 @@
+import styled from '@emotion/styled';
 import { Col, Flex, Row, Typography } from 'antd';
 import Slider from 'rc-slider';
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
 
 import useApp from '@/hooks/use-app';
-import { TST } from '@/shared/types/tst.type';
+import { TAntdToken } from '@/shared/types/tst.type';
 
 import { TWidgetProps } from '.';
 import { BaseWidgetTitle } from './base-widget-title';
 
-const SSlider = styled(Slider)<TST & { $color: string }>`
+const SSlider = styled(Slider)<TAntdToken & { $color: string }>`
   margin-left: 7px;
 
   & .rc-slider-track {
