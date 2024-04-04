@@ -157,7 +157,7 @@ function ProjectIdEditDashboard() {
 
             <GridLayout
               css={css`
-                height: 100%;
+                height: 100% !important;
               `}
               className="layout"
               compactType={null}

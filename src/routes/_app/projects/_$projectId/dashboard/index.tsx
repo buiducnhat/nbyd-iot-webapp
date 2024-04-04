@@ -127,6 +127,12 @@ function ProjectIdDashboard() {
 
               if (!widget) return null;
 
+              const datastream = datastreams.find(
+                (x) => x.id === item.properties.datastreamId,
+              );
+
+              if (!datastream) return null;
+
               return (
                 <BaseDashboardItem
                   key={item.layout.i}
@@ -143,20 +149,19 @@ function ProjectIdDashboard() {
                   <widget.Widget
                     properties={item.properties}
                     defaultProperties={widget.defaultProperties}
-                    datastream={datastreams.find(
-                      (x) => x.id === item.properties.datastreamId,
-                    )}
-                    value={dsValues[item.properties.datastreamId]}
+                    datastream={datastream}
+                    value={dsValues[datastream.id]}
                     onChange={(value) => {
                       if (connectedSocket && isDefined(value)) {
                         socket.emit('/devices/command', {
-                          datastreamId: item.properties.datastreamId,
+                          deviceId: datastream?.deviceId,
+                          datastreamId: datastream?.id,
                           value: String(value),
                         });
                       }
                       setDsValues((prev) => ({
                         ...prev,
-                        [item.properties.datastreamId]: String(value),
+                        [datastream.id]: String(value),
                       }));
                     }}
                   />
