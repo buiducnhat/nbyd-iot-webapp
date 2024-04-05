@@ -4,6 +4,7 @@ import {
   Button,
   Col,
   ColorPicker,
+  Divider,
   Drawer,
   Form,
   Input,
@@ -12,6 +13,7 @@ import {
   Select,
   Space,
   Steps,
+  Switch,
 } from 'antd';
 import { DevTool as AntdFormDevtool } from 'antd-form-devtools';
 import { useEffect, useMemo, useState } from 'react';
@@ -322,25 +324,38 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
               )
             }
 
+            <Divider />
+
+            <Form.Item<TCreateDatastreamDto>
+              name="enabledHistory"
+              label={t('Enabled history')}
+            >
+              <Switch />
+            </Form.Item>
+
             {!isUpdate && (
-              <Form.Item wrapperCol={{ span: 20, offset: 4 }}>
-                <Button
-                  onClick={() => {
-                    form.resetFields([
-                      'mode',
-                      'dataType',
-                      'pin',
-                      'minValue',
-                      'maxValue',
-                      'defaultValue',
-                      'unit',
-                    ]);
-                    setCurrentStep(1);
-                  }}
-                >
-                  {t('Previous')}
-                </Button>
-              </Form.Item>
+              <>
+                <Divider />
+
+                <Form.Item wrapperCol={{ span: 20, offset: 4 }}>
+                  <Button
+                    onClick={() => {
+                      form.resetFields([
+                        'mode',
+                        'dataType',
+                        'pin',
+                        'minValue',
+                        'maxValue',
+                        'defaultValue',
+                        'unit',
+                      ]);
+                      setCurrentStep(1);
+                    }}
+                  >
+                    {t('Previous')}
+                  </Button>
+                </Form.Item>
+              </>
             )}
           </>
         ),

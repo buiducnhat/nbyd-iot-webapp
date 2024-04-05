@@ -58,6 +58,10 @@ export type TDatastream = {
   lastValue: string;
   createdAt: string;
   updatedAt: string;
-
+  histories: {
+    datastreamId: string;
+    value: string;
+    createdAt: string;
+  }[];
   device?: TDevice;
 };

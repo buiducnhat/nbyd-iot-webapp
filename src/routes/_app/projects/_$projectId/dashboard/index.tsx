@@ -61,7 +61,7 @@ function ProjectIdDashboard() {
     if (datastreams) {
       setDsValues(
         datastreams.reduce((prev: { [datastreamId: string]: string }, curr) => {
-          prev[curr.id] = curr.lastValue;
+          prev[curr.id] = curr.histories[0]?.value ?? curr.defaultValue ?? '';
           return prev;
         }, {}),
       );
