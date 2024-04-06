@@ -1,5 +1,5 @@
-import { TDashboardItem } from '../components/widgets';
+import { TWebDashboardTab } from '../project.model';
 
 export type TUpdateProjectWebDashboardDto = {
-  webDashboard: TDashboardItem[];
+  webDashboard: TWebDashboardTab[];
 };

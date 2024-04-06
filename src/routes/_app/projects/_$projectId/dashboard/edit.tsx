@@ -5,8 +5,9 @@ import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { Col, FloatButton, Row, Space, Typography } from 'antd';
 import { AxiosError } from 'axios';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
+import * as uuid from 'uuid';
 
 import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
@@ -14,6 +15,7 @@ import {
   BaseDashboardItem,
   TopLayerEdit,
 } from '@/modules/projects/components/dashboard-item';
+import DragableTabs from '@/modules/projects/components/dragable-tabs';
 import {
   FULL_ATTRIBUTES_WIDGETS,
   TDashboardItem,
@@ -21,6 +23,7 @@ import {
   TWidgetType,
 } from '@/modules/projects/components/widgets';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
+import { TWebDashboardTab } from '@/modules/projects/project.model';
 import projectService from '@/modules/projects/project.service';
 import { THttpResponse } from '@/shared/http-service';
 import { TAntdToken } from '@/shared/types/tst.type';
@@ -49,16 +52,16 @@ function ProjectIdEditDashboard() {
   const setLoading = useAppStore((state) => state.setLoading);
 
   const { project, datastreams, projectQuery } = useGetProjectDetail(projectId);
-  const webDashboard = project?.webDashboard;
 
-  const [items, setItems] = useState<TDashboardItem[]>([]);
+  const [dashboardTabs, setDashboardTabs] = useState<TWebDashboardTab[]>([]);
+  const [activeTabKey, setActiveTabKey] = useState<string>('');
   const [droppingItem, setDroppingItem] = useState<TWidgetCommon>();
   const [curRowNum, setCurRowNum] = useState<number>(DEFAULT_ROW_NUM);
 
   const updateWebDashboard = useMutation({
-    mutationFn: (webDashboard: TDashboardItem[]) =>
+    mutationFn: (webDashboard: TWebDashboardTab[]) =>
       projectService.updateWebDashboard(projectId, {
-        webDashboard,
+        webDashboard: webDashboard,
       }),
     onError: (error: AxiosError<THttpResponse<null>>) =>
       antdApp.notification.error({
@@ -68,24 +71,63 @@ function ProjectIdEditDashboard() {
     onSuccess: () => antdApp.message.success(t('Updated successfully')),
   });
 
+  const dashboardItems = useMemo(
+    () => dashboardTabs.find((tab) => tab.key === activeTabKey)?.content ?? [],
+    [activeTabKey, dashboardTabs],
+  );
+
+  const setDashboardItems = useCallback(
+    (items: TDashboardItem[]) => {
+      setDashboardTabs((prev) =>
+        prev.map((tab) => {
+          if (tab.key !== activeTabKey) return tab;
+
+          return {
+            ...tab,
+            content: items,
+          };
+        }),
+      );
+    },
+    [activeTabKey, setDashboardTabs],
+  );
+
   useEffect(() => {
-    setCurRowNum(() =>
-      Math.max(
-        DEFAULT_ROW_NUM,
-        ...items.map((item) => item.layout.y + item.layout.h),
-      ),
-    );
-  }, [items]);
+    if (dashboardItems) {
+      setCurRowNum(() =>
+        Math.max(
+          DEFAULT_ROW_NUM,
+          ...dashboardItems.map((item) => item.layout.y + item.layout.h),
+        ),
+      );
+    }
+  }, [dashboardItems]);
 
   useEffect(() => {
     projectQuery.isFetching ? setLoading(true) : setLoading(false);
   }, [projectQuery.isFetching, setLoading]);
 
   useEffect(() => {
-    if (webDashboard) {
-      setItems(webDashboard);
+    if (project?.webDashboard) {
+      setDashboardTabs(project?.webDashboard);
+      setActiveTabKey(project?.webDashboard?.[0]?.key);
     }
-  }, [webDashboard]);
+  }, [project?.webDashboard]);
+
+  useEffect(() => {
+    if (!project?.webDashboard || project?.webDashboard?.length === 0) {
+      const newKey = uuid.v4();
+
+      setDashboardTabs([
+        {
+          key: newKey,
+          title: t('Dashboard'),
+          content: [],
+        },
+      ]);
+      setActiveTabKey(newKey);
+    }
+  }, [project?.webDashboard, project?.webDashboard?.length, t]);
 
   return (
     <>
@@ -138,6 +180,13 @@ function ProjectIdEditDashboard() {
         </Col>
 
         <Col span={20}>
+          <DragableTabs
+            tabs={dashboardTabs}
+            setTabs={setDashboardTabs}
+            activeKey={activeTabKey}
+            setActiveKey={setActiveTabKey}
+          />
+
           <DashboardLayout
             $token={token}
             css={css`
@@ -167,8 +216,8 @@ function ProjectIdEditDashboard() {
               droppingItem={droppingItem?.layoutSettings}
               margin={[MARGIN_DASHBOARD, MARGIN_DASHBOARD]}
               onLayoutChange={(layout) => {
-                setItems((prev) =>
-                  prev.map((item) => {
+                setDashboardItems(
+                  dashboardItems.map((item) => {
                     const newItem = layout.find((l) => l.i === item.layout.i);
 
                     if (!newItem) return item;
@@ -187,22 +236,22 @@ function ProjectIdEditDashboard() {
                   setCurRowNum(item.y + droppingItem.layoutSettings.h);
                 }
 
-                setItems((prev) => [
+                setDashboardItems([
                   {
                     type: droppingItem.type,
                     properties: {
-                      title: `${droppingItem?.type}-${prev.length}`,
+                      title: `${droppingItem?.type}-${dashboardItems.length}`,
                     },
                     layout: {
                       ...item,
-                      i: `${droppingItem?.type}-${prev.length}`,
+                      i: `${droppingItem?.type}-${dashboardItems.length}`,
                     },
                   },
-                  ...prev,
+                  ...dashboardItems,
                 ]);
               }}
             >
-              {items.map((item) => {
+              {dashboardItems?.map((item) => {
                 const widget = FULL_ATTRIBUTES_WIDGETS[item.type];
 
                 if (!widget) return null;
@@ -222,11 +271,11 @@ function ProjectIdEditDashboard() {
                     }}
                   >
                     <TopLayerEdit
-                      webDashboard={items}
+                      webDashboard={dashboardItems}
                       dashboardItem={item}
                       datastreams={datastreams}
-                      onSave={(webDashboard) => {
-                        setItems(webDashboard);
+                      onSave={(items) => {
+                        setDashboardItems(items);
                       }}
                     >
                       <widget.Widget
@@ -261,7 +310,7 @@ function ProjectIdEditDashboard() {
           icon={<SaveOutlined />}
           tooltip={t('Save')}
           type="primary"
-          onClick={() => updateWebDashboard.mutate(items)}
+          onClick={() => updateWebDashboard.mutate(dashboardTabs)}
         />
       </FloatButton.Group>
     </>

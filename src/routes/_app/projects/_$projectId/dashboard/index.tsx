@@ -11,10 +11,8 @@ import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
 import { socket } from '@/modules/app/socket-io';
 import { BaseDashboardItem } from '@/modules/projects/components/dashboard-item';
-import {
-  FULL_ATTRIBUTES_WIDGETS,
-  TDashboardItem,
-} from '@/modules/projects/components/widgets';
+import DragableTabs from '@/modules/projects/components/dragable-tabs';
+import { FULL_ATTRIBUTES_WIDGETS } from '@/modules/projects/components/widgets';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
 import { TAntdToken } from '@/shared/types/tst.type';
 import { isDefined } from '@/shared/utils';
@@ -41,12 +39,16 @@ function ProjectIdDashboard() {
 
   const { project, datastreams, projectQuery } = useGetProjectDetail(projectId);
 
-  const [items, setItems] = useState<TDashboardItem[]>([]);
   const [dsValues, setDsValues] = useState<{ [datastreamId: string]: string }>(
     {},
   );
+  const [activeTabKey, setActiveTabKey] = useState<string>('');
 
-  const webDashboard = project?.webDashboard;
+  const items = useMemo(
+    () =>
+      project?.webDashboard?.find((x) => x.key === activeTabKey)?.content ?? [],
+    [activeTabKey, project?.webDashboard],
+  );
 
   const maxY = useMemo(
     () =>
@@ -74,10 +76,10 @@ function ProjectIdDashboard() {
   }, [projectQuery.isFetching, setLoading]);
 
   useEffect(() => {
-    if (webDashboard) {
-      setItems(webDashboard);
+    if (project?.webDashboard) {
+      setActiveTabKey(project?.webDashboard?.[0]?.key);
     }
-  }, [webDashboard]);
+  }, [project?.webDashboard]);
 
   useEffect(() => {
     if (connectedSocket) {
@@ -105,6 +107,14 @@ function ProjectIdDashboard() {
   return (
     <>
       <MacScrollbar>
+        <DragableTabs
+          viewMode
+          tabs={project?.webDashboard || []}
+          setTabs={() => null}
+          activeKey={activeTabKey}
+          setActiveKey={setActiveTabKey}
+        />
+
         <DashboardLayout
           $token={token}
           css={css`

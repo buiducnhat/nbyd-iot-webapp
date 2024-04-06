@@ -19,10 +19,16 @@ export type TProjectBasic = {
   createdAt: string;
 };
 
+export type TWebDashboardTab = {
+  key: string;
+  title: string;
+  content: TDashboardItem[];
+};
+
 export type TProjectDetail = TProjectBasic & {
   devices: TDevice[];
   metaData?: any;
-  webDashboard?: TDashboardItem[];
+  webDashboard?: TWebDashboardTab[];
   mobileDashboard?: any;
   updatedAt: string;
 };
