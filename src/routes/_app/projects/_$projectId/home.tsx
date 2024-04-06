@@ -28,6 +28,7 @@ import DeviceCodeDrawer from '@/modules/devices/components/device-code-drawer';
 import DeviceFormDrawer from '@/modules/devices/components/device-form-drawer';
 import DevicePreviewDrawer from '@/modules/devices/components/device-preview-drawer';
 import {
+  EDeviceConnection,
   EDeviceHardware,
   EDeviceStatus,
   TDevice,
@@ -172,6 +173,20 @@ function ProjectIdHome() {
               render: (status: EDeviceStatus) => (
                 <Tag
                   color={status == EDeviceStatus.OFFLINE ? 'orange' : 'green'}
+                >
+                  {status}
+                </Tag>
+              ),
+            },
+            {
+              title: t('Connection'),
+              dataIndex: 'connection',
+              key: 'connection',
+              render: (status: EDeviceConnection) => (
+                <Tag
+                  color={
+                    status == EDeviceConnection.WIFI ? 'success' : 'default'
+                  }
                 >
                   {status}
                 </Tag>
