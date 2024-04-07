@@ -14,7 +14,7 @@ const ProjectCard = ({ project }: TProjectCardProps) => {
   const { t, token } = useApp();
 
   return (
-    <Link to="/projects/$projectId/home" params={{ projectId: project.id }}>
+    <Link to="/projects/$projectId/devices" params={{ projectId: project.id }}>
       <Card
         hoverable
         bordered={false}

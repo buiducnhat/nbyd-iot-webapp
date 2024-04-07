@@ -56,7 +56,7 @@ export const getEsp32TemplateCode = (
   projectId: string,
   deviceAuthToken = '***',
 ) => {
-  return `#include <NBYD_IOT.h>\n#define NBYD_PROJECT_ID "${projectId}"\n#define NBYD_AUTH_TOKEN "${deviceAuthToken}"`;
+  return `#include <NBYD_IOT.h>\n\n#define PROJECT_ID "${projectId}"\n#define DEVICE_AUTH_TOKEN "${deviceAuthToken}"`;
 };
 
 export const isDefined = (value?: any) => {

@@ -37,11 +37,11 @@ import deviceService from '@/modules/devices/device.service';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
 import SoftButton from '@/shared/components/soft-button';
 
-export const Route = createFileRoute('/_app/projects/_$projectId/home')({
-  component: ProjectIdHome,
+export const Route = createFileRoute('/_app/projects/_$projectId/devices')({
+  component: ProjectIdDevices,
 });
 
-function ProjectIdHome() {
+function ProjectIdDevices() {
   const { projectId } = Route.useParams();
 
   const { t, token, antdApp } = useApp();

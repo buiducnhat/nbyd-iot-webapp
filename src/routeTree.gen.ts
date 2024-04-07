@@ -11,7 +11,7 @@ import { Route as AppProjectsProjectIdImport } from './routes/_app/projects/_$pr
 import { Route as AppProjectsProjectIdDashboardEditImport } from './routes/_app/projects/_$projectId/dashboard/edit';
 import { Route as AppProjectsProjectIdDashboardIndexImport } from './routes/_app/projects/_$projectId/dashboard/index';
 import { Route as AppProjectsProjectIdDatastreamsImport } from './routes/_app/projects/_$projectId/datastreams';
-import { Route as AppProjectsProjectIdHomeImport } from './routes/_app/projects/_$projectId/home';
+import { Route as AppProjectsProjectIdDevicesImport } from './routes/_app/projects/_$projectId/devices';
 import { Route as AppProjectsProjectIdIndexImport } from './routes/_app/projects/_$projectId/index';
 import { Route as AppProjectsIndexImport } from './routes/_app/projects/index';
 import { Route as AuthImport } from './routes/_auth';
@@ -55,10 +55,11 @@ const AppProjectsProjectIdIndexRoute = AppProjectsProjectIdIndexImport.update({
   getParentRoute: () => AppProjectsProjectIdRoute,
 } as any);
 
-const AppProjectsProjectIdHomeRoute = AppProjectsProjectIdHomeImport.update({
-  path: '/home',
-  getParentRoute: () => AppProjectsProjectIdRoute,
-} as any);
+const AppProjectsProjectIdDevicesRoute =
+  AppProjectsProjectIdDevicesImport.update({
+    path: '/devices',
+    getParentRoute: () => AppProjectsProjectIdRoute,
+  } as any);
 
 const AppProjectsProjectIdDatastreamsRoute =
   AppProjectsProjectIdDatastreamsImport.update({
@@ -110,8 +111,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProjectsProjectIdDatastreamsImport;
       parentRoute: typeof AppProjectsProjectIdImport;
     };
-    '/_app/projects/_$projectId/home': {
-      preLoaderRoute: typeof AppProjectsProjectIdHomeImport;
+    '/_app/projects/_$projectId/devices': {
+      preLoaderRoute: typeof AppProjectsProjectIdDevicesImport;
       parentRoute: typeof AppProjectsProjectIdImport;
     };
     '/_app/projects/_$projectId/': {
@@ -136,7 +137,7 @@ export const routeTree = rootRoute.addChildren([
   AppRoute.addChildren([
     AppProjectsProjectIdRoute.addChildren([
       AppProjectsProjectIdDatastreamsRoute,
-      AppProjectsProjectIdHomeRoute,
+      AppProjectsProjectIdDevicesRoute,
       AppProjectsProjectIdIndexRoute,
       AppProjectsProjectIdDashboardEditRoute,
       AppProjectsProjectIdDashboardIndexRoute,

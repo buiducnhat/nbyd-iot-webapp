@@ -159,11 +159,11 @@ function ProjectDetailPage() {
                 align-self: flex-end;
               `}
               size="large"
-              defaultActiveKey="home"
+              defaultActiveKey="devices"
               onChange={(key) => {
                 navigate({
                   to:
-                    key === 'home'
+                    key === 'devices'
                       ? '/projects/$projectId/'
                       : key === 'datastreams'
                         ? '/projects/$projectId/datastreams'
@@ -174,8 +174,8 @@ function ProjectDetailPage() {
               activeKey={location.pathname?.split('/').pop()}
               items={[
                 {
-                  key: 'home',
-                  label: t('Home'),
+                  key: 'devices',
+                  label: t('Devices'),
                 },
                 {
                   key: 'datastreams',
