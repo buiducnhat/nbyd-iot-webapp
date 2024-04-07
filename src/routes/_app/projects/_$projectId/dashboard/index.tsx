@@ -13,6 +13,9 @@ import { socket } from '@/modules/app/socket-io';
 import { BaseDashboardItem } from '@/modules/projects/components/dashboard-item';
 import DragableTabs from '@/modules/projects/components/dragable-tabs';
 import { FULL_ATTRIBUTES_WIDGETS } from '@/modules/projects/components/widgets';
+import { TSocketDevicCommandDto } from '@/modules/projects/dto/socket-device-command.dto';
+import { TSocketDeviceDataDto } from '@/modules/projects/dto/socket-device-data.dto';
+import { TSocketJoinRoomDto } from '@/modules/projects/dto/socket-join-room.dto';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
 import { TAntdToken } from '@/shared/types/tst.type';
 import { isDefined } from '@/shared/utils';
@@ -85,19 +88,16 @@ function ProjectIdDashboard() {
     if (connectedSocket) {
       socket.emit('/ws-room/projects/join', {
         projectId,
-      });
+      } as TSocketJoinRoomDto);
 
-      socket.on(
-        '/devices/data',
-        (data: { datastreamId: string; value: string }) => {
-          setDsValues((prev) => ({ ...prev, [data.datastreamId]: data.value }));
-        },
-      );
+      socket.on('/devices/data', (data: TSocketDeviceDataDto) => {
+        setDsValues((prev) => ({ ...prev, [data.datastreamId]: data.value }));
+      });
 
       return () => {
         socket.emit('/ws-room/projects/leave', {
           projectId,
-        });
+        } as TSocketJoinRoomDto);
 
         socket.off('/devices/data');
       };
@@ -164,10 +164,11 @@ function ProjectIdDashboard() {
                     onChange={(value) => {
                       if (connectedSocket && isDefined(value)) {
                         socket.emit('/devices/command', {
+                          projectId,
                           deviceId: datastream?.deviceId,
                           datastreamId: datastream?.id,
                           value: String(value),
-                        });
+                        } as TSocketDevicCommandDto);
                       }
                       setDsValues((prev) => ({
                         ...prev,

@@ -1,5 +1,6 @@
 import httpService from '@/shared/http-service';
 
+import { TDatastream } from '../datastreams/datastream.model';
 import { TCreateProjectDto } from './dto/create-project.dto';
 import { TGetListProjectDto } from './dto/get-list-project.dto';
 import { TUpdateProjectWebDashboardDto } from './dto/update-project-web-dashboard.dto';
@@ -18,6 +19,17 @@ class ProjectService {
     return httpService.request<TProjectDetail>({
       url: `/api/projects/${id}`,
       method: 'GET',
+    });
+  }
+
+  getListDatastream(id: string, historyFrom?: Date, historyTo?: Date) {
+    return httpService.request<TDatastream[]>({
+      url: `/api/projects/${id}/datastreams`,
+      method: 'GET',
+      params: {
+        historyFrom: historyFrom ? historyFrom.getTime() : undefined,
+        historyTo: historyTo ? historyTo.getTime() : undefined,
+      },
     });
   }
 

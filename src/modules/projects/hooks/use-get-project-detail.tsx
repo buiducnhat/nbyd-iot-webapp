@@ -1,27 +1,29 @@
 import { useQuery } from '@tanstack/react-query';
-import * as R from 'ramda';
 import { useMemo } from 'react';
 
 import projectService from '../project.service';
 
-function useGetProjectDetail(projectId: string) {
+function useGetProjectDetail(
+  projectId: string,
+  historyFrom?: Date,
+  historyTo?: Date,
+) {
   const projectQuery = useQuery({
     queryKey: ['/projects/detail', projectId],
     queryFn: async () => projectService.getDetail(projectId),
     enabled: !!projectId,
   });
 
+  const datastreamsQuery = useQuery({
+    queryKey: ['/projects/datastreams', projectId],
+    queryFn: async () =>
+      projectService.getListDatastream(projectId, historyFrom, historyTo),
+    enabled: !!projectId,
+  });
+
   const project = projectQuery.data?.data;
 
-  const datastreams = useMemo(
-    () => R.flatten(R.map((a) => a.datastreams, project?.devices || [])),
-    [project],
-  ).map((datastream) => ({
-    ...datastream,
-    device: project?.devices.find((device) =>
-      device.datastreams.some((ds) => ds.id === datastream.id),
-    ),
-  }));
+  const datastreams = datastreamsQuery.data?.data || [];
 
   const devices = useMemo(() => project?.devices || [], [project]);
 
