@@ -6,6 +6,7 @@ import {
 
 export type TCreateDatastreamDto = {
   name: string;
+  mac?: string;
   iconId?: number;
   color?: string;
   type: EDatastreamType;

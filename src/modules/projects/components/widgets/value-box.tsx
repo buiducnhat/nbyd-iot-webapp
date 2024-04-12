@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import useApp from '@/hooks/use-app';
 import { EDatastreamDataType } from '@/modules/datastreams/datastream.model';
-import { isDefined, isNumberString } from '@/shared/utils';
+import { isNumberString } from '@/shared/utils';
 
 import { TWidgetProps } from '.';
 import { BaseWidgetTitle } from './base-widget-title';
@@ -20,7 +20,7 @@ function ValueBoxWidget({
   const [localValue, setLocalValue] = useState<string>('--');
 
   useEffect(() => {
-    if (!isDefined(value)) {
+    if (!value) {
       setLocalValue('--');
     } else if (
       datastream?.dataType === EDatastreamDataType.FLOAT &&

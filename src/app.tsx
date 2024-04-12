@@ -40,12 +40,12 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AntdApp>
-        <ConfigProvider theme={theme} locale={locale}>
+      <ConfigProvider theme={theme} locale={locale}>
+        <AntdApp>
           <Spin fullscreen spinning={loading} />
           <RouterProvider router={router} />
-        </ConfigProvider>
-      </AntdApp>
+        </AntdApp>
+      </ConfigProvider>
       <ReactQueryDevtools buttonPosition="bottom-left" />
     </QueryClientProvider>
   );

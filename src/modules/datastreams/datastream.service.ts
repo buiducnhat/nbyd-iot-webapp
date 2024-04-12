@@ -41,6 +41,22 @@ class DatastreamService {
     });
   }
 
+  getListByProject(projectId: string, needValues = false) {
+    return httpService.request<TDatastream[]>({
+      url: `/api/projects/${projectId}/datastreams`,
+      method: 'GET',
+      params: { needValues },
+    });
+  }
+
+  getValues(datastreamIds: string[]) {
+    return httpService.request<{ [key: string]: string }>({
+      url: `/api/datastreams/values`,
+      method: 'POST',
+      data: { datastreamIds },
+    });
+  }
+
   getListPinOptions(type: EDatastreamType, excludes?: string[]) {
     let result: Array<{ label: string; value: string; disabled?: boolean }> =
       [];
@@ -65,7 +81,7 @@ class DatastreamService {
         }));
         break;
       default:
-        return [];
+        break;
     }
 
     return result.map((item) => ({

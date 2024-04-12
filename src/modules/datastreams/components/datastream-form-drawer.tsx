@@ -16,9 +16,13 @@ import {
   Switch,
 } from 'antd';
 import { DevTool as AntdFormDevtool } from 'antd-form-devtools';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useInterval } from 'react-use';
 
 import useApp from '@/hooks/use-app';
+import { useAppStore } from '@/modules/app/app.zustand';
+import { socket } from '@/modules/app/socket-io';
+import { EDeviceHardware } from '@/modules/devices/device.model';
 import { TProjectDetail } from '@/modules/projects/project.model';
 import { isDefined, randomHexColor } from '@/shared/utils';
 
@@ -33,6 +37,8 @@ import {
 import datastreamService from '../datastream.service';
 import { TCreateDatastreamDto } from '../dto/create-datastream.dto';
 import { TUpdateDatastreamDto } from '../dto/update-datastream.dto';
+import { Z_DATASTREAM_PIN_OPTIONS } from '../dto/z-datastream-pin.enum';
+import ParingModal from './pairing-modal';
 
 type TDeviceFormDrawerProps = {
   open: boolean;
@@ -43,6 +49,8 @@ type TDeviceFormDrawerProps = {
   datastream?: TDatastream;
   datastreams: TDatastream[];
 };
+
+const PAIR_TIMEOUT = 5;
 
 const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
   open,
@@ -58,8 +66,12 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
   const [form] = Form.useForm<TCreateDatastreamDto>();
   const formValues = Form.useWatch<TCreateDatastreamDto>([], form);
 
+  const connectedSocket = useAppStore((state) => state.connectedSocket);
+
   const [currentStep, setCurrentStep] = useState(isUpdate ? 2 : 0);
   const [deviceId, setDeviceId] = useState<string>(project.devices[0]?.id);
+  const [openPairingModal, setOpenPairingModal] = useState(false);
+  const [pairTimeout, setPairTimeout] = useState(PAIR_TIMEOUT);
 
   const createMutation = useMutation({
     mutationFn: (data: TCreateDatastreamDto) =>
@@ -134,7 +146,17 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
             >
               <Select>
                 {EDatastreamTypeOptions.map((option) => (
-                  <Select.Option key={option.value} value={option.value}>
+                  <Select.Option
+                    key={option.value}
+                    value={option.value}
+                    disabled={
+                      option.value === EDatastreamType.ZIGBEE &&
+                      !(
+                        project.devices.find((x) => x.id === deviceId)
+                          ?.hardware === EDeviceHardware.RASPBERRY_PI
+                      )
+                    }
+                  >
                     {option.label}
                   </Select.Option>
                 ))}
@@ -233,35 +255,63 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
               </Form.Item>
             )}
 
-            <Form.Item<TCreateDatastreamDto>
-              name="pin"
-              label={t('Pin')}
-              required={formValues?.type !== EDatastreamType.ZIGBEE}
-              rules={[
-                {
-                  required: formValues?.type !== EDatastreamType.ZIGBEE,
-                },
-              ]}
-            >
-              <Select>
-                {datastreamService
-                  .getListPinOptions(
-                    formValues?.type,
-                    datastreams
-                      .filter((x) => x.deviceId === deviceId)
-                      .map((x) => x.pin as string),
-                  )
-                  .map((option) => (
-                    <Select.Option
-                      key={option.value}
-                      value={option.value}
-                      disabled={option.disabled}
-                    >
-                      {option.label}
-                    </Select.Option>
-                  ))}
-              </Select>
-            </Form.Item>
+            {formValues?.type !== EDatastreamType.ZIGBEE ? (
+              <Form.Item<TCreateDatastreamDto>
+                name="pin"
+                label={t('Pin')}
+                required
+                rules={[{ required: true }]}
+              >
+                <Select>
+                  {datastreamService
+                    .getListPinOptions(
+                      formValues?.type,
+                      datastreams
+                        .filter((x) => x.deviceId === deviceId)
+                        .map((x) => x.pin as string),
+                    )
+                    .map((option) => (
+                      <Select.Option
+                        key={option.value}
+                        value={option.value}
+                        disabled={option.disabled}
+                      >
+                        {option.label}
+                      </Select.Option>
+                    ))}
+                </Select>
+              </Form.Item>
+            ) : (
+              <>
+                <Form.Item<TCreateDatastreamDto>
+                  name="mac"
+                  label={t('Mac')}
+                  help={t('format_zigbee_mac_help')}
+                  rules={[
+                    {
+                      pattern: /^0x[a-fA-F0-9]{12}$/,
+                      message: t('mac_address_invalid'),
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+                <Form.Item<TCreateDatastreamDto>
+                  name="pin"
+                  label={t('Zigbee Type')}
+                  required
+                  rules={[{ required: true }]}
+                >
+                  <Select>
+                    {Z_DATASTREAM_PIN_OPTIONS.map((option) => (
+                      <Select.Option key={option.value} value={option.value}>
+                        {t(`ZDatastreamPinLabel.${option.label}` as any)}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </>
+            )}
 
             {
               // Analog/Virtual (integer/float)
@@ -378,6 +428,25 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
     [steps],
   );
 
+  const onPairButton = useCallback(() => {
+    setOpenPairingModal(true);
+    setPairTimeout(PAIR_TIMEOUT);
+
+    socket.emit('/z-datastreams/pair', {
+      projectId: project.id,
+      deviceId,
+      name: formValues?.name,
+      mac: formValues?.mac,
+      pin: formValues?.pin,
+    });
+  }, [
+    deviceId,
+    formValues?.mac,
+    formValues?.name,
+    formValues?.pin,
+    project.id,
+  ]);
+
   useEffect(() => {
     if (!isUpdate) {
       form.resetFields();
@@ -404,78 +473,122 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
     }
   }, [form, formValues?.type]);
 
+  useEffect(() => {
+    if (connectedSocket) {
+      socket.on('/z-datastreams/pair-result', (data: TDatastream) => {
+        if (data) {
+          refetch && refetch();
+          setOpenPairingModal(false);
+          setOpen(false);
+          antdApp.message.success(t('Paired successfully'));
+        }
+      });
+    }
+  }, [antdApp.message, connectedSocket, refetch, setOpen, t]);
+
+  useInterval(() => {
+    if (openPairingModal) {
+      setPairTimeout((prev) => {
+        if (prev === 1) {
+          setOpenPairingModal(false);
+          antdApp.message.error(t('Pairing timeout'));
+        }
+
+        return prev - 1;
+      });
+    }
+  }, 1000);
+
   return (
-    <Drawer
-      title={isUpdate ? t('Update') : t('Create new') + ' ' + t('Datastream')}
-      open={open}
-      onClose={() => setOpen(false)}
-      width={720}
-      extra={
-        <Space>
-          <Button onClick={() => setOpen(false)}>{t('Cancel')}</Button>
-
-          <Button
-            type="primary"
-            loading={createMutation.isPending}
-            disabled={createMutation.isPending}
-            onClick={() => {
-              form.submit();
-            }}
-          >
-            {t('Submit')}
-          </Button>
-        </Space>
-      }
-    >
-      <Steps size="small" items={stepItems} current={currentStep} />
-
-      <div
-        css={css`
-          margin-top: 24px;
-        `}
+    <>
+      <ParingModal
+        open={openPairingModal}
+        setOpen={setOpenPairingModal}
+        timeout={pairTimeout}
       />
 
-      <Form
-        form={form}
-        name={'datastream-form' + (isUpdate ? '-update' : '-create')}
-        autoComplete="off"
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 20 }}
-        onFinish={(values) => {
-          if (values.type === EDatastreamType.DIGITAL) {
-            values.dataType = EDatastreamDataType.INTEGER;
-            values.minValue = 0;
-            values.maxValue = 1;
-          }
+      <Drawer
+        title={isUpdate ? t('Update') : t('Create new') + ' ' + t('Datastream')}
+        open={open}
+        onClose={() => setOpen(false)}
+        width={720}
+        extra={
+          <Space>
+            <Button onClick={() => setOpen(false)}>{t('Cancel')}</Button>
 
-          if (isDefined(values.defaultValue)) {
-            values.defaultValue = String(values.defaultValue);
-          }
-
-          isUpdate
-            ? updateMutation.mutate({
-                ...values,
-              })
-            : createMutation.mutate({
-                ...values,
-              });
-        }}
-        initialValues={isUpdate ? datastream : { color: randomHexColor() }}
+            {formValues?.type !== EDatastreamType.ZIGBEE ? (
+              <Button
+                type="primary"
+                loading={createMutation.isPending}
+                disabled={currentStep < 2 || createMutation.isPending}
+                onClick={() => {
+                  form.submit();
+                }}
+              >
+                {t('Submit')}
+              </Button>
+            ) : (
+              <Button
+                type="primary"
+                disabled={currentStep < 2}
+                onClick={onPairButton}
+              >
+                {t('Pair')}
+              </Button>
+            )}
+          </Space>
+        }
       >
-        {steps.map((step, index) => (
-          <div
-            key={step.title}
-            css={css`
-              display: ${index === currentStep ? 'block' : 'none'};
-            `}
-          >
-            {step.content}
-          </div>
-        ))}
+        <Steps size="small" items={stepItems} current={currentStep} />
 
-        <AntdFormDevtool />
-      </Form>
-    </Drawer>
+        <div
+          css={css`
+            margin-top: 24px;
+          `}
+        />
+
+        <Form
+          form={form}
+          name={'datastream-form' + (isUpdate ? '-update' : '-create')}
+          autoComplete="off"
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+          onFinish={(values) => {
+            if (values.type === EDatastreamType.DIGITAL) {
+              values.dataType = EDatastreamDataType.INTEGER;
+              values.minValue = 0;
+              values.maxValue = 1;
+            }
+
+            if (isDefined(values.defaultValue)) {
+              values.defaultValue = String(values.defaultValue);
+            }
+
+            isUpdate
+              ? updateMutation.mutate({
+                  ...values,
+                })
+              : createMutation.mutate({
+                  ...values,
+                });
+          }}
+          initialValues={isUpdate ? datastream : { color: randomHexColor() }}
+        >
+          {steps.map((step, index) => (
+            <div
+              key={step.title}
+              css={css`
+                display: ${index === currentStep ? 'block' : 'none'};
+              `}
+            >
+              {step.content}
+            </div>
+          ))}
+
+          <AntdFormDevtool />
+        </Form>
+      </Drawer>
+    </>
   );
 };
 

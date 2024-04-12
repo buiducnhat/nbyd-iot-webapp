@@ -10,6 +10,7 @@ import RGL, { WidthProvider } from 'react-grid-layout';
 import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
 import { socket } from '@/modules/app/socket-io';
+import useGetListDatastream from '@/modules/datastreams/hooks/use-get-list-datastream';
 import { BaseDashboardItem } from '@/modules/projects/components/dashboard-item';
 import DragableTabs from '@/modules/projects/components/dragable-tabs';
 import { FULL_ATTRIBUTES_WIDGETS } from '@/modules/projects/components/widgets';
@@ -37,10 +38,10 @@ function ProjectIdDashboard() {
 
   const { t, token } = useApp();
 
-  const setLoading = useAppStore((state) => state.setLoading);
   const connectedSocket = useAppStore((state) => state.connectedSocket);
 
-  const { project, datastreams, projectQuery } = useGetProjectDetail(projectId);
+  const { project } = useGetProjectDetail(projectId);
+  const { datastreams } = useGetListDatastream(projectId, true);
 
   const [dsValues, setDsValues] = useState<{ [datastreamId: string]: string }>(
     {},
@@ -66,17 +67,13 @@ function ProjectIdDashboard() {
     if (datastreams) {
       setDsValues(
         datastreams.reduce((prev: { [datastreamId: string]: string }, curr) => {
-          prev[curr.id] = curr.histories[0]?.value ?? curr.defaultValue ?? '';
+          prev[curr.id] = curr.values?.[0]?.value ?? curr.defaultValue ?? '';
           return prev;
         }, {}),
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(datastreams)]);
-
-  useEffect(() => {
-    projectQuery.isFetching ? setLoading(true) : setLoading(false);
-  }, [projectQuery.isFetching, setLoading]);
 
   useEffect(() => {
     if (project?.webDashboard) {

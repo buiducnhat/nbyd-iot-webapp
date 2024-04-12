@@ -142,6 +142,14 @@
   "Rename": "",
   "Rename Tab": "",
   "Devices": "",
+  "Mac": "",
+  "Pair": "",
+  "Zigbee Type": "",
+  "format_zigbee_mac_help": "Format like 0x00b0d063c226",
+  "mac_address_invalid": "The MAC address is invalid",
+  "Paring": "",
+  "Paired successfully": "",
+  "Pairing timeout": "",
 
   "ApiResCode": {
     "1": "An error occurred",
@@ -156,5 +164,26 @@
     "1002": "The user doesn't exist",
     "1003": "The user already exists",
     "1004": "The user is not verified"
+  },
+
+  "ZDatastreamPinLabel": {
+    "DOOR_SENSOR": "Door sensor",
+    "MOTION_SENSOR": "Motion sensor",
+    "TEMPERATURE_SENSOR": "Temperature sensor",
+    "HUMIDITY_SENSOR": "Humidity sensor",
+    "TEMP_HUMI_SENSOR": "Temperature and humidity sensor",
+    "LIGHT_SENSOR": "Light sensor",
+    "SMOKE_SENSOR": "Smoke sensor",
+
+    "SWITCH_1G": "Switch 1 gang",
+    "SWITCH_2G": "Switch 2 gang",
+    "SWITCH_3G": "Switch 3 gang",
+
+    "SOCKET_1G": "Socket 1 gang",
+    "SOCKET_2G": "Socket 2 gang",
+    "SOCKET_3G": "Socket 3 gang",
+
+    "DIMMER_1G": "Dimmer 1 gang",
+    "DIMMER_2G": "Dimmer 2 gang"
   }
 }

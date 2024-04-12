@@ -47,6 +47,7 @@ export type TDatastream = {
   iconId: number;
   color: string;
   type: EDatastreamType;
+  mac?: string;
   pin?: string;
   mode?: EDatastreamMode;
   dataType?: EDatastreamDataType;
@@ -58,7 +59,7 @@ export type TDatastream = {
   lastValue: string;
   createdAt: string;
   updatedAt: string;
-  histories: {
+  values: {
     datastreamId: string;
     value: string;
     createdAt: string;

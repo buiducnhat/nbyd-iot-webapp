@@ -17,7 +17,6 @@ import {
   Tag,
   Typography,
 } from 'antd';
-import modal from 'antd/es/modal';
 import { useState } from 'react';
 
 import useApp from '@/hooks/use-app';
@@ -34,6 +33,7 @@ import {
   TDatastream,
 } from '@/modules/datastreams/datastream.model';
 import datastreamService from '@/modules/datastreams/datastream.service';
+import useGetListDatastream from '@/modules/datastreams/hooks/use-get-list-datastream';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
 import SoftButton from '@/shared/components/soft-button';
 
@@ -45,6 +45,7 @@ function ProjectIdDatastreams() {
   const { projectId } = Route.useParams();
 
   const { t, token, antdApp } = useApp();
+  const modal = antdApp.modal;
 
   const [selectedDatastreamIds, setSelectedDatastreamIds] = useState<
     React.Key[]
@@ -53,13 +54,14 @@ function ProjectIdDatastreams() {
   const [openCreateForm, setOpenCreateForm] = useState(false);
   const [openUpdateForm, setOpenUpdateForm] = useState(false);
 
-  const { project, datastreams, projectQuery } = useGetProjectDetail(projectId);
+  const { project } = useGetProjectDetail(projectId);
+  const { datastreams, datastreamsQuery } = useGetListDatastream(projectId);
 
   const deleteDatastreamMutation = useMutation({
     mutationFn: (data: any) =>
       datastreamService.delete(projectId, data.deviceId, data.id),
     onSuccess: () => {
-      projectQuery.refetch();
+      datastreamsQuery.refetch();
       antdApp.message.success(t('Deleted successfully'));
     },
     onError: (error) => {
@@ -71,7 +73,7 @@ function ProjectIdDatastreams() {
     mutationFn: (data: any) =>
       datastreamService.deleteMany(projectId, data.deviceId, data.ids),
     onSuccess: () => {
-      projectQuery.refetch();
+      datastreamsQuery.refetch();
       antdApp.message.success(t('Deleted successfully'));
     },
     onError: (error) => {
@@ -87,7 +89,7 @@ function ProjectIdDatastreams() {
             open={openCreateForm}
             setOpen={setOpenCreateForm}
             project={project}
-            refetch={projectQuery.refetch}
+            refetch={datastreamsQuery.refetch}
             datastreams={datastreams}
           />
 
@@ -95,7 +97,7 @@ function ProjectIdDatastreams() {
             open={openUpdateForm}
             setOpen={setOpenUpdateForm}
             project={project}
-            refetch={projectQuery.refetch}
+            refetch={datastreamsQuery.refetch}
             isUpdate
             datastreams={datastreams}
             datastream={selectedDatastream}
@@ -209,6 +211,11 @@ function ProjectIdDatastreams() {
               render: (type: EDatastreamType) => (
                 <DatastreamTypeTag type={type} />
               ),
+            },
+            {
+              title: t('Mac'),
+              dataIndex: 'mac',
+              key: 'mac',
             },
             {
               title: t('Pin'),
