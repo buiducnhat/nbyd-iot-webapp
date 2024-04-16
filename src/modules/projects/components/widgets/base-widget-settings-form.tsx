@@ -158,34 +158,36 @@ function BaseWidgetSettingsModal({
                       dashboardItem.type
                     ].validDatastreamTypes.includes(
                       `${x.type}_${x.mode || ''}_${
-                        x.dataType
+                        x.dataType || x.pin
                       }` as TValidDatastreamType,
                     ),
                   )
-                  .map((datastream) => (
-                    <Select.Option key={datastream.id} value={datastream.id}>
-                      <Flex justify="space-between">
-                        <span
-                          css={css`
-                            font-weight: ${token.fontWeightStrong};
-                          `}
-                        >
-                          {datastream.name}
-                        </span>
-                        <div>
-                          ({datastream.device?.name}/
+                  .map((datastream) => {
+                    return (
+                      <Select.Option key={datastream.id} value={datastream.id}>
+                        <Flex justify="space-between">
                           <span
                             css={css`
                               font-weight: ${token.fontWeightStrong};
                             `}
                           >
-                            {datastream.pin}
+                            {datastream.name}
                           </span>
-                          )
-                        </div>
-                      </Flex>
-                    </Select.Option>
-                  ))}
+                          <div>
+                            ({datastream.device?.name}/
+                            <span
+                              css={css`
+                                font-weight: ${token.fontWeightStrong};
+                              `}
+                            >
+                              {datastream.pin}
+                            </span>
+                            )
+                          </div>
+                        </Flex>
+                      </Select.Option>
+                    );
+                  })}
               </Select>
             </Form.Item>
 

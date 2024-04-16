@@ -200,7 +200,7 @@ const DashboardLayout = styled.div<TAntdToken>`
   border-radius: ${({ $token }) => $token.borderRadius}px;
   border: 1px dashed ${({ $token }) => $token.colorBorder};
   position: relative;
-  max-height: calc(100dvh - 275px);
+  max-height: calc(100dvh - 330px);
   overflow-y: auto;
   width: 100%;
 `;

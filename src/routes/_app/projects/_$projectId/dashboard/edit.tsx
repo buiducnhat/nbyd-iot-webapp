@@ -11,6 +11,7 @@ import * as uuid from 'uuid';
 
 import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
+import useGetListDatastream from '@/modules/datastreams/hooks/use-get-list-datastream';
 import {
   BaseDashboardItem,
   TopLayerEdit,
@@ -51,7 +52,8 @@ function ProjectIdEditDashboard() {
 
   const setLoading = useAppStore((state) => state.setLoading);
 
-  const { project, datastreams, projectQuery } = useGetProjectDetail(projectId);
+  const { project, projectQuery } = useGetProjectDetail(projectId);
+  const { datastreams } = useGetListDatastream(projectId);
 
   const [dashboardTabs, setDashboardTabs] = useState<TWebDashboardTab[]>([]);
   const [activeTabKey, setActiveTabKey] = useState<string>('');
@@ -331,7 +333,7 @@ const DashboardLayout = styled.div<TAntdToken>`
   border: 1px dashed ${({ $token }) => $token.colorBorder};
   position: relative;
   overflow-y: hidden;
-  max-height: calc(100vh - 275px);
+  max-height: calc(100vh - 330px);
   overflow-y: auto;
   width: '100%';
 `;

@@ -22,6 +22,13 @@ export const BaseDashboardItem = styled.div<
   padding: ${({ $token, $editing }) => ($editing ? 0 : $token.padding)}px;
 `;
 
+const TopLayer = styled.div<TAntdToken>`
+  position: relative;
+  height: 100%;
+  width: 100%;
+  padding: ${({ $token }) => $token.padding}px;
+`;
+
 type TTopLayerEditProps = {
   webDashboard: TDashboardItem[];
   dashboardItem: TDashboardItem;
@@ -124,10 +131,3 @@ export function TopLayerEdit({
     </TopLayer>
   );
 }
-
-const TopLayer = styled.div<TAntdToken>`
-  position: relative;
-  height: 100%;
-  width: 100%;
-  padding: ${({ $token }) => $token.padding}px;
-`;

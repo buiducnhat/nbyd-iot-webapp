@@ -4,6 +4,7 @@ import RGL from 'react-grid-layout';
 import { TDatastream } from '@/modules/datastreams/datastream.model';
 import { TFormField } from '@/shared/types/form-field';
 
+import DoorContact from './door-contact';
 import InputNumberWidget from './input-number';
 import InputTextWidget from './input-text';
 import LedWidget from './led';
@@ -17,7 +18,8 @@ export type TWidgetType =
   | 'LED'
   | 'SLIDER'
   | 'INPUT_NUMBER'
-  | 'INPUT_TEXT';
+  | 'INPUT_TEXT'
+  | 'DOOR_CONTACT';
 
 export type TWidgetProps<TProperties = any, TValue = any> = {
   value?: TValue;
@@ -34,7 +36,10 @@ export type TValidDatastreamType =
   | 'ANALOG_OUTPUT_INTEGER'
   | 'VIRTUAL__INTEGER'
   | 'VIRTUAL__FLOAT'
-  | 'VIRTUAL__STRING';
+  | 'VIRTUAL__STRING'
+  | 'ZIGBEE__DOOR_CONTACT'
+  | 'ZIGBEE__TEMPERATURE'
+  | 'ZIGBEE__HUMIDITY';
 
 export type TWidgetCommon = {
   Widget: React.FC<TWidgetProps>;
@@ -224,6 +229,26 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
     propertiesFields: [],
     defaultProperties: {
       value: '',
+    },
+  },
+  DOOR_CONTACT: {
+    type: 'DOOR_CONTACT',
+    Widget: DoorContact,
+    layoutSettings: {
+      i: 'DOOR_CONTACT',
+      w: 3,
+      h: 1,
+      x: 0,
+      y: 0,
+      minW: 3,
+      maxW: 5,
+      minH: 1,
+      maxH: 2,
+    },
+    validDatastreamTypes: ['ZIGBEE__DOOR_CONTACT'],
+    propertiesFields: [],
+    defaultProperties: {
+      value: false,
     },
   },
 };

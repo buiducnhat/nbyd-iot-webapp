@@ -150,6 +150,8 @@
   "Paring": "",
   "Paired successfully": "",
   "Pairing timeout": "",
+  "Door contact": "",
+  "Door": "",
 
   "ApiResCode": {
     "1": "An error occurred",
