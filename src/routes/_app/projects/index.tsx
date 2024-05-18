@@ -1,7 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { css } from '@emotion/react';
 import { createFileRoute } from '@tanstack/react-router';
-import { Button, Col, Flex, Input, Row, Space, Typography } from 'antd';
+import { Button, Col, Empty, Flex, Input, Row, Space, Typography } from 'antd';
 import { useState } from 'react';
 
 import useApp from '@/hooks/use-app';
@@ -57,6 +57,23 @@ function ProjectListPage() {
         </div>
 
         <Row gutter={[24, 24]}>
+          {listProject?.length === 0 && (
+            <Col span={24}>
+              <Empty
+                description={t(
+                  'No project found. Create a new project to start',
+                )}
+              >
+                <Button
+                  icon={<PlusOutlined />}
+                  type="primary"
+                  onClick={() => setOpenFormDrawer(true)}
+                >
+                  {t('Create')}
+                </Button>
+              </Empty>
+            </Col>
+          )}
           {listProject?.map((project) => (
             <Col key={project.id} span={4}>
               <ProjectCard project={project} />

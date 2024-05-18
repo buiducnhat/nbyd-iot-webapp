@@ -1,4 +1,4 @@
-import { TDevice } from '../devices/device.model';
+import { TGateway } from '../gateways/gateway.model';
 import { TDashboardItem } from './components/widgets';
 
 export enum EProjectStatus {
@@ -14,7 +14,7 @@ export type TProjectBasic = {
   imageFileId?: string;
   imageFileUrl?: string;
   _count: {
-    devices: number;
+    gateways: number;
   };
   createdAt: string;
 };
@@ -26,7 +26,7 @@ export type TWebDashboardTab = {
 };
 
 export type TProjectDetail = TProjectBasic & {
-  devices: TDevice[];
+  gateways: TGateway[];
   metaData?: any;
   webDashboard?: TWebDashboardTab[];
   mobileDashboard?: any;

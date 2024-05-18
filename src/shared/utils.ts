@@ -54,9 +54,9 @@ export const searchStr = (input: string, search: string) => {
 
 export const getEsp32TemplateCode = (
   projectId: string,
-  deviceAuthToken = '***',
+  gatewayAuthToken = '***',
 ) => {
-  return `#include <NBYD_IOT.h>\n\n#define PROJECT_ID "${projectId}"\n#define DEVICE_AUTH_TOKEN "${deviceAuthToken}"`;
+  return `#include <NBYD_IOT.h>\n\n#define PROJECT_ID "${projectId}"\n#define DEVICE_AUTH_TOKEN "${gatewayAuthToken}"`;
 };
 
 export const isDefined = (value?: any) => {

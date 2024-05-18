@@ -14,7 +14,7 @@ const ProjectCard = ({ project }: TProjectCardProps) => {
   const { t, token } = useApp();
 
   return (
-    <Link to="/projects/$projectId/devices" params={{ projectId: project.id }}>
+    <Link to="/projects/$projectId/gateways" params={{ projectId: project.id }}>
       <Card
         hoverable
         bordered={false}
@@ -32,7 +32,9 @@ const ProjectCard = ({ project }: TProjectCardProps) => {
       >
         <Card.Meta
           title={project.name}
-          description={t('deviceWithCount', { count: project._count.devices })}
+          description={t('gatewayWithCount', {
+            count: project._count.gateways,
+          })}
         />
       </Card>
     </Link>

@@ -17,13 +17,9 @@ import { DevTool } from 'antd-form-devtools';
 import { useEffect, useMemo, useState } from 'react';
 
 import useApp from '@/hooks/use-app';
-import { TDatastream } from '@/modules/datastreams/datastream.model';
+import { TDevice } from '@/modules/devices/device.model';
 
-import {
-  FULL_ATTRIBUTES_WIDGETS,
-  TDashboardItem,
-  TValidDatastreamType,
-} from '.';
+import { FULL_ATTRIBUTES_WIDGETS, TDashboardItem, TValidDeviceType } from '.';
 import { BaseDashboardItem } from '../dashboard-item';
 
 type TBaseWidgetSettingsFormProps = {
@@ -32,7 +28,7 @@ type TBaseWidgetSettingsFormProps = {
   webDashboard: TDashboardItem[];
   dashboardItem: TDashboardItem;
   initTitle?: string;
-  datastreams: TDatastream[];
+  devices: TDevice[];
   onSave: (webDashboard: TDashboardItem[]) => void;
 };
 
@@ -42,7 +38,7 @@ function BaseWidgetSettingsModal({
   webDashboard,
   dashboardItem,
   initTitle,
-  datastreams,
+  devices,
   onSave,
 }: TBaseWidgetSettingsFormProps) {
   const { t, token } = useApp();
@@ -50,7 +46,7 @@ function BaseWidgetSettingsModal({
   const [form] = Form.useForm();
   const formValues = Form.useWatch([], form);
 
-  const [selectedDatastream, setSelectedDatastream] = useState<TDatastream>();
+  const [selectedDevice, setSelectedDevice] = useState<TDevice>();
   const [previewValue, setPreviewValue] = useState<any>();
   const [isValid, setIsValid] = useState(true);
 
@@ -85,19 +81,17 @@ function BaseWidgetSettingsModal({
   };
 
   useEffect(() => {
-    const datastream = datastreams.find(
-      (x) => x.id === formValues?.datastreamId,
-    );
-    setSelectedDatastream(datastream);
-    form.setFieldValue('color', datastream?.color || '#ffffffff');
-  }, [dashboardItem.type, datastreams, form, formValues?.datastreamId]);
+    const device = devices.find((x) => x.id === formValues?.deviceId);
+    setSelectedDevice(device);
+    form.setFieldValue('color', device?.color || '#ffffffff');
+  }, [dashboardItem.type, devices, form, formValues?.deviceId]);
 
   useEffect(() => {
     setPreviewValue(
-      selectedDatastream?.defaultValue ||
+      selectedDevice?.defaultValue ||
         FULL_ATTRIBUTES_WIDGETS[dashboardItem.type].defaultProperties?.value,
     );
-  }, [dashboardItem.type, selectedDatastream?.defaultValue]);
+  }, [dashboardItem.type, selectedDevice?.defaultValue]);
 
   useEffect(() => {
     form.setFieldsValue({
@@ -150,43 +144,41 @@ function BaseWidgetSettingsModal({
               <Input />
             </Form.Item>
 
-            <Form.Item name="datastreamId" label={t('Datastream')} required>
+            <Form.Item name="deviceId" label={t('Device')} required>
               <Select>
-                {datastreams
+                {devices
                   .filter((x) => {
                     const w = FULL_ATTRIBUTES_WIDGETS[dashboardItem.type];
 
                     console.log(`${x.type}__${x.pin}`);
                     return (
-                      w.validDatastreamTypes.includes(
+                      w.validDeviceTypes.includes(
                         `${x.type}_${x.mode || ''}_${
                           x.dataType || x.pin
-                        }` as TValidDatastreamType,
+                        }` as TValidDeviceType,
                       ) ||
-                      w.validDatastreamTypes.includes(
-                        `${x.type}__${x.pin}` as any,
-                      )
+                      w.validDeviceTypes.includes(`${x.type}__${x.pin}` as any)
                     );
                   })
-                  .map((datastream) => {
+                  .map((device) => {
                     return (
-                      <Select.Option key={datastream.id} value={datastream.id}>
+                      <Select.Option key={device.id} value={device.id}>
                         <Flex justify="space-between">
                           <span
                             css={css`
                               font-weight: ${token.fontWeightStrong};
                             `}
                           >
-                            {datastream.name}
+                            {device.name}
                           </span>
                           <div>
-                            ({datastream.device?.name}/
+                            ({device.gateway?.name}/
                             <span
                               css={css`
                                 font-weight: ${token.fontWeightStrong};
                               `}
                             >
-                              {datastream.pin}
+                              {device.pin}
                             </span>
                             )
                           </div>
@@ -260,7 +252,7 @@ function BaseWidgetSettingsModal({
                 value={previewValue}
                 onChange={setPreviewValue}
                 properties={previewWidget.properties}
-                datastream={selectedDatastream}
+                device={selectedDevice}
               />
             </BaseDashboardItem>
           </Flex>

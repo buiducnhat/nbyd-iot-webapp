@@ -10,8 +10,8 @@ import { Route as AppImport } from './routes/_app';
 import { Route as AppProjectsProjectIdImport } from './routes/_app/projects/_$projectId';
 import { Route as AppProjectsProjectIdDashboardEditImport } from './routes/_app/projects/_$projectId/dashboard/edit';
 import { Route as AppProjectsProjectIdDashboardIndexImport } from './routes/_app/projects/_$projectId/dashboard/index';
-import { Route as AppProjectsProjectIdDatastreamsImport } from './routes/_app/projects/_$projectId/datastreams';
 import { Route as AppProjectsProjectIdDevicesImport } from './routes/_app/projects/_$projectId/devices';
+import { Route as AppProjectsProjectIdGatewaysImport } from './routes/_app/projects/_$projectId/gateways';
 import { Route as AppProjectsProjectIdIndexImport } from './routes/_app/projects/_$projectId/index';
 import { Route as AppProjectsIndexImport } from './routes/_app/projects/index';
 import { Route as AuthImport } from './routes/_auth';
@@ -55,15 +55,15 @@ const AppProjectsProjectIdIndexRoute = AppProjectsProjectIdIndexImport.update({
   getParentRoute: () => AppProjectsProjectIdRoute,
 } as any);
 
-const AppProjectsProjectIdDevicesRoute =
-  AppProjectsProjectIdDevicesImport.update({
-    path: '/devices',
+const AppProjectsProjectIdGatewaysRoute =
+  AppProjectsProjectIdGatewaysImport.update({
+    path: '/gateways',
     getParentRoute: () => AppProjectsProjectIdRoute,
   } as any);
 
-const AppProjectsProjectIdDatastreamsRoute =
-  AppProjectsProjectIdDatastreamsImport.update({
-    path: '/datastreams',
+const AppProjectsProjectIdDevicesRoute =
+  AppProjectsProjectIdDevicesImport.update({
+    path: '/devices',
     getParentRoute: () => AppProjectsProjectIdRoute,
   } as any);
 
@@ -107,12 +107,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProjectsIndexImport;
       parentRoute: typeof AppImport;
     };
-    '/_app/projects/_$projectId/datastreams': {
-      preLoaderRoute: typeof AppProjectsProjectIdDatastreamsImport;
-      parentRoute: typeof AppProjectsProjectIdImport;
-    };
     '/_app/projects/_$projectId/devices': {
       preLoaderRoute: typeof AppProjectsProjectIdDevicesImport;
+      parentRoute: typeof AppProjectsProjectIdImport;
+    };
+    '/_app/projects/_$projectId/gateways': {
+      preLoaderRoute: typeof AppProjectsProjectIdGatewaysImport;
       parentRoute: typeof AppProjectsProjectIdImport;
     };
     '/_app/projects/_$projectId/': {
@@ -136,8 +136,8 @@ export const routeTree = rootRoute.addChildren([
   IndexRoute,
   AppRoute.addChildren([
     AppProjectsProjectIdRoute.addChildren([
-      AppProjectsProjectIdDatastreamsRoute,
       AppProjectsProjectIdDevicesRoute,
+      AppProjectsProjectIdGatewaysRoute,
       AppProjectsProjectIdIndexRoute,
       AppProjectsProjectIdDashboardEditRoute,
       AppProjectsProjectIdDashboardIndexRoute,

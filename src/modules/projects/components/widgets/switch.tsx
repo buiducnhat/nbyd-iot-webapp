@@ -14,7 +14,7 @@ function SwitchWidget({
   onChange,
   properties,
   defaultProperties,
-  datastream,
+  device,
 }: TWidgetProps<
   {
     title: string;
@@ -57,7 +57,7 @@ function SwitchWidget({
       <Space>
         <SSwitch
           $token={token}
-          $color={properties?.color || datastream?.color || token.colorPrimary}
+          $color={properties?.color || device?.color || token.colorPrimary}
           checked={checked}
           onChange={(checked) => {
             if (checked === undefined) {

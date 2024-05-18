@@ -1,6 +1,6 @@
 import httpService from '@/shared/http-service';
 
-import { TDatastream } from '../datastreams/datastream.model';
+import { TDevice } from '../devices/device.model';
 import { TCreateProjectDto } from './dto/create-project.dto';
 import { TGetListProjectDto } from './dto/get-list-project.dto';
 import { TUpdateProjectWebDashboardDto } from './dto/update-project-web-dashboard.dto';
@@ -22,9 +22,9 @@ class ProjectService {
     });
   }
 
-  getListDatastream(id: string, historyFrom?: Date, historyTo?: Date) {
-    return httpService.request<TDatastream[]>({
-      url: `/api/projects/${id}/datastreams`,
+  getListDevice(id: string, historyFrom?: Date, historyTo?: Date) {
+    return httpService.request<TDevice[]>({
+      url: `/api/projects/${id}/devices`,
       method: 'GET',
       params: {
         historyFrom: historyFrom ? historyFrom.getTime() : undefined,

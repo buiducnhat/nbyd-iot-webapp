@@ -11,11 +11,11 @@ function useGetProjectDetail(projectId: string) {
   });
 
   const project = projectQuery.data?.data;
-  const devices = useMemo(() => project?.devices || [], [project]);
+  const gateways = useMemo(() => project?.gateways || [], [project]);
 
   return {
     project,
-    devices,
+    gateways,
     projectQuery,
   };
 }

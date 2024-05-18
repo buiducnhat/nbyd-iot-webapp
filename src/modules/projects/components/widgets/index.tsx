@@ -1,7 +1,7 @@
 import React from 'react';
 import RGL from 'react-grid-layout';
 
-import { TDatastream } from '@/modules/datastreams/datastream.model';
+import { TDevice } from '@/modules/devices/device.model';
 import { TFormField } from '@/shared/types/form-field';
 
 import DoorContact from './door-contact';
@@ -26,10 +26,10 @@ export type TWidgetProps<TProperties = any, TValue = any> = {
   onChange?: (value?: TValue) => void;
   properties?: TProperties;
   defaultProperties?: TProperties;
-  datastream?: TDatastream;
+  device?: TDevice;
 };
 
-export type TValidDatastreamType =
+export type TValidDeviceType =
   | 'DIGITAL_INPUT_INTEGER'
   | 'DIGITAL_OUTPUT_INTEGER'
   | 'ANALOG_INPUT_INTEGER'
@@ -45,7 +45,7 @@ export type TWidgetCommon = {
   Widget: React.FC<TWidgetProps>;
   type: TWidgetType;
   layoutSettings: RGL.Layout;
-  validDatastreamTypes: Array<TValidDatastreamType>;
+  validDeviceTypes: Array<TValidDeviceType>;
   properties?: any;
   propertiesFields: TFormField[];
   defaultProperties?: any;
@@ -72,7 +72,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       minH: 1,
       maxH: 1,
     },
-    validDatastreamTypes: ['DIGITAL_OUTPUT_INTEGER', 'VIRTUAL__INTEGER'],
+    validDeviceTypes: ['DIGITAL_OUTPUT_INTEGER', 'VIRTUAL__INTEGER'],
     propertiesFields: [
       { label: 'Color', name: 'color', type: 'color-picker' },
       {
@@ -110,7 +110,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       minH: 1,
       maxH: 2,
     },
-    validDatastreamTypes: [
+    validDeviceTypes: [
       'DIGITAL_INPUT_INTEGER',
       'DIGITAL_OUTPUT_INTEGER',
       'ANALOG_INPUT_INTEGER',
@@ -142,7 +142,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       minH: 1,
       maxH: 2,
     },
-    validDatastreamTypes: [
+    validDeviceTypes: [
       'DIGITAL_INPUT_INTEGER',
       'DIGITAL_OUTPUT_INTEGER',
       'ANALOG_INPUT_INTEGER',
@@ -170,7 +170,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       minH: 1,
       maxH: 1,
     },
-    validDatastreamTypes: [
+    validDeviceTypes: [
       'DIGITAL_OUTPUT_INTEGER',
       'ANALOG_OUTPUT_INTEGER',
       'VIRTUAL__INTEGER',
@@ -200,7 +200,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       minH: 1,
       maxH: 1,
     },
-    validDatastreamTypes: [
+    validDeviceTypes: [
       'DIGITAL_OUTPUT_INTEGER',
       'ANALOG_OUTPUT_INTEGER',
       'VIRTUAL__INTEGER',
@@ -225,7 +225,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       minH: 1,
       maxH: 1,
     },
-    validDatastreamTypes: ['VIRTUAL__STRING'],
+    validDeviceTypes: ['VIRTUAL__STRING'],
     propertiesFields: [],
     defaultProperties: {
       value: '',
@@ -245,7 +245,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       minH: 1,
       maxH: 2,
     },
-    validDatastreamTypes: ['ZIGBEE__DOOR_SENSOR'],
+    validDeviceTypes: ['ZIGBEE__DOOR_SENSOR'],
     propertiesFields: [],
     defaultProperties: {
       value: false,

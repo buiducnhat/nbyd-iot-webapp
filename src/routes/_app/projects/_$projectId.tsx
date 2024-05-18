@@ -92,7 +92,7 @@ function ProjectDetailPage() {
                 vertical
                 css={css`
                   height: 120px;
-                  width: 150px;
+                  width: 200px;
                   justify-content: space-between;
                 `}
               >
@@ -105,9 +105,6 @@ function ProjectDetailPage() {
                   >
                     {project?.name}
                   </Typography.Title>
-                  <Typography.Text type="secondary">
-                    {project?.description}
-                  </Typography.Text>
                 </Space>
 
                 <Dropdown.Button
@@ -159,14 +156,14 @@ function ProjectDetailPage() {
                 align-self: flex-end;
               `}
               size="large"
-              defaultActiveKey="devices"
+              defaultActiveKey="gateways"
               onChange={(key) => {
                 navigate({
                   to:
-                    key === 'devices'
+                    key === 'gateways'
                       ? '/projects/$projectId/'
-                      : key === 'datastreams'
-                        ? '/projects/$projectId/datastreams'
+                      : key === 'devices'
+                        ? '/projects/$projectId/devices'
                         : '/projects/$projectId/dashboard',
                   params: { projectId },
                 });
@@ -174,12 +171,12 @@ function ProjectDetailPage() {
               activeKey={location.pathname?.split('/').pop()}
               items={[
                 {
-                  key: 'devices',
-                  label: t('Devices'),
+                  key: 'gateways',
+                  label: t('Gateways'),
                 },
                 {
-                  key: 'datastreams',
-                  label: t('Datastreams'),
+                  key: 'devices',
+                  label: t('Devices'),
                 },
                 {
                   key:

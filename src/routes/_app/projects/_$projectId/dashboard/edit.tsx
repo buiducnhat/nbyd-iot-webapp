@@ -11,7 +11,7 @@ import * as uuid from 'uuid';
 
 import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
-import useGetListDatastream from '@/modules/datastreams/hooks/use-get-list-datastream';
+import useGetListDevice from '@/modules/devices/hooks/use-get-list-device';
 import {
   BaseDashboardItem,
   TopLayerEdit,
@@ -53,7 +53,7 @@ function ProjectIdEditDashboard() {
   const setLoading = useAppStore((state) => state.setLoading);
 
   const { project, projectQuery } = useGetProjectDetail(projectId);
-  const { datastreams } = useGetListDatastream(projectId);
+  const { devices } = useGetListDevice(projectId);
 
   const [dashboardTabs, setDashboardTabs] = useState<TWebDashboardTab[]>([]);
   const [activeTabKey, setActiveTabKey] = useState<string>('');
@@ -275,7 +275,7 @@ function ProjectIdEditDashboard() {
                     <TopLayerEdit
                       webDashboard={dashboardItems}
                       dashboardItem={item}
-                      datastreams={datastreams}
+                      devices={devices}
                       onSave={(items) => {
                         setDashboardItems(items);
                       }}
@@ -283,8 +283,8 @@ function ProjectIdEditDashboard() {
                       <widget.Widget
                         properties={item.properties}
                         defaultProperties={widget.defaultProperties}
-                        datastream={datastreams.find(
-                          (x) => x.id === item.properties.datastreamId,
+                        device={devices.find(
+                          (x) => x.id === item.properties.deviceId,
                         )}
                       />
                     </TopLayerEdit>

@@ -7,5 +7,5 @@ export const Route = createFileRoute('/_app/projects/_$projectId/')({
 function ProjectIdIndex() {
   const params = Route.useParams();
 
-  return <Navigate to="/projects/$projectId/devices" params={params} />;
+  return <Navigate to="/projects/$projectId/gateways" params={params} />;
 }

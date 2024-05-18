@@ -1,8 +1,6 @@
 import {
-  CodeOutlined,
   DeleteOutlined,
   EditOutlined,
-  EyeOutlined,
   MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
@@ -11,29 +9,31 @@ import { useMutation } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import {
   Button,
+  ColorPicker,
   Dropdown,
   Flex,
-  Image,
   Space,
   Table,
   Tag,
   Typography,
 } from 'antd';
-import modal from 'antd/es/modal';
-import dayjs from 'dayjs';
 import { useState } from 'react';
 
 import useApp from '@/hooks/use-app';
-import DeviceCodeDrawer from '@/modules/devices/components/device-code-drawer';
 import DeviceFormDrawer from '@/modules/devices/components/device-form-drawer';
-import DevicePreviewDrawer from '@/modules/devices/components/device-preview-drawer';
 import {
-  EDeviceConnection,
-  EDeviceHardware,
-  EDeviceStatus,
+  DeviceDataTypeTag,
+  DeviceModeTag,
+  DeviceTypeTag,
+} from '@/modules/devices/components/device-tags';
+import {
+  EDeviceDataType,
+  EDeviceMode,
+  EDeviceType,
   TDevice,
 } from '@/modules/devices/device.model';
 import deviceService from '@/modules/devices/device.service';
+import useGetListDevice from '@/modules/devices/hooks/use-get-list-device';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
 import SoftButton from '@/shared/components/soft-button';
 
@@ -45,21 +45,33 @@ function ProjectIdDevices() {
   const { projectId } = Route.useParams();
 
   const { t, token, antdApp } = useApp();
+  const modal = antdApp.modal;
 
-  const [deviceFormAction, setDeviceFormAction] = useState<'create' | 'update'>(
-    'create',
-  );
+  const [selectedDeviceIds, setSelectedDeviceIds] = useState<React.Key[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<TDevice>();
-  const [openDeviceFormDrawer, setOpenDeviceFormDrawer] = useState(false);
-  const [openPreviewDrawer, setOpenPreviewDrawer] = useState(false);
-  const [openCodeDrawer, setOpenCodeDrawer] = useState(false);
+  const [openCreateForm, setOpenCreateForm] = useState(false);
+  const [openUpdateForm, setOpenUpdateForm] = useState(false);
 
-  const { project, projectQuery } = useGetProjectDetail(projectId);
+  const { project } = useGetProjectDetail(projectId);
+  const { devices, devicesQuery } = useGetListDevice(projectId);
 
   const deleteDeviceMutation = useMutation({
-    mutationFn: (deviceId: string) => deviceService.delete(projectId, deviceId),
+    mutationFn: (data: any) =>
+      deviceService.delete(projectId, data.gatewayId, data.id),
     onSuccess: () => {
-      projectQuery.refetch();
+      devicesQuery.refetch();
+      antdApp.message.success(t('Deleted successfully'));
+    },
+    onError: (error) => {
+      antdApp.message.error(error.message);
+    },
+  });
+
+  const deleteDevicesMutation = useMutation({
+    mutationFn: (data: any) =>
+      deviceService.deleteMany(projectId, data.gatewayId, data.ids),
+    onSuccess: () => {
+      devicesQuery.refetch();
       antdApp.message.success(t('Deleted successfully'));
     },
     onError: (error) => {
@@ -69,32 +81,28 @@ function ProjectIdDevices() {
 
   return (
     <>
-      <DeviceFormDrawer
-        action={deviceFormAction}
-        open={openDeviceFormDrawer}
-        setOpen={setOpenDeviceFormDrawer}
-        projectId={projectId}
-        device={selectedDevice}
-        refetch={() => projectQuery.refetch()}
-      />
+      {project && (
+        <>
+          <DeviceFormDrawer
+            open={openCreateForm}
+            setOpen={setOpenCreateForm}
+            project={project}
+            refetch={devicesQuery.refetch}
+            devices={devices}
+          />
 
-      {selectedDevice?.id && (
-        <DeviceCodeDrawer
-          projectId={projectId}
-          device={selectedDevice}
-          open={openCodeDrawer}
-          setOpen={setOpenCodeDrawer}
-        />
+          <DeviceFormDrawer
+            open={openUpdateForm}
+            setOpen={setOpenUpdateForm}
+            project={project}
+            refetch={devicesQuery.refetch}
+            isUpdate
+            devices={devices}
+            device={selectedDevice}
+          />
+        </>
       )}
 
-      {selectedDevice?.id && (
-        <DevicePreviewDrawer
-          projectId={projectId}
-          id={selectedDevice.id}
-          open={openPreviewDrawer}
-          setOpen={setOpenPreviewDrawer}
-        />
-      )}
       <Space
         size="large"
         direction="vertical"
@@ -103,36 +111,67 @@ function ProjectIdDevices() {
         `}
       >
         <Flex justify="space-between">
-          <Typography.Text
-            strong
-            css={css`
-              font-size: ${token.fontSizeLG}px;
-            `}
-          >
-            {t('deviceWithCount', { count: project?.devices.length })}
-          </Typography.Text>
+          <Space size="large">
+            <Typography.Text
+              strong
+              css={css`
+                font-size: ${token.fontSizeLG}px;
+              `}
+            >
+              {t('deviceWithCount', { count: devices?.length })}
+            </Typography.Text>
+
+            {selectedDeviceIds.length > 0 && (
+              <Button
+                size="small"
+                danger
+                type="dashed"
+                onClick={() => {
+                  modal.confirm({
+                    title: t('Delete confirmation'),
+                    content: t(
+                      'Are you sure you want to delete the selected items?',
+                    ),
+                    okText: t('Yes'),
+                    cancelText: t('No'),
+                    onOk: async () => {
+                      await deleteDevicesMutation.mutateAsync({
+                        gatewayId: selectedDevice?.gatewayId,
+                        ids: selectedDeviceIds as string[],
+                      });
+                    },
+                  });
+                }}
+              >
+                {t('Delete selected')}
+              </Button>
+            )}
+          </Space>
 
           <SoftButton
             $token={token}
             type="primary"
             size="small"
             icon={<PlusOutlined />}
-            onClick={() => {
-              setDeviceFormAction('create');
-              setOpenDeviceFormDrawer(true);
-            }}
+            onClick={() => setOpenCreateForm(true)}
           >
-            {t('New device')}
+            {t('New') + ' ' + t('Device')}
           </SoftButton>
         </Flex>
 
         <Table
-          dataSource={project?.devices}
+          dataSource={devices}
+          rowSelection={{
+            type: 'checkbox',
+            onChange: (selectedRowKeys) =>
+              setSelectedDeviceIds(selectedRowKeys),
+          }}
           rowKey={(record) => record.id}
           pagination={false}
           bordered
           columns={[
             {
+              title: t('No.'),
               dataIndex: 'id',
               key: 'id',
               render: (_id: string, _record, index: number) => index + 1,
@@ -141,84 +180,87 @@ function ProjectIdDevices() {
               title: t('Device'),
               dataIndex: 'name',
               key: 'name',
-              fixed: 'left',
-              render: (name: string, record) => (
-                <Space direction="vertical" align="center">
-                  <Image
+              render: (_id: string, record: TDevice) => (
+                <Space direction="vertical">
+                  <Typography.Text
+                    strong
                     css={css`
-                      border-radius: ${token.borderRadius}px;
+                      color: ${token.colorPrimary};
                     `}
-                    width={50}
-                    src={
-                      record.imageFileUrl ||
-                      '/assets/images/device-placeholder.jpeg'
-                    }
-                  />
-                  <Typography.Text strong>{name}</Typography.Text>
+                  >
+                    {record.name}
+                  </Typography.Text>
+                  <Typography.Text type="secondary">
+                    {record.gateway?.name}
+                  </Typography.Text>
                 </Space>
               ),
             },
             {
-              title: t('Hardware'),
-              dataIndex: 'hardware',
-              key: 'hardware',
-              render: (hardware: EDeviceHardware) => (
-                <Tag color="blue">{hardware}</Tag>
+              title: t('Color'),
+              dataIndex: 'color',
+              key: 'color',
+              render: (color: string) => <ColorPicker value={color} disabled />,
+            },
+            {
+              title: t('Type'),
+              dataIndex: 'type',
+              key: 'type',
+              render: (_, record) => (
+                <Space direction="vertical">
+                  <DeviceTypeTag type={record.type} />
+                  {record.type === EDeviceType.ZIGBEE && (
+                    <Tag>{record.mac}</Tag>
+                  )}
+                </Space>
               ),
             },
             {
-              title: t('Status'),
-              dataIndex: 'status',
-              key: 'status',
-              render: (status: EDeviceStatus) => (
-                <Tag
-                  color={status == EDeviceStatus.OFFLINE ? 'orange' : 'green'}
-                >
-                  {status}
-                </Tag>
+              title: t('Pin/Type'),
+              dataIndex: 'pin',
+              key: 'pin',
+            },
+            {
+              title: t('Mode'),
+              dataIndex: 'mode',
+              key: 'mode',
+              render: (mode: EDeviceMode) => <DeviceModeTag mode={mode} />,
+            },
+            {
+              title: t('Data type'),
+              dataIndex: 'dataType',
+              key: 'dataType',
+              render: (dataType: EDeviceDataType) => (
+                <DeviceDataTypeTag dataType={dataType} />
               ),
             },
             {
-              title: t('Connection'),
-              dataIndex: 'connection',
-              key: 'connection',
-              render: (status: EDeviceConnection) => (
-                <Tag
-                  color={
-                    status == EDeviceConnection.WIFI ? 'success' : 'default'
-                  }
-                >
-                  {status}
-                </Tag>
-              ),
+              title: t('Unit'),
+              dataIndex: 'unit',
+              key: 'unit',
             },
             {
-              title: t('Last online'),
-              dataIndex: 'lastOnlineAt',
-              key: 'lastOnlineAt',
-              render: (lastOnlineAt: string) => (
-                <Typography.Text>
-                  {lastOnlineAt
-                    ? dayjs(lastOnlineAt).format('YYYY-MM-DD HH:mm')
-                    : '-'}
-                </Typography.Text>
-              ),
+              title: t('Min'),
+              dataIndex: 'minValue',
+              key: 'minValue',
             },
             {
-              title: t('Auth token'),
-              dataIndex: 'authToken',
-              key: 'authToken',
-              render: (authToken: string) => (
-                <Tag>
-                  <Typography.Text
-                    copyable
-                    ellipsis
-                    css={css`
-                      max-width: 110px;
-                    `}
-                  >
-                    {authToken}
-                  </Typography.Text>
+              title: t('Max'),
+              dataIndex: 'maxValue',
+              key: 'maxValue',
+            },
+            {
+              title: t('Default'),
+              dataIndex: 'defaultValue',
+              key: 'defaultValue',
+            },
+            {
+              title: t('History'),
+              dataIndex: 'enabledHistory',
+              key: 'enabledHistory',
+              render: (enabledHistory: boolean) => (
+                <Tag color={enabledHistory ? 'green' : 'gold'}>
+                  {enabledHistory ? t('Yes') : t('No')}
                 </Tag>
               ),
             },
@@ -232,32 +274,22 @@ function ProjectIdDevices() {
                   trigger={['click']}
                   menu={{
                     items: [
-                      {
-                        label: t('View'),
-                        key: 'view',
-                        icon: <EyeOutlined />,
-                        onClick: () => {
-                          setSelectedDevice(record);
-                          setOpenPreviewDrawer(true);
-                        },
-                      },
-                      {
-                        label: t('Code'),
-                        key: 'code',
-                        icon: <CodeOutlined />,
-                        onClick: () => {
-                          setSelectedDevice(record);
-                          setOpenCodeDrawer(true);
-                        },
-                      },
+                      // {
+                      //   label: t('View'),
+                      //   key: 'view',
+                      //   icon: <EyeOutlined />,
+                      //   onClick: () => {
+                      //     setSelectedGateway(record);
+                      //     // setOpenPreviewDrawer(true);
+                      //   },
+                      // },
                       {
                         label: t('Edit'),
                         key: 'edit',
                         icon: <EditOutlined />,
                         onClick: () => {
-                          setDeviceFormAction('update');
+                          setOpenUpdateForm(true);
                           setSelectedDevice(record);
-                          setOpenDeviceFormDrawer(true);
                         },
                       },
                       {
@@ -274,7 +306,10 @@ function ProjectIdDevices() {
                             okText: t('Yes'),
                             cancelText: t('No'),
                             onOk: async () => {
-                              await deleteDeviceMutation.mutateAsync(record.id);
+                              await deleteDeviceMutation.mutateAsync({
+                                gatewayId: record.gatewayId,
+                                id: record.id,
+                              });
                             },
                           });
                         },

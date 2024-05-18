@@ -32,7 +32,7 @@ function SliderWidget({
   onChange,
   properties,
   defaultProperties,
-  datastream,
+  device,
 }: TWidgetProps<
   {
     title: string;
@@ -77,9 +77,7 @@ function SliderWidget({
         >
           <SSlider
             $token={token}
-            $color={
-              properties?.color || datastream?.color || token.colorPrimary
-            }
+            $color={properties?.color || device?.color || token.colorPrimary}
             value={localValue}
             onChange={(val) => {
               if (typeof val === 'number' && !isNaN(val)) {
@@ -92,12 +90,8 @@ function SliderWidget({
               }
             }}
             step={properties?.step || defaultProperties?.step}
-            min={
-              datastream?.minValue || properties?.min || defaultProperties?.min
-            }
-            max={
-              datastream?.maxValue || properties?.max || defaultProperties?.max
-            }
+            min={device?.minValue || properties?.min || defaultProperties?.min}
+            max={device?.maxValue || properties?.max || defaultProperties?.max}
           />
         </Col>
 

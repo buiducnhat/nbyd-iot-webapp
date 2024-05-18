@@ -1,13 +1,16 @@
-import { EDeviceConnection, EDeviceHardware } from '../device.model';
+import { EDeviceDataType, EDeviceMode, EDeviceType } from '../device.model';
 
 export type TCreateDeviceDto = {
   name: string;
-  description?: string;
-  hardware: EDeviceHardware;
-  connection: EDeviceConnection;
-};
-
-export type TUpdateDeviceDto = {
-  name?: string;
-  description?: string;
+  iconId?: number;
+  color?: string;
+  type: EDeviceType;
+  mode?: EDeviceMode;
+  pin?: string;
+  dataType?: EDeviceDataType;
+  minValue?: number;
+  maxValue?: number;
+  defaultValue?: string;
+  unit?: string;
+  enabledHistory?: boolean;
 };

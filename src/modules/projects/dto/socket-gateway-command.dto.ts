@@ -1,6 +1,6 @@
 export type TSocketDevicCommandDto = {
   projectId: string;
+  gatewayId: string;
   deviceId: string;
-  datastreamId: string;
   value: string;
 };

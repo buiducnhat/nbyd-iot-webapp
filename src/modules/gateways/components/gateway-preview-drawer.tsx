@@ -13,25 +13,25 @@ import dayjs from 'dayjs';
 
 import useApp from '@/hooks/use-app';
 
-import { EDeviceStatus } from '../device.model';
-import useGetDeviceDetail from '../hooks/use-get-device-detail';
+import { EGatewayStatus } from '../gateway.model';
+import useGetGatewayDetail from '../hooks/use-get-gateway-detail';
 
-type TDevicePreviewDrawerProps = {
+type TGatewayPreviewDrawerProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
   projectId: string;
   id: string;
 };
 
-const DevicePreviewDrawer: React.FC<TDevicePreviewDrawerProps> = ({
+const GatewayPreviewDrawer: React.FC<TGatewayPreviewDrawerProps> = ({
   open,
   setOpen,
   projectId,
   id,
-}: TDevicePreviewDrawerProps) => {
+}: TGatewayPreviewDrawerProps) => {
   const { t } = useApp();
 
-  const { device, deviceQuery } = useGetDeviceDetail(projectId, id);
+  const { gateway, gatewayQuery } = useGetGatewayDetail(projectId, id);
 
   return (
     <Drawer
@@ -41,19 +41,19 @@ const DevicePreviewDrawer: React.FC<TDevicePreviewDrawerProps> = ({
       width={720}
       extra={<Button onClick={() => setOpen(false)}>{t('Cancel')}</Button>}
     >
-      {deviceQuery.isLoading ? (
+      {gatewayQuery.isLoading ? (
         <Skeleton />
-      ) : !deviceQuery?.data ? (
+      ) : !gatewayQuery?.data ? (
         <Empty />
       ) : (
         <Descriptions
           column={2}
-          title={t('Device')}
+          title={t('Gateway')}
           items={[
             {
               label: t('ID'),
               span: 1,
-              children: device?.id,
+              children: gateway?.id,
             },
             {
               label: '',
@@ -61,8 +61,8 @@ const DevicePreviewDrawer: React.FC<TDevicePreviewDrawerProps> = ({
               children: (
                 <Image
                   src={
-                    device?.imageFileUrl ||
-                    '/assets/images/device-placeholder.jpeg'
+                    gateway?.imageFileUrl ||
+                    '/assets/images/gateway-placeholder.jpeg'
                   }
                   width={64}
                 />
@@ -71,7 +71,7 @@ const DevicePreviewDrawer: React.FC<TDevicePreviewDrawerProps> = ({
             {
               label: t('Name'),
               span: 1,
-              children: <strong>{device?.name}</strong>,
+              children: <strong>{gateway?.name}</strong>,
             },
             {
               label: t('Status'),
@@ -79,22 +79,24 @@ const DevicePreviewDrawer: React.FC<TDevicePreviewDrawerProps> = ({
               children: (
                 <Tag
                   color={
-                    device?.status === EDeviceStatus.ONLINE ? 'green' : 'orange'
+                    gateway?.status === EGatewayStatus.ONLINE
+                      ? 'green'
+                      : 'orange'
                   }
                 >
-                  {device?.status}
+                  {gateway?.status}
                 </Tag>
               ),
             },
             {
               label: t('Hardware'),
               span: 1,
-              children: <Tag color="blue">{device?.hardware}</Tag>,
+              children: <Tag color="blue">{gateway?.hardware}</Tag>,
             },
             {
               label: t('Connection'),
               span: 1,
-              children: <Tag color="magenta">{device?.connection}</Tag>,
+              children: <Tag color="magenta">{gateway?.connection}</Tag>,
             },
             {
               label: t('Meta data'),
@@ -103,11 +105,11 @@ const DevicePreviewDrawer: React.FC<TDevicePreviewDrawerProps> = ({
                 <Space direction="vertical">
                   <Space>
                     <Typography.Text>{t('IP Address')}:</Typography.Text>
-                    <Tag>{device?.metaData?.ipAddress}</Tag>
+                    <Tag>{gateway?.metaData?.ipAddress}</Tag>
                   </Space>
                   <Space>
                     <Typography.Text>{t('MAC Address')}:</Typography.Text>
-                    <Tag>{device?.metaData?.macAddress}</Tag>
+                    <Tag>{gateway?.metaData?.macAddress}</Tag>
                   </Space>
                 </Space>
               ),
@@ -118,7 +120,7 @@ const DevicePreviewDrawer: React.FC<TDevicePreviewDrawerProps> = ({
               children: (
                 <Tag>
                   <Typography.Text copyable>
-                    {device?.authToken}
+                    {gateway?.authToken}
                   </Typography.Text>
                 </Tag>
               ),
@@ -126,19 +128,19 @@ const DevicePreviewDrawer: React.FC<TDevicePreviewDrawerProps> = ({
             {
               label: t('Description'),
               span: 2,
-              children: device?.description,
+              children: gateway?.description,
             },
             {
               label: t('Last online'),
               span: 2,
-              children: dayjs(device?.lastOnlineAt).format(
+              children: dayjs(gateway?.lastOnlineAt).format(
                 'YYYY/MM/DD - HH:mm:ss',
               ),
             },
             {
               label: t('Created at'),
               span: 2,
-              children: dayjs(device?.createdAt).format(
+              children: dayjs(gateway?.createdAt).format(
                 'YYYY/MM/DD - HH:mm:ss',
               ),
             },
@@ -149,4 +151,4 @@ const DevicePreviewDrawer: React.FC<TDevicePreviewDrawerProps> = ({
   );
 };
 
-export default DevicePreviewDrawer;
+export default GatewayPreviewDrawer;

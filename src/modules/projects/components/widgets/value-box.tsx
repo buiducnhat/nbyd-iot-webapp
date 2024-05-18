@@ -3,7 +3,7 @@ import { Space, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 
 import useApp from '@/hooks/use-app';
-import { EDatastreamDataType } from '@/modules/datastreams/datastream.model';
+import { EDeviceDataType } from '@/modules/devices/device.model';
 import { isNumberString } from '@/shared/utils';
 
 import { TWidgetProps } from '.';
@@ -13,7 +13,7 @@ function ValueBoxWidget({
   value,
   properties,
   defaultProperties,
-  datastream,
+  device,
 }: TWidgetProps<{ title: string; decimalPlaces?: number }, string>) {
   const { t, token } = useApp();
 
@@ -23,7 +23,7 @@ function ValueBoxWidget({
     if (!value) {
       setLocalValue('--');
     } else if (
-      datastream?.dataType === EDatastreamDataType.FLOAT &&
+      device?.dataType === EDeviceDataType.FLOAT &&
       isNumberString(value as string)
     ) {
       setLocalValue(
@@ -35,7 +35,7 @@ function ValueBoxWidget({
       setLocalValue(value as string);
     }
   }, [
-    datastream?.dataType,
+    device?.dataType,
     defaultProperties?.decimalPlaces,
     properties?.decimalPlaces,
     value,
@@ -61,10 +61,8 @@ function ValueBoxWidget({
           {localValue}
         </Typography.Text>
 
-        {datastream?.unit ? (
-          <Typography.Text type="secondary">
-            ({datastream.unit})
-          </Typography.Text>
+        {device?.unit ? (
+          <Typography.Text type="secondary">({device.unit})</Typography.Text>
         ) : null}
       </Space>
     </Space>

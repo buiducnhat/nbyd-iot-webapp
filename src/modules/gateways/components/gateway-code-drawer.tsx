@@ -13,32 +13,32 @@ import useApp from '@/hooks/use-app';
 import { TAntdToken } from '@/shared/types/tst.type';
 import { getEsp32TemplateCode } from '@/shared/utils';
 
-import { EDeviceHardware, TDevice } from '../device.model';
+import { EGatewayHardware, TGateway } from '../gateway.model';
 
-type TDeviceCodeDrawerProps = {
+type TGatewayCodeDrawerProps = {
   projectId: string;
-  device: TDevice;
+  gateway: TGateway;
   open: boolean;
   setOpen: (open: boolean) => void;
 };
 
-const DeviceCodeDrawer = ({
+const GatewayCodeDrawer = ({
   projectId,
-  device,
+  gateway,
   open,
   setOpen,
-}: TDeviceCodeDrawerProps) => {
+}: TGatewayCodeDrawerProps) => {
   const { t, isDarkTheme, token } = useApp();
 
   const code = useMemo(() => {
-    return device.hardware === EDeviceHardware.ESP32
-      ? getEsp32TemplateCode(projectId, device?.authToken)
+    return gateway.hardware === EGatewayHardware.ESP32
+      ? getEsp32TemplateCode(projectId, gateway?.authToken)
       : '';
-  }, [device, projectId]);
+  }, [gateway, projectId]);
 
   return (
     <Drawer
-      title={t('Device')}
+      title={t('Gateway')}
       width={600}
       open={open}
       onClose={() => setOpen(false)}
@@ -98,7 +98,7 @@ const DeviceCodeDrawer = ({
   );
 };
 
-export default DeviceCodeDrawer;
+export default GatewayCodeDrawer;
 
 const CodeContainer = styled.div<TAntdToken>`
   background: ${({ $token }) => $token.colorBgBase};

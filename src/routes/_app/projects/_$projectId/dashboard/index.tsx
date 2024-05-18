@@ -10,12 +10,12 @@ import RGL, { WidthProvider } from 'react-grid-layout';
 import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
 import { socket } from '@/modules/app/socket-io';
-import useGetListDatastream from '@/modules/datastreams/hooks/use-get-list-datastream';
+import useGetListDevice from '@/modules/devices/hooks/use-get-list-device';
 import { BaseDashboardItem } from '@/modules/projects/components/dashboard-item';
 import DragableTabs from '@/modules/projects/components/dragable-tabs';
 import { FULL_ATTRIBUTES_WIDGETS } from '@/modules/projects/components/widgets';
-import { TSocketDevicCommandDto } from '@/modules/projects/dto/socket-device-command.dto';
-import { TSocketDeviceDataDto } from '@/modules/projects/dto/socket-device-data.dto';
+import { TSocketDevicCommandDto } from '@/modules/projects/dto/socket-gateway-command.dto';
+import { TSocketGatewayDataDto } from '@/modules/projects/dto/socket-gateway-data.dto';
 import { TSocketJoinRoomDto } from '@/modules/projects/dto/socket-join-room.dto';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
 import { TAntdToken } from '@/shared/types/tst.type';
@@ -41,11 +41,11 @@ function ProjectIdDashboard() {
   const connectedSocket = useAppStore((state) => state.connectedSocket);
 
   const { project } = useGetProjectDetail(projectId);
-  const { datastreams } = useGetListDatastream(projectId, true);
+  const { devices } = useGetListDevice(projectId, true);
 
-  const [dsValues, setDsValues] = useState<{ [datastreamId: string]: string }>(
-    {},
-  );
+  const [deviceValues, setDeviceValues] = useState<{
+    [deviceId: string]: string;
+  }>({});
   const [activeTabKey, setActiveTabKey] = useState<string>('');
 
   const items = useMemo(
@@ -64,16 +64,16 @@ function ProjectIdDashboard() {
   );
 
   useEffect(() => {
-    if (datastreams) {
-      setDsValues(
-        datastreams.reduce((prev: { [datastreamId: string]: string }, curr) => {
+    if (devices) {
+      setDeviceValues(
+        devices.reduce((prev: { [deviceId: string]: string }, curr) => {
           prev[curr.id] = curr.values?.[0]?.value ?? curr.defaultValue ?? '';
           return prev;
         }, {}),
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(datastreams)]);
+  }, [JSON.stringify(devices)]);
 
   useEffect(() => {
     if (project?.webDashboard) {
@@ -87,8 +87,8 @@ function ProjectIdDashboard() {
         projectId,
       } as TSocketJoinRoomDto);
 
-      socket.on('/devices/data', (data: TSocketDeviceDataDto) => {
-        setDsValues((prev) => ({ ...prev, [data.datastreamId]: data.value }));
+      socket.on('/gateways/data', (data: TSocketGatewayDataDto) => {
+        setDeviceValues((prev) => ({ ...prev, [data.deviceId]: data.value }));
       });
 
       return () => {
@@ -96,7 +96,7 @@ function ProjectIdDashboard() {
           projectId,
         } as TSocketJoinRoomDto);
 
-        socket.off('/devices/data');
+        socket.off('/gateways/data');
       };
     }
   }, [projectId, connectedSocket]);
@@ -134,11 +134,11 @@ function ProjectIdDashboard() {
 
               if (!widget) return null;
 
-              const datastream = datastreams.find(
-                (x) => x.id === item.properties.datastreamId,
+              const device = devices.find(
+                (x) => x.id === item.properties.deviceId,
               );
 
-              if (!datastream) return null;
+              if (!device) return null;
 
               return (
                 <BaseDashboardItem
@@ -156,20 +156,20 @@ function ProjectIdDashboard() {
                   <widget.Widget
                     properties={item.properties}
                     defaultProperties={widget.defaultProperties}
-                    datastream={datastream}
-                    value={dsValues[datastream.id]}
+                    device={device}
+                    value={deviceValues[device.id]}
                     onChange={(value) => {
                       if (connectedSocket && isDefined(value)) {
-                        socket.emit('/devices/command', {
+                        socket.emit('/gateways/command', {
                           projectId,
-                          deviceId: datastream?.deviceId,
-                          datastreamId: datastream?.id,
+                          gatewayId: device?.gatewayId,
+                          deviceId: device?.id,
                           value: String(value),
                         } as TSocketDevicCommandDto);
                       }
-                      setDsValues((prev) => ({
+                      setDeviceValues((prev) => ({
                         ...prev,
-                        [datastream.id]: String(value),
+                        [device.id]: String(value),
                       }));
                     }}
                   />

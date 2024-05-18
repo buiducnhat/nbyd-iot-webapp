@@ -5,7 +5,7 @@ import { Button, Space } from 'antd';
 import { ReactNode, useState } from 'react';
 
 import useApp from '@/hooks/use-app';
-import { TDatastream } from '@/modules/datastreams/datastream.model';
+import { TDevice } from '@/modules/devices/device.model';
 import { TAntdToken } from '@/shared/types/tst.type';
 
 import { TDashboardItem } from './widgets';
@@ -32,7 +32,7 @@ const TopLayer = styled.div<TAntdToken>`
 type TTopLayerEditProps = {
   webDashboard: TDashboardItem[];
   dashboardItem: TDashboardItem;
-  datastreams: TDatastream[];
+  devices: TDevice[];
   children: ReactNode;
   onSave: (webDashboard: TDashboardItem[]) => void;
 };
@@ -40,7 +40,7 @@ type TTopLayerEditProps = {
 export function TopLayerEdit({
   webDashboard,
   dashboardItem,
-  datastreams,
+  devices,
   onSave,
   children,
 }: TTopLayerEditProps) {
@@ -59,7 +59,7 @@ export function TopLayerEdit({
         <BaseWidgetSettingsModal
           open={openSettings}
           setOpen={setOpenSettings}
-          datastreams={datastreams}
+          devices={devices}
           webDashboard={webDashboard}
           dashboardItem={dashboardItem}
           onSave={onSave}

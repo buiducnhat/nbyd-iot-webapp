@@ -12,7 +12,7 @@ const MIN_SIZE = 40;
 function LedWidget({
   value,
   properties,
-  datastream,
+  device,
 }: TWidgetProps<{ title: string; color?: string }, string>) {
   value = String(value);
 
@@ -64,7 +64,7 @@ function LedWidget({
           css={css`
             background-color: ${value === '0'
               ? token.colorBgLayout
-              : properties?.color || datastream?.color || token.colorSuccess};
+              : properties?.color || device?.color || token.colorSuccess};
             border: 1px solid ${token.colorBorder};
             border-radius: 100%;
             width: ${ledSize}px;

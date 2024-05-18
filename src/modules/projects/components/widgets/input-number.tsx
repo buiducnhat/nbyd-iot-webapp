@@ -13,7 +13,7 @@ function InputNumberWidget({
   properties,
   value,
   onChange,
-  datastream,
+  device,
 }: TWidgetProps<{ title: string }, number>) {
   value = Number(value);
 
@@ -49,8 +49,8 @@ function InputNumberWidget({
           type="text"
           icon={<MinusOutlined />}
           disabled={
-            typeof value === 'number' && datastream?.minValue
-              ? value <= datastream?.minValue
+            typeof value === 'number' && device?.minValue
+              ? value <= device?.minValue
               : false
           }
           onClick={() => {
@@ -65,15 +65,15 @@ function InputNumberWidget({
             setFromButton(false);
             setInputValue(typeof val === 'number' ? val : 0);
           }}
-          min={datastream?.minValue}
-          max={datastream?.maxValue}
+          min={device?.minValue}
+          max={device?.maxValue}
         />
         <Button
           type="text"
           icon={<PlusOutlined />}
           disabled={
-            typeof value === 'number' && datastream?.maxValue
-              ? value >= datastream?.maxValue
+            typeof value === 'number' && device?.maxValue
+              ? value >= device?.maxValue
               : false
           }
           onClick={() => {
