@@ -7,10 +7,15 @@ import useApp from '@/hooks/use-app';
 type TPairingModalContentProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
+  onCancel: () => void;
   timeout: number;
 };
 
-const ParingModal = ({ open, setOpen, timeout }: TPairingModalContentProps) => {
+const ParingModal = ({
+  open,
+  onCancel,
+  timeout,
+}: TPairingModalContentProps) => {
   const { t, token } = useApp();
 
   const secondToMinute = useCallback((seconds: number) => {
@@ -25,8 +30,9 @@ const ParingModal = ({ open, setOpen, timeout }: TPairingModalContentProps) => {
     <Modal
       title={t('Paring')}
       open={open}
-      onOk={() => setOpen(false)}
-      okText={t('Cancel')}
+      onCancel={onCancel}
+      cancelText={t('Cancel')}
+      okButtonProps={{ style: { display: 'none' } }}
     >
       <Flex
         vertical

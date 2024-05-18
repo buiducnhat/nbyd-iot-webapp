@@ -50,7 +50,7 @@ type TDeviceFormDrawerProps = {
   datastreams: TDatastream[];
 };
 
-const PAIR_TIMEOUT = 5;
+const PAIR_TIMEOUT = 4 * 60;
 
 const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
   open,
@@ -282,35 +282,20 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
                 </Select>
               </Form.Item>
             ) : (
-              <>
-                <Form.Item<TCreateDatastreamDto>
-                  name="mac"
-                  label={t('Mac')}
-                  help={t('format_zigbee_mac_help')}
-                  rules={[
-                    {
-                      pattern: /^0x[a-fA-F0-9]{12}$/,
-                      message: t('mac_address_invalid'),
-                    },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-                <Form.Item<TCreateDatastreamDto>
-                  name="pin"
-                  label={t('Zigbee Type')}
-                  required
-                  rules={[{ required: true }]}
-                >
-                  <Select>
-                    {Z_DATASTREAM_PIN_OPTIONS.map((option) => (
-                      <Select.Option key={option.value} value={option.value}>
-                        {t(`ZDatastreamPinLabel.${option.label}` as any)}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-              </>
+              <Form.Item<TCreateDatastreamDto>
+                name="pin"
+                label={t('Zigbee Type')}
+                required
+                rules={[{ required: true }]}
+              >
+                <Select>
+                  {Z_DATASTREAM_PIN_OPTIONS.map((option) => (
+                    <Select.Option key={option.value} value={option.value}>
+                      {t(`ZDatastreamPinLabel.${option.label}` as any)}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
             )}
 
             {
@@ -435,17 +420,22 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
     socket.emit('/z-datastreams/pair', {
       projectId: project.id,
       deviceId,
+      value: true,
       name: formValues?.name,
-      mac: formValues?.mac,
       pin: formValues?.pin,
     });
-  }, [
-    deviceId,
-    formValues?.mac,
-    formValues?.name,
-    formValues?.pin,
-    project.id,
-  ]);
+  }, [deviceId, formValues?.name, formValues?.pin, project.id]);
+
+  const onCancelPairing = useCallback(() => {
+    setOpenPairingModal(false);
+    socket.emit('/z-datastreams/pair', {
+      projectId: project.id,
+      deviceId,
+      value: false,
+      name: formValues?.name,
+      pin: formValues?.pin,
+    });
+  }, [deviceId, formValues?.name, formValues?.pin, project.id]);
 
   useEffect(() => {
     if (!isUpdate) {
@@ -505,6 +495,7 @@ const DatastreamFormDrawer: React.FC<TDeviceFormDrawerProps> = ({
         open={openPairingModal}
         setOpen={setOpenPairingModal}
         timeout={pairTimeout}
+        onCancel={onCancelPairing}
       />
 
       <Drawer

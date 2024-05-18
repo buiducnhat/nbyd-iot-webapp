@@ -153,15 +153,21 @@ function BaseWidgetSettingsModal({
             <Form.Item name="datastreamId" label={t('Datastream')} required>
               <Select>
                 {datastreams
-                  .filter((x) =>
-                    FULL_ATTRIBUTES_WIDGETS[
-                      dashboardItem.type
-                    ].validDatastreamTypes.includes(
-                      `${x.type}_${x.mode || ''}_${
-                        x.dataType || x.pin
-                      }` as TValidDatastreamType,
-                    ),
-                  )
+                  .filter((x) => {
+                    const w = FULL_ATTRIBUTES_WIDGETS[dashboardItem.type];
+
+                    console.log(`${x.type}__${x.pin}`);
+                    return (
+                      w.validDatastreamTypes.includes(
+                        `${x.type}_${x.mode || ''}_${
+                          x.dataType || x.pin
+                        }` as TValidDatastreamType,
+                      ) ||
+                      w.validDatastreamTypes.includes(
+                        `${x.type}__${x.pin}` as any,
+                      )
+                    );
+                  })
                   .map((datastream) => {
                     return (
                       <Select.Option key={datastream.id} value={datastream.id}>

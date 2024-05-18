@@ -208,17 +208,17 @@ function ProjectIdDatastreams() {
               title: t('Type'),
               dataIndex: 'type',
               key: 'type',
-              render: (type: EDatastreamType) => (
-                <DatastreamTypeTag type={type} />
+              render: (_, record) => (
+                <Space direction="vertical">
+                  <DatastreamTypeTag type={record.type} />
+                  {record.type === EDatastreamType.ZIGBEE && (
+                    <Tag>{record.mac}</Tag>
+                  )}
+                </Space>
               ),
             },
             {
-              title: t('Mac'),
-              dataIndex: 'mac',
-              key: 'mac',
-            },
-            {
-              title: t('Pin'),
+              title: t('Pin/Type'),
               dataIndex: 'pin',
               key: 'pin',
             },

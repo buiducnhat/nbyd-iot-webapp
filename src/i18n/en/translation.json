@@ -152,6 +152,7 @@
   "Pairing timeout": "",
   "Door contact": "",
   "Door": "",
+  "Pin/Type": "",
 
   "ApiResCode": {
     "1": "An error occurred",

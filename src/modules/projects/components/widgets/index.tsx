@@ -19,7 +19,7 @@ export type TWidgetType =
   | 'SLIDER'
   | 'INPUT_NUMBER'
   | 'INPUT_TEXT'
-  | 'DOOR_CONTACT';
+  | 'DOOR_SENSOR';
 
 export type TWidgetProps<TProperties = any, TValue = any> = {
   value?: TValue;
@@ -37,7 +37,7 @@ export type TValidDatastreamType =
   | 'VIRTUAL__INTEGER'
   | 'VIRTUAL__FLOAT'
   | 'VIRTUAL__STRING'
-  | 'ZIGBEE__DOOR_CONTACT'
+  | 'ZIGBEE__DOOR_SENSOR'
   | 'ZIGBEE__TEMPERATURE'
   | 'ZIGBEE__HUMIDITY';
 
@@ -231,11 +231,11 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       value: '',
     },
   },
-  DOOR_CONTACT: {
-    type: 'DOOR_CONTACT',
+  DOOR_SENSOR: {
+    type: 'DOOR_SENSOR',
     Widget: DoorContact,
     layoutSettings: {
-      i: 'DOOR_CONTACT',
+      i: 'DOOR_SENSOR',
       w: 3,
       h: 1,
       x: 0,
@@ -245,7 +245,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       minH: 1,
       maxH: 2,
     },
-    validDatastreamTypes: ['ZIGBEE__DOOR_CONTACT'],
+    validDatastreamTypes: ['ZIGBEE__DOOR_SENSOR'],
     propertiesFields: [],
     defaultProperties: {
       value: false,
