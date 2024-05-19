@@ -138,8 +138,6 @@ function ProjectIdDashboard() {
                 (x) => x.id === item.properties.deviceId,
               );
 
-              if (!device) return null;
-
               return (
                 <BaseDashboardItem
                   key={item.layout.i}
@@ -157,20 +155,26 @@ function ProjectIdDashboard() {
                     properties={item.properties}
                     defaultProperties={widget.defaultProperties}
                     device={device}
-                    value={deviceValues[device.id]}
+                    value={
+                      device
+                        ? deviceValues[device.id]
+                        : widget.defaultProperties.value
+                    }
                     onChange={(value) => {
-                      if (connectedSocket && isDefined(value)) {
-                        socket.emit('/gateways/command', {
-                          projectId,
-                          gatewayId: device?.gatewayId,
-                          deviceId: device?.id,
-                          value: String(value),
-                        } as TSocketDevicCommandDto);
+                      if (device) {
+                        if (connectedSocket && isDefined(value)) {
+                          socket.emit('/gateways/command', {
+                            projectId,
+                            gatewayId: device?.gatewayId,
+                            deviceId: device?.id,
+                            value: String(value),
+                          } as TSocketDevicCommandDto);
+                        }
+                        setDeviceValues((prev) => ({
+                          ...prev,
+                          [device.id]: String(value),
+                        }));
                       }
-                      setDeviceValues((prev) => ({
-                        ...prev,
-                        [device.id]: String(value),
-                      }));
                     }}
                   />
                 </BaseDashboardItem>

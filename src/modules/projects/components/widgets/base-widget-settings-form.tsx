@@ -150,7 +150,6 @@ function BaseWidgetSettingsModal({
                   .filter((x) => {
                     const w = FULL_ATTRIBUTES_WIDGETS[dashboardItem.type];
 
-                    console.log(`${x.type}__${x.pin}`);
                     return (
                       w.validDeviceTypes.includes(
                         `${x.type}_${x.mode || ''}_${
@@ -209,6 +208,7 @@ function BaseWidgetSettingsModal({
                     <Switch />
                   ) : field.type === 'color-picker' ? (
                     <ColorPicker
+                      disabledAlpha
                       value={formValues?.[field.name]}
                       onChangeComplete={(color) => {
                         form.setFieldValue(field.name, color.toHexString());

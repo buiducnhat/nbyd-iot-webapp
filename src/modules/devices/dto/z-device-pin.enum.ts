@@ -19,7 +19,7 @@ export enum EZDevicePin {
   DIMMER_2G = 'DIMMER_2G',
 }
 
-export const Z_DATASTREAM_PIN_OPTIONS = [
+export const Z_DEVICE_PIN_OPTIONS = [
   { label: 'DOOR_SENSOR', value: EZDevicePin.DOOR_SENSOR.toString() },
   { label: 'MOTION_SENSOR', value: EZDevicePin.MOTION_SENSOR.toString() },
   {

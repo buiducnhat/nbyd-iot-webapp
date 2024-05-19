@@ -37,7 +37,7 @@ import {
 import deviceService from '../device.service';
 import { TCreateDeviceDto } from '../dto/create-device.dto';
 import { TUpdateDeviceDto } from '../dto/update-device.dto';
-import { Z_DATASTREAM_PIN_OPTIONS } from '../dto/z-device-pin.enum';
+import { Z_DEVICE_PIN_OPTIONS } from '../dto/z-device-pin.enum';
 import ParingModal from './pairing-modal';
 
 type TGatewayFormDrawerProps = {
@@ -210,6 +210,7 @@ const DeviceFormDrawer: React.FC<TGatewayFormDrawerProps> = ({
                   labelCol={{ span: 20 }}
                 >
                   <ColorPicker
+                    disabledAlpha
                     value={formValues?.color}
                     onChangeComplete={(_color) =>
                       form.setFieldsValue({ color: _color.toHexString() })
@@ -288,7 +289,7 @@ const DeviceFormDrawer: React.FC<TGatewayFormDrawerProps> = ({
                 rules={[{ required: true }]}
               >
                 <Select>
-                  {Z_DATASTREAM_PIN_OPTIONS.map((option) => (
+                  {Z_DEVICE_PIN_OPTIONS.map((option) => (
                     <Select.Option key={option.value} value={option.value}>
                       {t(`ZDevicePinLabel.${option.label}` as any)}
                     </Select.Option>

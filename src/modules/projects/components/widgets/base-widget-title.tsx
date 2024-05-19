@@ -11,6 +11,7 @@ export const BaseWidgetTitle = ({ children }: { children: string }) => {
       strong
       css={css`
         color: ${token.colorTextLabel};
+        font-size: ${token.fontSizeSM}px;
       `}
     >
       {children}

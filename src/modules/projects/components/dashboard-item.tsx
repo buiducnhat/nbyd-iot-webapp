@@ -27,6 +27,7 @@ const TopLayer = styled.div<TAntdToken>`
   height: 100%;
   width: 100%;
   padding: ${({ $token }) => $token.padding}px;
+  padding-top: ${({ $token }) => $token.paddingXS}px;
 `;
 
 type TTopLayerEditProps = {

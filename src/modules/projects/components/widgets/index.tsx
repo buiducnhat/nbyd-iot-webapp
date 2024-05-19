@@ -10,6 +10,9 @@ import InputTextWidget from './input-text';
 import LedWidget from './led';
 import SliderWidget from './slider';
 import SwitchWidget from './switch';
+import Switch1G from './switch-1g';
+import Switch2G from './switch-2g';
+import Switch3G from './switch-3g';
 import ValueBoxWidget from './value-box';
 
 export type TWidgetType =
@@ -19,7 +22,10 @@ export type TWidgetType =
   | 'SLIDER'
   | 'INPUT_NUMBER'
   | 'INPUT_TEXT'
-  | 'DOOR_SENSOR';
+  | 'DOOR_SENSOR'
+  | 'SWITCH_1G'
+  | 'SWITCH_2G'
+  | 'SWITCH_3G';
 
 export type TWidgetProps<TProperties = any, TValue = any> = {
   value?: TValue;
@@ -39,7 +45,10 @@ export type TValidDeviceType =
   | 'VIRTUAL__STRING'
   | 'ZIGBEE__DOOR_SENSOR'
   | 'ZIGBEE__TEMPERATURE'
-  | 'ZIGBEE__HUMIDITY';
+  | 'ZIGBEE__HUMIDITY'
+  | 'ZIGBEE__SWITCH_1G'
+  | 'ZIGBEE__SWITCH_2G'
+  | 'ZIGBEE__SWITCH_3G';
 
 export type TWidgetCommon = {
   Widget: React.FC<TWidgetProps>;
@@ -246,9 +255,80 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       maxH: 2,
     },
     validDeviceTypes: ['ZIGBEE__DOOR_SENSOR'],
-    propertiesFields: [],
+    propertiesFields: [{ label: 'Color', name: 'color', type: 'color-picker' }],
     defaultProperties: {
-      value: false,
+      value: {
+        contact: true,
+      },
+    },
+  },
+  SWITCH_1G: {
+    Widget: Switch1G,
+    type: 'SWITCH_1G',
+    layoutSettings: {
+      i: 'SWITCH_1G',
+      w: 4,
+      h: 1,
+      x: 0,
+      y: 0,
+      minW: 4,
+      maxW: 6,
+      minH: 1,
+      maxH: 1,
+    },
+    validDeviceTypes: ['ZIGBEE__SWITCH_1G'],
+    propertiesFields: [{ label: 'Color', name: 'color', type: 'color-picker' }],
+    defaultProperties: {
+      value: {
+        state: 'OFF',
+      },
+    },
+  },
+  SWITCH_2G: {
+    Widget: Switch2G,
+    type: 'SWITCH_2G',
+    layoutSettings: {
+      i: 'SWITCH_2G',
+      w: 4,
+      h: 1,
+      x: 0,
+      y: 0,
+      minW: 4,
+      maxW: 6,
+      minH: 1,
+      maxH: 1,
+    },
+    validDeviceTypes: ['ZIGBEE__SWITCH_2G'],
+    propertiesFields: [{ label: 'Color', name: 'color', type: 'color-picker' }],
+    defaultProperties: {
+      value: {
+        state1: 'OFF',
+        state2: 'OFF',
+      },
+    },
+  },
+  SWITCH_3G: {
+    Widget: Switch3G,
+    type: 'SWITCH_3G',
+    layoutSettings: {
+      i: 'SWITCH_3G',
+      w: 4,
+      h: 1,
+      x: 0,
+      y: 0,
+      minW: 4,
+      maxW: 6,
+      minH: 1,
+      maxH: 1,
+    },
+    validDeviceTypes: ['ZIGBEE__SWITCH_3G'],
+    propertiesFields: [{ label: 'Color', name: 'color', type: 'color-picker' }],
+    defaultProperties: {
+      value: {
+        state1: 'OFF',
+        state2: 'OFF',
+        state3: 'OFF',
+      },
     },
   },
 };
