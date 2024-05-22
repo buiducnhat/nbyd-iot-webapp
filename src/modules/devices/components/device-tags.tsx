@@ -33,6 +33,7 @@ export const DeviceDataTypeTag = ({
     [EDeviceDataType.INTEGER]: 'volcano',
     [EDeviceDataType.FLOAT]: 'gold',
     [EDeviceDataType.STRING]: 'cyan',
+    [EDeviceDataType.JSON]: 'red',
   };
 
   return <Tag color={dataTypeColorMap[dataType]}>{dataType}</Tag>;

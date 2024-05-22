@@ -9,15 +9,15 @@ import { BaseWidgetTitle } from './base-widget-title';
 
 const Switch1G = ({
   value,
-  onChange,
   properties,
   device,
+  onChange,
 }: TWidgetProps<
   {
     title: string;
     color?: string;
   },
-  { state: 'ON' | 'OFF' }
+  { state?: 'ON' | 'OFF' }
 >) => {
   const { t, token } = useApp();
 
@@ -38,36 +38,53 @@ const Switch1G = ({
         css={css`
           height: 100%;
         `}
+        gutter={[token.sizeXS, token.sizeXS]}
       >
-        <Col
-          span={24}
-          css={css`
-            padding: 4px 0;
-            display: flex;
-            justify-content: center;
-            cursor: pointer;
-            transition: cubic-bezier();
-            :hover {
-              background-color: ${properties?.color ||
-              device?.color ||
-              token.colorPrimary}25;
-            }
-          `}
-          onClick={() => {
-            onChange?.({
-              state: value?.state === 'ON' ? 'OFF' : 'ON',
-            });
-          }}
-        >
-          <PoweroffOutlined
-            css={css`
-              font-size: 36px;
-              color: ${value?.state === 'ON'
-                ? properties?.color || device?.color || token.colorPrimary
-                : token.colorBgMask};
-            `}
-          />
-        </Col>
+        {['state'].map((state: string, index) => (
+          <Col key={index} span={24}>
+            <div
+              css={css`
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                cursor: pointer;
+                transition: cubic-bezier();
+                background-color: ${(value as any)?.[state] === 'ON'
+                  ? `${
+                      properties?.color || device?.color || token.colorPrimary
+                    }25`
+                  : `${token.colorBorder}50`};
+                :hover {
+                  background-color: ${properties?.color ||
+                  device?.color ||
+                  token.colorPrimary}50;
+                }
+              `}
+              onClick={() => {
+                if (!value) {
+                  onChange?.({
+                    [state]: 'ON',
+                  });
+                } else {
+                  onChange?.({
+                    ...value,
+                    [state]: (value as any)?.[state] === 'ON' ? 'OFF' : 'ON',
+                  });
+                }
+              }}
+            >
+              <PoweroffOutlined
+                css={css`
+                  font-size: 32px;
+                  color: ${(value as any)?.[state] === 'ON'
+                    ? properties?.color || device?.color || token.colorPrimary
+                    : token.colorBgMask};
+                `}
+              />
+            </div>
+          </Col>
+        ))}
       </Row>
     </Flex>
   );

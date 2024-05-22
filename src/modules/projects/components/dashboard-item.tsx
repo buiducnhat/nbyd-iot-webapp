@@ -19,15 +19,14 @@ export const BaseDashboardItem = styled.div<
   border-radius: ${({ $token }) => $token.borderRadius}px;
   background-color: ${({ $token }) => $token.colorBgElevated};
   box-shadow: 0px 0px 15px 0px #00000025;
-  padding: ${({ $token, $editing }) => ($editing ? 0 : $token.padding)}px;
+  padding: ${({ $token, $editing }) => ($editing ? 0 : $token.paddingXS)}px;
 `;
 
 const TopLayer = styled.div<TAntdToken>`
   position: relative;
   height: 100%;
   width: 100%;
-  padding: ${({ $token }) => $token.padding}px;
-  padding-top: ${({ $token }) => $token.paddingXS}px;
+  padding: ${({ $token }) => $token.paddingXS}px;
 `;
 
 type TTopLayerEditProps = {

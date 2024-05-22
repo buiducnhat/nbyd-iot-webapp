@@ -32,6 +32,7 @@ export enum EDeviceDataType {
   INTEGER = 'INTEGER',
   FLOAT = 'FLOAT',
   STRING = 'STRING',
+  JSON = 'JSON',
 }
 
 export const EDeviceDataTypeOptions = [

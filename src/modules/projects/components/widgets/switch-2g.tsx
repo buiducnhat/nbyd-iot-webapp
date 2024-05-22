@@ -11,12 +11,13 @@ const Switch2G = ({
   value,
   properties,
   device,
+  onChange,
 }: TWidgetProps<
   {
     title: string;
     color?: string;
   },
-  { state1: 'ON' | 'OFF'; state2: 'ON' | 'OFF' }
+  { state_l1?: 'ON' | 'OFF'; state_l2?: 'ON' | 'OFF' }
 >) => {
   const { t, token } = useApp();
 
@@ -37,32 +38,51 @@ const Switch2G = ({
         css={css`
           height: 100%;
         `}
+        gutter={[token.sizeXS, token.sizeXS]}
       >
-        {['state1', 'state2'].map((state, index) => (
-          <Col
-            key={index}
-            span={12}
-            css={css`
-              padding: 4px 0;
-              display: flex;
-              justify-content: center;
-              cursor: pointer;
-              transition: cubic-bezier();
-              :hover {
-                background-color: ${properties?.color ||
-                device?.color ||
-                token.colorPrimary}25;
-              }
-            `}
-          >
-            <PoweroffOutlined
+        {['state_l1', 'state_l2'].map((state: string, index) => (
+          <Col key={index} span={12}>
+            <div
               css={css`
-                font-size: 32px;
-                color: ${value?.[state as 'state1' | 'state2'] === 'ON'
-                  ? properties?.color || device?.color || token.colorPrimary
-                  : token.colorBgMask};
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                cursor: pointer;
+                transition: cubic-bezier();
+                background-color: ${(value as any)?.[state] === 'ON'
+                  ? `${
+                      properties?.color || device?.color || token.colorPrimary
+                    }25`
+                  : `${token.colorBorder}50`};
+                :hover {
+                  background-color: ${properties?.color ||
+                  device?.color ||
+                  token.colorPrimary}50;
+                }
               `}
-            />
+              onClick={() => {
+                if (!value) {
+                  onChange?.({
+                    [state]: 'ON',
+                  });
+                } else {
+                  onChange?.({
+                    ...value,
+                    [state]: (value as any)?.[state] === 'ON' ? 'OFF' : 'ON',
+                  });
+                }
+              }}
+            >
+              <PoweroffOutlined
+                css={css`
+                  font-size: 32px;
+                  color: ${(value as any)?.[state] === 'ON'
+                    ? properties?.color || device?.color || token.colorPrimary
+                    : token.colorBgMask};
+                `}
+              />
+            </div>
           </Col>
         ))}
       </Row>

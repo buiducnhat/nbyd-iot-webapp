@@ -7,7 +7,7 @@ import useApp from '@/hooks/use-app';
 import { TWidgetProps } from '.';
 import { BaseWidgetTitle } from './base-widget-title';
 
-const DoorContact = ({
+const DoorSensor = ({
   value,
   properties,
   device,
@@ -60,4 +60,4 @@ const DoorContact = ({
   );
 };
 
-export default DoorContact;
+export default DoorSensor;

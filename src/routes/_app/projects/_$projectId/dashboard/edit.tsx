@@ -28,7 +28,7 @@ import { TWebDashboardTab } from '@/modules/projects/project.model';
 import projectService from '@/modules/projects/project.service';
 import { THttpResponse } from '@/shared/http-service';
 import { TAntdToken } from '@/shared/types/tst.type';
-import { transApiResDataCode } from '@/shared/utils';
+import { styledOmit$PropsOptions, transApiResDataCode } from '@/shared/utils';
 
 const GridLayout = WidthProvider(RGL);
 
@@ -275,7 +275,12 @@ function ProjectIdEditDashboard() {
                     <TopLayerEdit
                       webDashboard={dashboardItems}
                       dashboardItem={item}
-                      devices={devices}
+                      devices={devices.map((x) => ({
+                        ...x,
+                        gateway: project?.gateways.find(
+                          (g) => g.id === x.gatewayId,
+                        ),
+                      }))}
                       onSave={(items) => {
                         setDashboardItems(items);
                       }}
@@ -319,20 +324,23 @@ function ProjectIdEditDashboard() {
   );
 }
 
-const ListWidgetLayout = styled(Space)<TAntdToken>`
-  padding: ${({ $token }) => $token.paddingXS}px;
-  border-radius: ${({ $token }) => $token.borderRadius}px;
-  background-color: ${({ $token }) => $token.colorBgLayout};
-  height: calc(100vh - 275px);
-  width: 100%;
-`;
+const ListWidgetLayout = styled(
+  Space,
+  styledOmit$PropsOptions,
+)<TAntdToken>(({ $token }) => ({
+  padding: $token.paddingXS,
+  borderRadius: $token.borderRadius,
+  backgroundColor: $token.colorBgLayout,
+  height: 'calc(100vh - 275px)',
+  width: '100%',
+}));
 
 const DashboardLayout = styled.div<TAntdToken>`
   background-color: ${({ $token }) => $token.colorBgContainer};
   border-radius: ${({ $token }) => $token.borderRadius}px;
   border: 1px dashed ${({ $token }) => $token.colorBorder};
   position: relative;
-  overflow-y: hidden;
+  /* overflow-y: hidden; */
   max-height: calc(100vh - 330px);
   overflow-y: auto;
   width: '100%';

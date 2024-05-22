@@ -44,7 +44,7 @@ function ProjectIdDashboard() {
   const { devices } = useGetListDevice(projectId, true);
 
   const [deviceValues, setDeviceValues] = useState<{
-    [deviceId: string]: string;
+    [deviceId: string]: any;
   }>({});
   const [activeTabKey, setActiveTabKey] = useState<string>('');
 
@@ -66,7 +66,7 @@ function ProjectIdDashboard() {
   useEffect(() => {
     if (devices) {
       setDeviceValues(
-        devices.reduce((prev: { [deviceId: string]: string }, curr) => {
+        devices.reduce((prev: { [deviceId: string]: any }, curr) => {
           prev[curr.id] = curr.values?.[0]?.value ?? curr.defaultValue ?? '';
           return prev;
         }, {}),
@@ -87,7 +87,7 @@ function ProjectIdDashboard() {
         projectId,
       } as TSocketJoinRoomDto);
 
-      socket.on('/gateways/data', (data: TSocketGatewayDataDto) => {
+      socket.on('/devices/data', (data: TSocketGatewayDataDto) => {
         setDeviceValues((prev) => ({ ...prev, [data.deviceId]: data.value }));
       });
 
@@ -96,7 +96,7 @@ function ProjectIdDashboard() {
           projectId,
         } as TSocketJoinRoomDto);
 
-        socket.off('/gateways/data');
+        socket.off('/devices/data');
       };
     }
   }, [projectId, connectedSocket]);
@@ -163,16 +163,16 @@ function ProjectIdDashboard() {
                     onChange={(value) => {
                       if (device) {
                         if (connectedSocket && isDefined(value)) {
-                          socket.emit('/gateways/command', {
+                          socket.emit('/devices/command', {
                             projectId,
                             gatewayId: device?.gatewayId,
                             deviceId: device?.id,
-                            value: String(value),
+                            value,
                           } as TSocketDevicCommandDto);
                         }
                         setDeviceValues((prev) => ({
                           ...prev,
-                          [device.id]: String(value),
+                          [device.id]: value,
                         }));
                       }
                     }}

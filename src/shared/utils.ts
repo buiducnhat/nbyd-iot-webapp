@@ -70,3 +70,7 @@ export const isNumberString = (value: string) => {
 export const randomHexColor = () => {
   return '#' + Math.floor(Math.random() * 16777215).toString(16);
 };
+
+export const styledOmit$PropsOptions = {
+  shouldForwardProp: (propName: string) => !propName.startsWith('$'),
+};

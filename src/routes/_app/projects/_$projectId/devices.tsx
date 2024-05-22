@@ -216,9 +216,12 @@ function ProjectIdDevices() {
               ),
             },
             {
-              title: t('Pin/Type'),
+              title: t('Pin/Zigbee Type'),
               dataIndex: 'pin',
               key: 'pin',
+              render: (pin: string, record) => (
+                <Tag color={record?.color}>{pin}</Tag>
+              ),
             },
             {
               title: t('Mode'),

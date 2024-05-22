@@ -420,8 +420,15 @@ const DeviceFormDrawer: React.FC<TGatewayFormDrawerProps> = ({
       value: true,
       name: formValues?.name,
       pin: formValues?.pin,
+      color: formValues?.color,
     });
-  }, [gatewayId, formValues?.name, formValues?.pin, project.id]);
+  }, [
+    project.id,
+    gatewayId,
+    formValues?.name,
+    formValues?.pin,
+    formValues?.color,
+  ]);
 
   const onCancelPairing = useCallback(() => {
     setOpenPairingModal(false);
@@ -513,7 +520,18 @@ const DeviceFormDrawer: React.FC<TGatewayFormDrawerProps> = ({
                   form.submit();
                 }}
               >
-                {t('Submit')}
+                {t('Save')}
+              </Button>
+            ) : isUpdate ? (
+              <Button
+                type="primary"
+                loading={updateMutation.isPending}
+                disabled={currentStep < 2 || updateMutation.isPending}
+                onClick={() => {
+                  form.submit();
+                }}
+              >
+                {t('Save')}
               </Button>
             ) : (
               <Button

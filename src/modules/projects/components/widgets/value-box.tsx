@@ -14,7 +14,10 @@ function ValueBoxWidget({
   properties,
   defaultProperties,
   device,
-}: TWidgetProps<{ title: string; decimalPlaces?: number }, string>) {
+}: TWidgetProps<
+  { title: string; decimalPlaces?: number; color?: string; unit?: string },
+  string
+>) {
   const { t, token } = useApp();
 
   const [localValue, setLocalValue] = useState<string>('--');
@@ -56,13 +59,16 @@ function ValueBoxWidget({
           css={css`
             font-size: ${token.fontSizeHeading4};
             font-family: 'Chivo Mono';
+            color: ${properties?.color || token.colorText};
           `}
         >
           {localValue}
         </Typography.Text>
 
-        {device?.unit ? (
-          <Typography.Text type="secondary">({device.unit})</Typography.Text>
+        {properties?.unit || device?.unit ? (
+          <Typography.Text type="secondary">
+            ({properties?.unit || device?.unit})
+          </Typography.Text>
         ) : null}
       </Space>
     </Space>

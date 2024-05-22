@@ -4,7 +4,7 @@ import RGL from 'react-grid-layout';
 import { TDevice } from '@/modules/devices/device.model';
 import { TFormField } from '@/shared/types/form-field';
 
-import DoorContact from './door-contact';
+import DoorSensor from './door-sensor';
 import InputNumberWidget from './input-number';
 import InputTextWidget from './input-text';
 import LedWidget from './led';
@@ -13,6 +13,7 @@ import SwitchWidget from './switch';
 import Switch1G from './switch-1g';
 import Switch2G from './switch-2g';
 import Switch3G from './switch-3g';
+import THSensorWidget from './th-sensor';
 import ValueBoxWidget from './value-box';
 
 export type TWidgetType =
@@ -25,7 +26,8 @@ export type TWidgetType =
   | 'DOOR_SENSOR'
   | 'SWITCH_1G'
   | 'SWITCH_2G'
-  | 'SWITCH_3G';
+  | 'SWITCH_3G'
+  | 'TH_SENSOR';
 
 export type TWidgetProps<TProperties = any, TValue = any> = {
   value?: TValue;
@@ -44,11 +46,10 @@ export type TValidDeviceType =
   | 'VIRTUAL__FLOAT'
   | 'VIRTUAL__STRING'
   | 'ZIGBEE__DOOR_SENSOR'
-  | 'ZIGBEE__TEMPERATURE'
-  | 'ZIGBEE__HUMIDITY'
   | 'ZIGBEE__SWITCH_1G'
   | 'ZIGBEE__SWITCH_2G'
-  | 'ZIGBEE__SWITCH_3G';
+  | 'ZIGBEE__SWITCH_3G'
+  | 'ZIGBEE__TH_SENSOR';
 
 export type TWidgetCommon = {
   Widget: React.FC<TWidgetProps>;
@@ -129,10 +130,12 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
       'VIRTUAL__STRING',
     ],
     propertiesFields: [
+      { label: 'Color', name: 'color', type: 'color-picker' },
+      { label: 'Unit', name: 'unit', type: 'input' },
       { name: 'decimalPlaces', label: 'Decimal places', type: 'input-number' },
     ],
     defaultProperties: {
-      value: '0',
+      value: '--',
       unit: '',
       decimalPlaces: 4,
     },
@@ -242,7 +245,7 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
   },
   DOOR_SENSOR: {
     type: 'DOOR_SENSOR',
-    Widget: DoorContact,
+    Widget: DoorSensor,
     layoutSettings: {
       i: 'DOOR_SENSOR',
       w: 3,
@@ -302,8 +305,8 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
     propertiesFields: [{ label: 'Color', name: 'color', type: 'color-picker' }],
     defaultProperties: {
       value: {
-        state1: 'OFF',
-        state2: 'OFF',
+        state_l1: 'OFF',
+        state_l2: 'OFF',
       },
     },
   },
@@ -325,9 +328,32 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
     propertiesFields: [{ label: 'Color', name: 'color', type: 'color-picker' }],
     defaultProperties: {
       value: {
-        state1: 'OFF',
-        state2: 'OFF',
-        state3: 'OFF',
+        state_l1: 'OFF',
+        state_l2: 'OFF',
+        state_l3: 'OFF',
+      },
+    },
+  },
+  TH_SENSOR: {
+    Widget: THSensorWidget,
+    type: 'TH_SENSOR',
+    layoutSettings: {
+      i: 'TH_SENSOR',
+      w: 4,
+      h: 1,
+      x: 0,
+      y: 0,
+      minW: 4,
+      maxW: 6,
+      minH: 1,
+      maxH: 1,
+    },
+    validDeviceTypes: ['ZIGBEE__TH_SENSOR'],
+    propertiesFields: [{ label: 'Color', name: 'color', type: 'color-picker' }],
+    defaultProperties: {
+      value: {
+        temperature: 0,
+        humidity: 0,
       },
     },
   },

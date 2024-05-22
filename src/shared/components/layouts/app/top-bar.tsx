@@ -6,7 +6,6 @@ import {
   UnlockFilled,
 } from '@ant-design/icons';
 import { css } from '@emotion/react';
-import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import {
@@ -25,7 +24,6 @@ import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
 import authService from '@/modules/auth/auth.service';
 import { useAuthStore } from '@/modules/auth/auth.zustand';
-import { TAntdToken } from '@/shared/types/tst.type';
 
 type TMainTopBarProps = {
   collapsed: boolean;
@@ -75,7 +73,18 @@ const MainTopBar = ({ collapsed, setCollapse }: TMainTopBarProps) => {
   );
 
   return (
-    <SHeader $token={token}>
+    <Layout.Header
+      css={css`
+        background: ${token.colorBgContainer};
+        display: flex;
+        padding: 0;
+        top: 0;
+        z-index: 1;
+        position: sticky;
+        width: 100%;
+        align-items: center;
+      `}
+    >
       <Button
         type="text"
         icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -87,7 +96,11 @@ const MainTopBar = ({ collapsed, setCollapse }: TMainTopBarProps) => {
         `}
       />
 
-      <SFlexGrowMax />
+      <div
+        css={css`
+          flex: 1;
+        `}
+      />
 
       <Space
         css={css`
@@ -106,37 +119,18 @@ const MainTopBar = ({ collapsed, setCollapse }: TMainTopBarProps) => {
           menu={{ items: dropItems }}
           placement="bottomRight"
         >
-          {user?.avatarImageFileUrl ? (
-            <SAvatar $token={token} size={48} src={user?.avatarImageFileUrl} />
-          ) : (
-            <SAvatar $token={token} size={48}>
-              {user?.firstName.charAt(0)}
-            </SAvatar>
-          )}
+          <Avatar
+            css={css`
+              cursor: pointer;
+              border: 2px solid ${token.colorBorder};
+            `}
+            size={48}
+            src={user?.avatarImageFileUrl || user?.firstName.charAt(0)}
+          />
         </Dropdown>
       </Space>
-    </SHeader>
+    </Layout.Header>
   );
 };
 
 export default MainTopBar;
-
-const SHeader = styled(Layout.Header)<TAntdToken>`
-  background: ${({ $token }) => $token.colorBgContainer};
-  display: flex;
-  padding: 0;
-  top: 0;
-  z-index: 1;
-  position: sticky;
-  width: 100%;
-  align-items: center;
-`;
-
-const SAvatar = styled(Avatar)<TAntdToken>`
-  cursor: pointer;
-  border: 2px solid ${({ $token }) => $token.colorBorder};
-`;
-
-const SFlexGrowMax = styled.div`
-  flex: 1;
-`;

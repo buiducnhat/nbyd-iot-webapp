@@ -152,8 +152,10 @@
   "Pairing timeout": "",
   "Door contact": "",
   "Door": "",
-  "Pin/Type": "",
+  "Pin/Zigbee Type": "",
   "No project found. Create a new project to start": "",
+  "TH": "",
+  "Temp-Humi": "",
 
   "ApiResCode": {
     "1": "An error occurred",
@@ -175,7 +177,7 @@
     "MOTION_SENSOR": "Motion sensor",
     "TEMPERATURE_SENSOR": "Temperature sensor",
     "HUMIDITY_SENSOR": "Humidity sensor",
-    "TEMP_HUMI_SENSOR": "Temperature and humidity sensor",
+    "TH_SENSOR": "Temperature and humidity sensor",
     "LIGHT_SENSOR": "Light sensor",
     "SMOKE_SENSOR": "Smoke sensor",
 
