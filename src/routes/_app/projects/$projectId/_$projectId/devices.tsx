@@ -37,7 +37,9 @@ import useGetListDevice from '@/modules/devices/hooks/use-get-list-device';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
 import SoftButton from '@/shared/components/soft-button';
 
-export const Route = createFileRoute('/_app/projects/_$projectId/devices')({
+export const Route = createFileRoute(
+  '/_app/projects/$projectId/_$projectId/devices',
+)({
   component: ProjectIdDevices,
 });
 

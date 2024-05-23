@@ -37,7 +37,9 @@ import gatewayService from '@/modules/gateways/gateway.service';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
 import SoftButton from '@/shared/components/soft-button';
 
-export const Route = createFileRoute('/_app/projects/_$projectId/gateways')({
+export const Route = createFileRoute(
+  '/_app/projects/$projectId/_$projectId/gateways',
+)({
   component: ProjectIdGateways,
 });
 

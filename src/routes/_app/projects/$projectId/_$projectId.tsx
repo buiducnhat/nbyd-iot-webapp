@@ -20,11 +20,11 @@ import ProjectFormDrawer from '@/modules/projects/components/project-form-drawer
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
 import projectService from '@/modules/projects/project.service';
 
-export const Route = createFileRoute('/_app/projects/_$projectId')({
-  component: ProjectDetailPage,
+export const Route = createFileRoute('/_app/projects/$projectId/_$projectId')({
+  component: ProjectIdLayout,
 });
 
-function ProjectDetailPage() {
+function ProjectIdLayout() {
   const { projectId } = Route.useParams();
 
   const location = useLocation();
