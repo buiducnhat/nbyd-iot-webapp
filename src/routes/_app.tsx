@@ -49,7 +49,7 @@ function AppLayout() {
 
   useEffect(() => {
     if (authQuery.isError) {
-      navigate({ from: '/projects', to: '/auth/login' });
+      navigate({ to: '/auth/login' });
     }
   }, [authQuery.isError, navigate]);
 

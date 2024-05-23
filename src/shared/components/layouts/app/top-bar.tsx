@@ -4,10 +4,11 @@ import {
   MoonOutlined,
   SunOutlined,
   UnlockFilled,
+  UserOutlined,
 } from '@ant-design/icons';
 import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import {
   Avatar,
   Button,
@@ -63,6 +64,11 @@ const MainTopBar = ({ collapsed, setCollapse }: TMainTopBarProps) => {
 
   const dropItems: MenuProps['items'] = useMemo(
     () => [
+      {
+        key: 'profile',
+        icon: <UserOutlined />,
+        label: <Link to={'/profile'}>{t('Profile')}</Link>,
+      },
       {
         key: 'logout',
         icon: <UnlockFilled />,
@@ -125,8 +131,10 @@ const MainTopBar = ({ collapsed, setCollapse }: TMainTopBarProps) => {
               border: 2px solid ${token.colorBorder};
             `}
             size={48}
-            src={user?.avatarImageFileUrl || user?.firstName.charAt(0)}
-          />
+            src={user?.avatarImageFileUrl}
+          >
+            {user?.firstName.charAt(0)}
+          </Avatar>
         </Dropdown>
       </Space>
     </Layout.Header>

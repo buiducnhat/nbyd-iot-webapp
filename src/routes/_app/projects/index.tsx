@@ -1,13 +1,14 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { css } from '@emotion/react';
 import { createFileRoute } from '@tanstack/react-router';
-import { Button, Col, Empty, Flex, Input, Row, Space, Typography } from 'antd';
+import { Button, Col, Empty, Flex, Input, Row, Space } from 'antd';
 import { useState } from 'react';
 
 import useApp from '@/hooks/use-app';
 import ProjectCard from '@/modules/projects/components/project-card';
 import ProjectFormDrawer from '@/modules/projects/components/project-form-drawer';
 import useGetListProject from '@/modules/projects/hooks/use-get-list-project';
+import TitleHeading from '@/shared/components/title-heading';
 
 export const Route = createFileRoute('/_app/projects/')({
   component: ProjectListPage,
@@ -37,7 +38,7 @@ function ProjectListPage() {
         `}
       >
         <Flex align="center" justify="space-between">
-          <Typography.Title level={3}>{t('Projects')}</Typography.Title>
+          <TitleHeading>{t('Projects')}</TitleHeading>
 
           <Button
             icon={<PlusOutlined />}

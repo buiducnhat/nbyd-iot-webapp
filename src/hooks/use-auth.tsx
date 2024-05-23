@@ -28,7 +28,7 @@ export const useAuth = () => {
 
   const authQuery = useQuery({
     enabled: !user,
-    queryKey: ['auth/getMe'],
+    queryKey: ['/auth/getMe'],
     queryFn: () => getMe(),
     retry: false,
   });
