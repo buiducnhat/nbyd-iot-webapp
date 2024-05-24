@@ -13,12 +13,13 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as AuthImport } from './routes/_auth'
 import { Route as AppImport } from './routes/_app'
 import { Route as IndexImport } from './routes/index'
+import { Route as AuthAuthImport } from './routes/auth/_auth'
 import { Route as AppProjectsIndexImport } from './routes/_app/projects/index'
 import { Route as AppProfileIndexImport } from './routes/_app/profile/index'
-import { Route as AuthAuthLoginImport } from './routes/_auth/auth/login'
+import { Route as AuthAuthRegisterImport } from './routes/auth/_auth/register'
+import { Route as AuthAuthLoginImport } from './routes/auth/_auth/login'
 import { Route as AppProjectsProjectIdProjectIdImport } from './routes/_app/projects/$projectId/_$projectId'
 import { Route as AppProjectsProjectIdProjectIdIndexImport } from './routes/_app/projects/$projectId/_$projectId/index'
 import { Route as AppProjectsProjectIdProjectIdGatewaysImport } from './routes/_app/projects/$projectId/_$projectId/gateways'
@@ -28,6 +29,7 @@ import { Route as AppProjectsProjectIdProjectIdDashboardEditImport } from './rou
 
 // Create Virtual Routes
 
+const AuthImport = createFileRoute('/auth')()
 const AppProjectsProjectIdImport = createFileRoute(
   '/_app/projects/$projectId',
 )()
@@ -35,7 +37,7 @@ const AppProjectsProjectIdImport = createFileRoute(
 // Create/Update Routes
 
 const AuthRoute = AuthImport.update({
-  id: '/_auth',
+  path: '/auth',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -47,6 +49,11 @@ const AppRoute = AppImport.update({
 const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const AuthAuthRoute = AuthAuthImport.update({
+  id: '/_auth',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const AppProjectsProjectIdRoute = AppProjectsProjectIdImport.update({
@@ -64,9 +71,14 @@ const AppProfileIndexRoute = AppProfileIndexImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 
+const AuthAuthRegisterRoute = AuthAuthRegisterImport.update({
+  path: '/register',
+  getParentRoute: () => AuthAuthRoute,
+} as any)
+
 const AuthAuthLoginRoute = AuthAuthLoginImport.update({
-  path: '/auth/login',
-  getParentRoute: () => AuthRoute,
+  path: '/login',
+  getParentRoute: () => AuthAuthRoute,
 } as any)
 
 const AppProjectsProjectIdProjectIdRoute =
@@ -123,19 +135,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppImport
       parentRoute: typeof rootRoute
     }
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: ''
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
-    '/_auth/auth/login': {
-      id: '/_auth/auth/login'
-      path: '/auth/login'
+    '/auth/_auth': {
+      id: '/auth/_auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthAuthImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/_auth/login': {
+      id: '/auth/_auth/login'
+      path: '/login'
       fullPath: '/auth/login'
       preLoaderRoute: typeof AuthAuthLoginImport
-      parentRoute: typeof AuthImport
+      parentRoute: typeof AuthAuthImport
+    }
+    '/auth/_auth/register': {
+      id: '/auth/_auth/register'
+      path: '/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof AuthAuthRegisterImport
+      parentRoute: typeof AuthAuthImport
     }
     '/_app/profile/': {
       id: '/_app/profile/'
@@ -221,7 +247,12 @@ export const routeTree = rootRoute.addChildren({
         }),
     }),
   }),
-  AuthRoute: AuthRoute.addChildren({ AuthAuthLoginRoute }),
+  AuthRoute: AuthRoute.addChildren({
+    AuthAuthRoute: AuthAuthRoute.addChildren({
+      AuthAuthLoginRoute,
+      AuthAuthRegisterRoute,
+    }),
+  }),
 })
 
 /* prettier-ignore-end */

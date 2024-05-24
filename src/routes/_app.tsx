@@ -28,6 +28,7 @@ function AppLayout() {
 
   const { token, antdApp } = useApp();
 
+  const user = useAuthStore((state) => state.user);
   const accessToken = useAuthStore((state) => state.accessToken);
   const setConnectedSocket = useAppStore((state) => state.setConnectedSocket);
 
@@ -48,10 +49,10 @@ function AppLayout() {
   });
 
   useEffect(() => {
-    if (authQuery.isError) {
+    if (authQuery.isError || !user) {
       navigate({ to: '/auth/login' });
     }
-  }, [authQuery.isError, navigate]);
+  }, [authQuery.isError, navigate, user]);
 
   useEffect(() => {
     if (authQuery.isSuccess) {

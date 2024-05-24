@@ -12,6 +12,7 @@ export const useAuth = () => {
   const getMe = async () => {
     try {
       const fetchedUser = await authService.getMe();
+
       setUser(fetchedUser.data);
       setTokens({
         accessToken: Cookies.get('accessToken'),
@@ -23,6 +24,7 @@ export const useAuth = () => {
       return user;
     } catch (error) {
       setUser(null);
+      throw error;
     }
   };
 
