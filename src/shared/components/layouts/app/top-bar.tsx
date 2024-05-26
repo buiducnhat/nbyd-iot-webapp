@@ -1,6 +1,5 @@
 import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
+  ArrowLeftOutlined,
   MoonOutlined,
   SunOutlined,
   UnlockFilled,
@@ -8,7 +7,7 @@ import {
 } from '@ant-design/icons';
 import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import {
   Avatar,
   Button,
@@ -26,12 +25,7 @@ import { useAppStore } from '@/modules/app/app.zustand';
 import authService from '@/modules/auth/auth.service';
 import { useAuthStore } from '@/modules/auth/auth.zustand';
 
-type TMainTopBarProps = {
-  collapsed: boolean;
-  setCollapse: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-const MainTopBar = ({ collapsed, setCollapse }: TMainTopBarProps) => {
+const MainTopBar = () => {
   const { t, token } = useApp();
 
   const gTheme = useAppStore((state) => state.theme);
@@ -41,6 +35,7 @@ const MainTopBar = ({ collapsed, setCollapse }: TMainTopBarProps) => {
   const logout = useAuthStore((state) => state.logout);
 
   const navigate = useNavigate();
+  const router = useRouter();
 
   const logoutMutation = useMutation({
     mutationFn: () => authService.logout(),
@@ -93,8 +88,8 @@ const MainTopBar = ({ collapsed, setCollapse }: TMainTopBarProps) => {
     >
       <Button
         type="text"
-        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        onClick={() => setCollapse(!collapsed)}
+        icon={<ArrowLeftOutlined />}
+        onClick={() => router.history.back()}
         css={css`
           font-size: 16px !important;
           width: 64px !important;

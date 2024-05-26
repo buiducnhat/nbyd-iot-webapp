@@ -33,7 +33,7 @@ import { styledOmit$PropsOptions, transApiResDataCode } from '@/shared/utils';
 const GridLayout = WidthProvider(RGL);
 
 export const Route = createFileRoute(
-  '/_app/projects/$projectId/_$projectId/dashboard/edit',
+  '/_app/projects/$projectId/_layout/dashboard/edit',
 )({
   component: ProjectIdEditDashboard,
 });

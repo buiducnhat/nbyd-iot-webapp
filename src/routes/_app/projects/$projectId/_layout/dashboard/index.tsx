@@ -24,7 +24,7 @@ import { isDefined } from '@/shared/utils';
 const GridLayout = WidthProvider(RGL);
 
 export const Route = createFileRoute(
-  '/_app/projects/$projectId/_$projectId/dashboard/',
+  '/_app/projects/$projectId/_layout/dashboard/',
 )({
   component: ProjectIdDashboard,
 });

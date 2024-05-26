@@ -38,7 +38,7 @@ import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail
 import SoftButton from '@/shared/components/soft-button';
 
 export const Route = createFileRoute(
-  '/_app/projects/$projectId/_$projectId/devices',
+  '/_app/projects/$projectId/_layout/devices',
 )({
   component: ProjectIdDevices,
 });

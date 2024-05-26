@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { useAuthStore } from '@/modules/auth/auth.zustand';
 
-export const Route = createFileRoute('/auth/_auth')({
+export const Route = createFileRoute('/auth/_layout')({
   component: AuthLayout,
 });
 

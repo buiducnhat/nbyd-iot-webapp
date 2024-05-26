@@ -15,17 +15,17 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as AppImport } from './routes/_app'
 import { Route as IndexImport } from './routes/index'
-import { Route as AuthAuthImport } from './routes/auth/_auth'
+import { Route as AuthLayoutImport } from './routes/auth/_layout'
 import { Route as AppProjectsIndexImport } from './routes/_app/projects/index'
 import { Route as AppProfileIndexImport } from './routes/_app/profile/index'
-import { Route as AuthAuthRegisterImport } from './routes/auth/_auth/register'
-import { Route as AuthAuthLoginImport } from './routes/auth/_auth/login'
-import { Route as AppProjectsProjectIdProjectIdImport } from './routes/_app/projects/$projectId/_$projectId'
-import { Route as AppProjectsProjectIdProjectIdIndexImport } from './routes/_app/projects/$projectId/_$projectId/index'
-import { Route as AppProjectsProjectIdProjectIdGatewaysImport } from './routes/_app/projects/$projectId/_$projectId/gateways'
-import { Route as AppProjectsProjectIdProjectIdDevicesImport } from './routes/_app/projects/$projectId/_$projectId/devices'
-import { Route as AppProjectsProjectIdProjectIdDashboardIndexImport } from './routes/_app/projects/$projectId/_$projectId/dashboard/index'
-import { Route as AppProjectsProjectIdProjectIdDashboardEditImport } from './routes/_app/projects/$projectId/_$projectId/dashboard/edit'
+import { Route as AuthLayoutRegisterImport } from './routes/auth/_layout/register'
+import { Route as AuthLayoutLoginImport } from './routes/auth/_layout/login'
+import { Route as AppProjectsProjectIdLayoutImport } from './routes/_app/projects/$projectId/_layout'
+import { Route as AppProjectsProjectIdLayoutIndexImport } from './routes/_app/projects/$projectId/_layout/index'
+import { Route as AppProjectsProjectIdLayoutGatewaysImport } from './routes/_app/projects/$projectId/_layout/gateways'
+import { Route as AppProjectsProjectIdLayoutDevicesImport } from './routes/_app/projects/$projectId/_layout/devices'
+import { Route as AppProjectsProjectIdLayoutDashboardIndexImport } from './routes/_app/projects/$projectId/_layout/dashboard/index'
+import { Route as AppProjectsProjectIdLayoutDashboardEditImport } from './routes/_app/projects/$projectId/_layout/dashboard/edit'
 
 // Create Virtual Routes
 
@@ -51,8 +51,8 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthAuthRoute = AuthAuthImport.update({
-  id: '/_auth',
+const AuthLayoutRoute = AuthLayoutImport.update({
+  id: '/_layout',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -71,50 +71,51 @@ const AppProfileIndexRoute = AppProfileIndexImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 
-const AuthAuthRegisterRoute = AuthAuthRegisterImport.update({
+const AuthLayoutRegisterRoute = AuthLayoutRegisterImport.update({
   path: '/register',
-  getParentRoute: () => AuthAuthRoute,
+  getParentRoute: () => AuthLayoutRoute,
 } as any)
 
-const AuthAuthLoginRoute = AuthAuthLoginImport.update({
+const AuthLayoutLoginRoute = AuthLayoutLoginImport.update({
   path: '/login',
-  getParentRoute: () => AuthAuthRoute,
+  getParentRoute: () => AuthLayoutRoute,
 } as any)
 
-const AppProjectsProjectIdProjectIdRoute =
-  AppProjectsProjectIdProjectIdImport.update({
-    id: '/_$projectId',
+const AppProjectsProjectIdLayoutRoute = AppProjectsProjectIdLayoutImport.update(
+  {
+    id: '/_layout',
     getParentRoute: () => AppProjectsProjectIdRoute,
-  } as any)
+  } as any,
+)
 
-const AppProjectsProjectIdProjectIdIndexRoute =
-  AppProjectsProjectIdProjectIdIndexImport.update({
+const AppProjectsProjectIdLayoutIndexRoute =
+  AppProjectsProjectIdLayoutIndexImport.update({
     path: '/',
-    getParentRoute: () => AppProjectsProjectIdProjectIdRoute,
+    getParentRoute: () => AppProjectsProjectIdLayoutRoute,
   } as any)
 
-const AppProjectsProjectIdProjectIdGatewaysRoute =
-  AppProjectsProjectIdProjectIdGatewaysImport.update({
+const AppProjectsProjectIdLayoutGatewaysRoute =
+  AppProjectsProjectIdLayoutGatewaysImport.update({
     path: '/gateways',
-    getParentRoute: () => AppProjectsProjectIdProjectIdRoute,
+    getParentRoute: () => AppProjectsProjectIdLayoutRoute,
   } as any)
 
-const AppProjectsProjectIdProjectIdDevicesRoute =
-  AppProjectsProjectIdProjectIdDevicesImport.update({
+const AppProjectsProjectIdLayoutDevicesRoute =
+  AppProjectsProjectIdLayoutDevicesImport.update({
     path: '/devices',
-    getParentRoute: () => AppProjectsProjectIdProjectIdRoute,
+    getParentRoute: () => AppProjectsProjectIdLayoutRoute,
   } as any)
 
-const AppProjectsProjectIdProjectIdDashboardIndexRoute =
-  AppProjectsProjectIdProjectIdDashboardIndexImport.update({
+const AppProjectsProjectIdLayoutDashboardIndexRoute =
+  AppProjectsProjectIdLayoutDashboardIndexImport.update({
     path: '/dashboard/',
-    getParentRoute: () => AppProjectsProjectIdProjectIdRoute,
+    getParentRoute: () => AppProjectsProjectIdLayoutRoute,
   } as any)
 
-const AppProjectsProjectIdProjectIdDashboardEditRoute =
-  AppProjectsProjectIdProjectIdDashboardEditImport.update({
+const AppProjectsProjectIdLayoutDashboardEditRoute =
+  AppProjectsProjectIdLayoutDashboardEditImport.update({
     path: '/dashboard/edit',
-    getParentRoute: () => AppProjectsProjectIdProjectIdRoute,
+    getParentRoute: () => AppProjectsProjectIdLayoutRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -142,26 +143,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
-    '/auth/_auth': {
-      id: '/auth/_auth'
+    '/auth/_layout': {
+      id: '/auth/_layout'
       path: '/auth'
       fullPath: '/auth'
-      preLoaderRoute: typeof AuthAuthImport
+      preLoaderRoute: typeof AuthLayoutImport
       parentRoute: typeof AuthRoute
     }
-    '/auth/_auth/login': {
-      id: '/auth/_auth/login'
+    '/auth/_layout/login': {
+      id: '/auth/_layout/login'
       path: '/login'
       fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthAuthLoginImport
-      parentRoute: typeof AuthAuthImport
+      preLoaderRoute: typeof AuthLayoutLoginImport
+      parentRoute: typeof AuthLayoutImport
     }
-    '/auth/_auth/register': {
-      id: '/auth/_auth/register'
+    '/auth/_layout/register': {
+      id: '/auth/_layout/register'
       path: '/register'
       fullPath: '/auth/register'
-      preLoaderRoute: typeof AuthAuthRegisterImport
-      parentRoute: typeof AuthAuthImport
+      preLoaderRoute: typeof AuthLayoutRegisterImport
+      parentRoute: typeof AuthLayoutImport
     }
     '/_app/profile/': {
       id: '/_app/profile/'
@@ -184,47 +185,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProjectsProjectIdImport
       parentRoute: typeof AppImport
     }
-    '/_app/projects/$projectId/_$projectId': {
-      id: '/_app/projects/$projectId/_$projectId'
+    '/_app/projects/$projectId/_layout': {
+      id: '/_app/projects/$projectId/_layout'
       path: '/projects/$projectId'
       fullPath: '/projects/$projectId'
-      preLoaderRoute: typeof AppProjectsProjectIdProjectIdImport
+      preLoaderRoute: typeof AppProjectsProjectIdLayoutImport
       parentRoute: typeof AppProjectsProjectIdRoute
     }
-    '/_app/projects/$projectId/_$projectId/devices': {
-      id: '/_app/projects/$projectId/_$projectId/devices'
+    '/_app/projects/$projectId/_layout/devices': {
+      id: '/_app/projects/$projectId/_layout/devices'
       path: '/devices'
       fullPath: '/projects/$projectId/devices'
-      preLoaderRoute: typeof AppProjectsProjectIdProjectIdDevicesImport
-      parentRoute: typeof AppProjectsProjectIdProjectIdImport
+      preLoaderRoute: typeof AppProjectsProjectIdLayoutDevicesImport
+      parentRoute: typeof AppProjectsProjectIdLayoutImport
     }
-    '/_app/projects/$projectId/_$projectId/gateways': {
-      id: '/_app/projects/$projectId/_$projectId/gateways'
+    '/_app/projects/$projectId/_layout/gateways': {
+      id: '/_app/projects/$projectId/_layout/gateways'
       path: '/gateways'
       fullPath: '/projects/$projectId/gateways'
-      preLoaderRoute: typeof AppProjectsProjectIdProjectIdGatewaysImport
-      parentRoute: typeof AppProjectsProjectIdProjectIdImport
+      preLoaderRoute: typeof AppProjectsProjectIdLayoutGatewaysImport
+      parentRoute: typeof AppProjectsProjectIdLayoutImport
     }
-    '/_app/projects/$projectId/_$projectId/': {
-      id: '/_app/projects/$projectId/_$projectId/'
+    '/_app/projects/$projectId/_layout/': {
+      id: '/_app/projects/$projectId/_layout/'
       path: '/'
       fullPath: '/projects/$projectId/'
-      preLoaderRoute: typeof AppProjectsProjectIdProjectIdIndexImport
-      parentRoute: typeof AppProjectsProjectIdProjectIdImport
+      preLoaderRoute: typeof AppProjectsProjectIdLayoutIndexImport
+      parentRoute: typeof AppProjectsProjectIdLayoutImport
     }
-    '/_app/projects/$projectId/_$projectId/dashboard/edit': {
-      id: '/_app/projects/$projectId/_$projectId/dashboard/edit'
+    '/_app/projects/$projectId/_layout/dashboard/edit': {
+      id: '/_app/projects/$projectId/_layout/dashboard/edit'
       path: '/dashboard/edit'
       fullPath: '/projects/$projectId/dashboard/edit'
-      preLoaderRoute: typeof AppProjectsProjectIdProjectIdDashboardEditImport
-      parentRoute: typeof AppProjectsProjectIdProjectIdImport
+      preLoaderRoute: typeof AppProjectsProjectIdLayoutDashboardEditImport
+      parentRoute: typeof AppProjectsProjectIdLayoutImport
     }
-    '/_app/projects/$projectId/_$projectId/dashboard/': {
-      id: '/_app/projects/$projectId/_$projectId/dashboard/'
+    '/_app/projects/$projectId/_layout/dashboard/': {
+      id: '/_app/projects/$projectId/_layout/dashboard/'
       path: '/dashboard'
       fullPath: '/projects/$projectId/dashboard'
-      preLoaderRoute: typeof AppProjectsProjectIdProjectIdDashboardIndexImport
-      parentRoute: typeof AppProjectsProjectIdProjectIdImport
+      preLoaderRoute: typeof AppProjectsProjectIdLayoutDashboardIndexImport
+      parentRoute: typeof AppProjectsProjectIdLayoutImport
     }
   }
 }
@@ -237,20 +238,20 @@ export const routeTree = rootRoute.addChildren({
     AppProfileIndexRoute,
     AppProjectsIndexRoute,
     AppProjectsProjectIdRoute: AppProjectsProjectIdRoute.addChildren({
-      AppProjectsProjectIdProjectIdRoute:
-        AppProjectsProjectIdProjectIdRoute.addChildren({
-          AppProjectsProjectIdProjectIdDevicesRoute,
-          AppProjectsProjectIdProjectIdGatewaysRoute,
-          AppProjectsProjectIdProjectIdIndexRoute,
-          AppProjectsProjectIdProjectIdDashboardEditRoute,
-          AppProjectsProjectIdProjectIdDashboardIndexRoute,
+      AppProjectsProjectIdLayoutRoute:
+        AppProjectsProjectIdLayoutRoute.addChildren({
+          AppProjectsProjectIdLayoutDevicesRoute,
+          AppProjectsProjectIdLayoutGatewaysRoute,
+          AppProjectsProjectIdLayoutIndexRoute,
+          AppProjectsProjectIdLayoutDashboardEditRoute,
+          AppProjectsProjectIdLayoutDashboardIndexRoute,
         }),
     }),
   }),
   AuthRoute: AuthRoute.addChildren({
-    AuthAuthRoute: AuthAuthRoute.addChildren({
-      AuthAuthLoginRoute,
-      AuthAuthRegisterRoute,
+    AuthLayoutRoute: AuthLayoutRoute.addChildren({
+      AuthLayoutLoginRoute,
+      AuthLayoutRegisterRoute,
     }),
   }),
 })

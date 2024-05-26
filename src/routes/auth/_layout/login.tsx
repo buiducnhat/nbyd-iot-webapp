@@ -23,7 +23,7 @@ import authService from '@/modules/auth/auth.service';
 import { THttpResponse } from '@/shared/http-service';
 import { transApiResDataCode } from '@/shared/utils';
 
-export const Route = createFileRoute('/auth/_auth/login')({
+export const Route = createFileRoute('/auth/_layout/login')({
   component: LoginPage,
 });
 
@@ -212,9 +212,7 @@ function LoginPage() {
               gap={token.sizeUnit}
             >
               <Typography.Text>{t("Don't have an account?")}</Typography.Text>
-              <Link to="/auth/register">
-                <Typography.Link>{t('Create new account')}</Typography.Link>
-              </Link>
+              <Link to="/auth/register">{t('Create new account')}</Link>
             </Flex>
           </Form>
         </Flex>

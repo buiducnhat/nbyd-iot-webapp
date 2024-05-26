@@ -1,9 +1,9 @@
 import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
 import { Outlet, createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Image, Layout, Space, Spin } from 'antd';
+import { Image, Layout, Space } from 'antd';
 import { onMessage } from 'firebase/messaging';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import useApp from '@/hooks/use-app';
 import { useAuth } from '@/hooks/use-auth';
@@ -14,7 +14,6 @@ import { messaging } from '@/modules/firebase';
 import { EAppType } from '@/modules/firebase/dto/fcm-token.dto';
 import firebaseService from '@/modules/firebase/firebase.service';
 import { requestFcmPermission } from '@/modules/firebase/request-permission';
-import MainSideNav from '@/shared/components/layouts/app/side-nav';
 import MainTopBar from '@/shared/components/layouts/app/top-bar';
 
 export const Route = createFileRoute('/_app')({
@@ -31,8 +30,6 @@ function AppLayout() {
   const user = useAuthStore((state) => state.user);
   const accessToken = useAuthStore((state) => state.accessToken);
   const setConnectedSocket = useAppStore((state) => state.setConnectedSocket);
-
-  const [collapsed, setCollapsed] = useState(false);
 
   // On message of fcm
   onMessage(messaging, (payload) => {
@@ -55,7 +52,7 @@ function AppLayout() {
   }, [authQuery.isError, navigate, user]);
 
   useEffect(() => {
-    if (authQuery.isSuccess) {
+    if (authQuery.isSuccess && user) {
       socket.auth = { token: accessToken };
       socket.connect();
 
@@ -68,7 +65,7 @@ function AppLayout() {
         socket.off('disconnect', () => setConnectedSocket(false));
       };
     }
-  }, [accessToken, authQuery.isSuccess, navigate, setConnectedSocket]);
+  }, [accessToken, authQuery.isSuccess, navigate, setConnectedSocket, user]);
 
   const sendTokenMutation = useMutation({
     mutationFn: (token: string) =>
@@ -76,7 +73,7 @@ function AppLayout() {
   });
 
   useEffect(() => {
-    if (authQuery.isSuccess) {
+    if (authQuery.isSuccess && user) {
       requestFcmPermission().then((token) => {
         if (token) {
           sendTokenMutation.mutate(token);
@@ -84,47 +81,31 @@ function AppLayout() {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authQuery.isSuccess]);
+  }, [authQuery.isSuccess, user]);
 
-  return authQuery.isSuccess ? (
+  return (
     <Layout
-      hasSider
       css={css`
         min-height: 100dvh;
       `}
     >
-      <MainSideNav collapsed={collapsed} setCollapsed={setCollapsed} />
+      <MainTopBar />
 
-      <Layout>
-        <MainTopBar collapsed={collapsed} setCollapse={setCollapsed} />
-
-        <Layout.Content
-          className="main-content"
-          css={css`
-            margin: ${token.margin}px;
-            padding: ${token.padding}px;
-            background-color: ${token.colorBgContainer};
-            border-radius: ${token.borderRadius}px;
-            height: calc(100dvh - 64px - 2 * ${token.margin}px);
-            overflow-y: auto;
-            overflow: -moz-scrollbars-none;
-            -ms-overflow-style: none;
-          `}
-        >
-          <Outlet />
-        </Layout.Content>
-      </Layout>
-    </Layout>
-  ) : (
-    <Layout
-      css={css`
-        min-height: 100dvh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      `}
-    >
-      <Spin size="large" />
+      <Layout.Content
+        className="main-content"
+        css={css`
+          margin: ${token.margin}px;
+          padding: ${token.padding}px;
+          background-color: ${token.colorBgContainer};
+          border-radius: ${token.borderRadius}px;
+          height: calc(100dvh - 64px - 2 * ${token.margin}px);
+          overflow-y: auto;
+          overflow: -moz-scrollbars-none;
+          -ms-overflow-style: none;
+        `}
+      >
+        <Outlet />
+      </Layout.Content>
     </Layout>
   );
 }

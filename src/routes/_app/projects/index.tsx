@@ -76,7 +76,7 @@ function ProjectListPage() {
             </Col>
           )}
           {listProject?.map((project) => (
-            <Col key={project.id} span={4}>
+            <Col key={project.id} xs={12} md={6} lg={4}>
               <ProjectCard project={project} />
             </Col>
           ))}
