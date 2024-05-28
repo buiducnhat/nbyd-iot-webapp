@@ -3,6 +3,7 @@ import { Link } from '@tanstack/react-router';
 import { Card } from 'antd';
 
 import useApp from '@/hooks/use-app';
+import useDeviceSize from '@/hooks/use-device-size';
 
 import { TProjectBasic } from '../project.model';
 
@@ -13,8 +14,13 @@ type TProjectCardProps = {
 const ProjectCard = ({ project }: TProjectCardProps) => {
   const { t, token } = useApp();
 
+  const { isMobile } = useDeviceSize();
+
   return (
-    <Link to="/projects/$projectId/gateways" params={{ projectId: project.id }}>
+    <Link
+      to={isMobile ? '/m/projects/$projectId' : '/d/projects/$projectId'}
+      params={{ projectId: project.id }}
+    >
       <Card
         hoverable
         bordered={false}

@@ -105,7 +105,7 @@ const GatewayFormDrawer: React.FC<TGatewayFormDrawerProps> = ({
               form.submit();
             }}
           >
-            {t('Submit')}
+            {t('Save')}
           </Button>
         </Space>
       }

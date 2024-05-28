@@ -16,22 +16,31 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as AppImport } from './routes/_app'
 import { Route as IndexImport } from './routes/index'
 import { Route as AuthLayoutImport } from './routes/auth/_layout'
-import { Route as AppProjectsIndexImport } from './routes/_app/projects/index'
 import { Route as AppProfileIndexImport } from './routes/_app/profile/index'
 import { Route as AuthLayoutRegisterImport } from './routes/auth/_layout/register'
 import { Route as AuthLayoutLoginImport } from './routes/auth/_layout/login'
-import { Route as AppProjectsProjectIdLayoutImport } from './routes/_app/projects/$projectId/_layout'
-import { Route as AppProjectsProjectIdLayoutIndexImport } from './routes/_app/projects/$projectId/_layout/index'
-import { Route as AppProjectsProjectIdLayoutGatewaysImport } from './routes/_app/projects/$projectId/_layout/gateways'
-import { Route as AppProjectsProjectIdLayoutDevicesImport } from './routes/_app/projects/$projectId/_layout/devices'
-import { Route as AppProjectsProjectIdLayoutDashboardIndexImport } from './routes/_app/projects/$projectId/_layout/dashboard/index'
-import { Route as AppProjectsProjectIdLayoutDashboardEditImport } from './routes/_app/projects/$projectId/_layout/dashboard/edit'
+import { Route as AppMProjectsIndexImport } from './routes/_app/m/projects/index'
+import { Route as AppDProjectsIndexImport } from './routes/_app/d/projects/index'
+import { Route as AppMProjectsProjectIdLayoutImport } from './routes/_app/m/projects/$projectId/_layout'
+import { Route as AppDProjectsProjectIdLayoutImport } from './routes/_app/d/projects/$projectId/_layout'
+import { Route as AppMProjectsProjectIdLayoutIndexImport } from './routes/_app/m/projects/$projectId/_layout/index'
+import { Route as AppDProjectsProjectIdLayoutIndexImport } from './routes/_app/d/projects/$projectId/_layout/index'
+import { Route as AppMProjectsProjectIdLayoutDevicesImport } from './routes/_app/m/projects/$projectId/_layout/devices'
+import { Route as AppDProjectsProjectIdLayoutGatewaysImport } from './routes/_app/d/projects/$projectId/_layout/gateways'
+import { Route as AppDProjectsProjectIdLayoutDevicesImport } from './routes/_app/d/projects/$projectId/_layout/devices'
+import { Route as AppMProjectsProjectIdLayoutDashboardIndexImport } from './routes/_app/m/projects/$projectId/_layout/dashboard/index'
+import { Route as AppDProjectsProjectIdLayoutDashboardIndexImport } from './routes/_app/d/projects/$projectId/_layout/dashboard/index'
+import { Route as AppMProjectsProjectIdLayoutDashboardEditImport } from './routes/_app/m/projects/$projectId/_layout/dashboard/edit'
+import { Route as AppDProjectsProjectIdLayoutDashboardEditImport } from './routes/_app/d/projects/$projectId/_layout/dashboard/edit'
 
 // Create Virtual Routes
 
 const AuthImport = createFileRoute('/auth')()
-const AppProjectsProjectIdImport = createFileRoute(
-  '/_app/projects/$projectId',
+const AppMProjectsProjectIdImport = createFileRoute(
+  '/_app/m/projects/$projectId',
+)()
+const AppDProjectsProjectIdImport = createFileRoute(
+  '/_app/d/projects/$projectId',
 )()
 
 // Create/Update Routes
@@ -56,16 +65,6 @@ const AuthLayoutRoute = AuthLayoutImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
-const AppProjectsProjectIdRoute = AppProjectsProjectIdImport.update({
-  path: '/projects/$projectId',
-  getParentRoute: () => AppRoute,
-} as any)
-
-const AppProjectsIndexRoute = AppProjectsIndexImport.update({
-  path: '/projects/',
-  getParentRoute: () => AppRoute,
-} as any)
-
 const AppProfileIndexRoute = AppProfileIndexImport.update({
   path: '/profile/',
   getParentRoute: () => AppRoute,
@@ -81,41 +80,90 @@ const AuthLayoutLoginRoute = AuthLayoutLoginImport.update({
   getParentRoute: () => AuthLayoutRoute,
 } as any)
 
-const AppProjectsProjectIdLayoutRoute = AppProjectsProjectIdLayoutImport.update(
-  {
+const AppMProjectsProjectIdRoute = AppMProjectsProjectIdImport.update({
+  path: '/m/projects/$projectId',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppDProjectsProjectIdRoute = AppDProjectsProjectIdImport.update({
+  path: '/d/projects/$projectId',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppMProjectsIndexRoute = AppMProjectsIndexImport.update({
+  path: '/m/projects/',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppDProjectsIndexRoute = AppDProjectsIndexImport.update({
+  path: '/d/projects/',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppMProjectsProjectIdLayoutRoute =
+  AppMProjectsProjectIdLayoutImport.update({
     id: '/_layout',
-    getParentRoute: () => AppProjectsProjectIdRoute,
-  } as any,
-)
+    getParentRoute: () => AppMProjectsProjectIdRoute,
+  } as any)
 
-const AppProjectsProjectIdLayoutIndexRoute =
-  AppProjectsProjectIdLayoutIndexImport.update({
+const AppDProjectsProjectIdLayoutRoute =
+  AppDProjectsProjectIdLayoutImport.update({
+    id: '/_layout',
+    getParentRoute: () => AppDProjectsProjectIdRoute,
+  } as any)
+
+const AppMProjectsProjectIdLayoutIndexRoute =
+  AppMProjectsProjectIdLayoutIndexImport.update({
     path: '/',
-    getParentRoute: () => AppProjectsProjectIdLayoutRoute,
+    getParentRoute: () => AppMProjectsProjectIdLayoutRoute,
   } as any)
 
-const AppProjectsProjectIdLayoutGatewaysRoute =
-  AppProjectsProjectIdLayoutGatewaysImport.update({
-    path: '/gateways',
-    getParentRoute: () => AppProjectsProjectIdLayoutRoute,
+const AppDProjectsProjectIdLayoutIndexRoute =
+  AppDProjectsProjectIdLayoutIndexImport.update({
+    path: '/',
+    getParentRoute: () => AppDProjectsProjectIdLayoutRoute,
   } as any)
 
-const AppProjectsProjectIdLayoutDevicesRoute =
-  AppProjectsProjectIdLayoutDevicesImport.update({
+const AppMProjectsProjectIdLayoutDevicesRoute =
+  AppMProjectsProjectIdLayoutDevicesImport.update({
     path: '/devices',
-    getParentRoute: () => AppProjectsProjectIdLayoutRoute,
+    getParentRoute: () => AppMProjectsProjectIdLayoutRoute,
   } as any)
 
-const AppProjectsProjectIdLayoutDashboardIndexRoute =
-  AppProjectsProjectIdLayoutDashboardIndexImport.update({
+const AppDProjectsProjectIdLayoutGatewaysRoute =
+  AppDProjectsProjectIdLayoutGatewaysImport.update({
+    path: '/gateways',
+    getParentRoute: () => AppDProjectsProjectIdLayoutRoute,
+  } as any)
+
+const AppDProjectsProjectIdLayoutDevicesRoute =
+  AppDProjectsProjectIdLayoutDevicesImport.update({
+    path: '/devices',
+    getParentRoute: () => AppDProjectsProjectIdLayoutRoute,
+  } as any)
+
+const AppMProjectsProjectIdLayoutDashboardIndexRoute =
+  AppMProjectsProjectIdLayoutDashboardIndexImport.update({
     path: '/dashboard/',
-    getParentRoute: () => AppProjectsProjectIdLayoutRoute,
+    getParentRoute: () => AppMProjectsProjectIdLayoutRoute,
   } as any)
 
-const AppProjectsProjectIdLayoutDashboardEditRoute =
-  AppProjectsProjectIdLayoutDashboardEditImport.update({
+const AppDProjectsProjectIdLayoutDashboardIndexRoute =
+  AppDProjectsProjectIdLayoutDashboardIndexImport.update({
+    path: '/dashboard/',
+    getParentRoute: () => AppDProjectsProjectIdLayoutRoute,
+  } as any)
+
+const AppMProjectsProjectIdLayoutDashboardEditRoute =
+  AppMProjectsProjectIdLayoutDashboardEditImport.update({
     path: '/dashboard/edit',
-    getParentRoute: () => AppProjectsProjectIdLayoutRoute,
+    getParentRoute: () => AppMProjectsProjectIdLayoutRoute,
+  } as any)
+
+const AppDProjectsProjectIdLayoutDashboardEditRoute =
+  AppDProjectsProjectIdLayoutDashboardEditImport.update({
+    path: '/dashboard/edit',
+    getParentRoute: () => AppDProjectsProjectIdLayoutRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -171,61 +219,110 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfileIndexImport
       parentRoute: typeof AppImport
     }
-    '/_app/projects/': {
-      id: '/_app/projects/'
-      path: '/projects'
-      fullPath: '/projects'
-      preLoaderRoute: typeof AppProjectsIndexImport
+    '/_app/d/projects/': {
+      id: '/_app/d/projects/'
+      path: '/d/projects'
+      fullPath: '/d/projects'
+      preLoaderRoute: typeof AppDProjectsIndexImport
       parentRoute: typeof AppImport
     }
-    '/_app/projects/$projectId': {
-      id: '/_app/projects/$projectId'
-      path: '/projects/$projectId'
-      fullPath: '/projects/$projectId'
-      preLoaderRoute: typeof AppProjectsProjectIdImport
+    '/_app/m/projects/': {
+      id: '/_app/m/projects/'
+      path: '/m/projects'
+      fullPath: '/m/projects'
+      preLoaderRoute: typeof AppMProjectsIndexImport
       parentRoute: typeof AppImport
     }
-    '/_app/projects/$projectId/_layout': {
-      id: '/_app/projects/$projectId/_layout'
-      path: '/projects/$projectId'
-      fullPath: '/projects/$projectId'
-      preLoaderRoute: typeof AppProjectsProjectIdLayoutImport
-      parentRoute: typeof AppProjectsProjectIdRoute
+    '/_app/d/projects/$projectId': {
+      id: '/_app/d/projects/$projectId'
+      path: '/d/projects/$projectId'
+      fullPath: '/d/projects/$projectId'
+      preLoaderRoute: typeof AppDProjectsProjectIdImport
+      parentRoute: typeof AppImport
     }
-    '/_app/projects/$projectId/_layout/devices': {
-      id: '/_app/projects/$projectId/_layout/devices'
+    '/_app/d/projects/$projectId/_layout': {
+      id: '/_app/d/projects/$projectId/_layout'
+      path: '/d/projects/$projectId'
+      fullPath: '/d/projects/$projectId'
+      preLoaderRoute: typeof AppDProjectsProjectIdLayoutImport
+      parentRoute: typeof AppDProjectsProjectIdRoute
+    }
+    '/_app/m/projects/$projectId': {
+      id: '/_app/m/projects/$projectId'
+      path: '/m/projects/$projectId'
+      fullPath: '/m/projects/$projectId'
+      preLoaderRoute: typeof AppMProjectsProjectIdImport
+      parentRoute: typeof AppImport
+    }
+    '/_app/m/projects/$projectId/_layout': {
+      id: '/_app/m/projects/$projectId/_layout'
+      path: '/m/projects/$projectId'
+      fullPath: '/m/projects/$projectId'
+      preLoaderRoute: typeof AppMProjectsProjectIdLayoutImport
+      parentRoute: typeof AppMProjectsProjectIdRoute
+    }
+    '/_app/d/projects/$projectId/_layout/devices': {
+      id: '/_app/d/projects/$projectId/_layout/devices'
       path: '/devices'
-      fullPath: '/projects/$projectId/devices'
-      preLoaderRoute: typeof AppProjectsProjectIdLayoutDevicesImport
-      parentRoute: typeof AppProjectsProjectIdLayoutImport
+      fullPath: '/d/projects/$projectId/devices'
+      preLoaderRoute: typeof AppDProjectsProjectIdLayoutDevicesImport
+      parentRoute: typeof AppDProjectsProjectIdLayoutImport
     }
-    '/_app/projects/$projectId/_layout/gateways': {
-      id: '/_app/projects/$projectId/_layout/gateways'
+    '/_app/d/projects/$projectId/_layout/gateways': {
+      id: '/_app/d/projects/$projectId/_layout/gateways'
       path: '/gateways'
-      fullPath: '/projects/$projectId/gateways'
-      preLoaderRoute: typeof AppProjectsProjectIdLayoutGatewaysImport
-      parentRoute: typeof AppProjectsProjectIdLayoutImport
+      fullPath: '/d/projects/$projectId/gateways'
+      preLoaderRoute: typeof AppDProjectsProjectIdLayoutGatewaysImport
+      parentRoute: typeof AppDProjectsProjectIdLayoutImport
     }
-    '/_app/projects/$projectId/_layout/': {
-      id: '/_app/projects/$projectId/_layout/'
+    '/_app/m/projects/$projectId/_layout/devices': {
+      id: '/_app/m/projects/$projectId/_layout/devices'
+      path: '/devices'
+      fullPath: '/m/projects/$projectId/devices'
+      preLoaderRoute: typeof AppMProjectsProjectIdLayoutDevicesImport
+      parentRoute: typeof AppMProjectsProjectIdLayoutImport
+    }
+    '/_app/d/projects/$projectId/_layout/': {
+      id: '/_app/d/projects/$projectId/_layout/'
       path: '/'
-      fullPath: '/projects/$projectId/'
-      preLoaderRoute: typeof AppProjectsProjectIdLayoutIndexImport
-      parentRoute: typeof AppProjectsProjectIdLayoutImport
+      fullPath: '/d/projects/$projectId/'
+      preLoaderRoute: typeof AppDProjectsProjectIdLayoutIndexImport
+      parentRoute: typeof AppDProjectsProjectIdLayoutImport
     }
-    '/_app/projects/$projectId/_layout/dashboard/edit': {
-      id: '/_app/projects/$projectId/_layout/dashboard/edit'
+    '/_app/m/projects/$projectId/_layout/': {
+      id: '/_app/m/projects/$projectId/_layout/'
+      path: '/'
+      fullPath: '/m/projects/$projectId/'
+      preLoaderRoute: typeof AppMProjectsProjectIdLayoutIndexImport
+      parentRoute: typeof AppMProjectsProjectIdLayoutImport
+    }
+    '/_app/d/projects/$projectId/_layout/dashboard/edit': {
+      id: '/_app/d/projects/$projectId/_layout/dashboard/edit'
       path: '/dashboard/edit'
-      fullPath: '/projects/$projectId/dashboard/edit'
-      preLoaderRoute: typeof AppProjectsProjectIdLayoutDashboardEditImport
-      parentRoute: typeof AppProjectsProjectIdLayoutImport
+      fullPath: '/d/projects/$projectId/dashboard/edit'
+      preLoaderRoute: typeof AppDProjectsProjectIdLayoutDashboardEditImport
+      parentRoute: typeof AppDProjectsProjectIdLayoutImport
     }
-    '/_app/projects/$projectId/_layout/dashboard/': {
-      id: '/_app/projects/$projectId/_layout/dashboard/'
+    '/_app/m/projects/$projectId/_layout/dashboard/edit': {
+      id: '/_app/m/projects/$projectId/_layout/dashboard/edit'
+      path: '/dashboard/edit'
+      fullPath: '/m/projects/$projectId/dashboard/edit'
+      preLoaderRoute: typeof AppMProjectsProjectIdLayoutDashboardEditImport
+      parentRoute: typeof AppMProjectsProjectIdLayoutImport
+    }
+    '/_app/d/projects/$projectId/_layout/dashboard/': {
+      id: '/_app/d/projects/$projectId/_layout/dashboard/'
       path: '/dashboard'
-      fullPath: '/projects/$projectId/dashboard'
-      preLoaderRoute: typeof AppProjectsProjectIdLayoutDashboardIndexImport
-      parentRoute: typeof AppProjectsProjectIdLayoutImport
+      fullPath: '/d/projects/$projectId/dashboard'
+      preLoaderRoute: typeof AppDProjectsProjectIdLayoutDashboardIndexImport
+      parentRoute: typeof AppDProjectsProjectIdLayoutImport
+    }
+    '/_app/m/projects/$projectId/_layout/dashboard/': {
+      id: '/_app/m/projects/$projectId/_layout/dashboard/'
+      path: '/dashboard'
+      fullPath: '/m/projects/$projectId/dashboard'
+      preLoaderRoute: typeof AppMProjectsProjectIdLayoutDashboardIndexImport
+      parentRoute: typeof AppMProjectsProjectIdLayoutImport
     }
   }
 }
@@ -236,15 +333,25 @@ export const routeTree = rootRoute.addChildren({
   IndexRoute,
   AppRoute: AppRoute.addChildren({
     AppProfileIndexRoute,
-    AppProjectsIndexRoute,
-    AppProjectsProjectIdRoute: AppProjectsProjectIdRoute.addChildren({
-      AppProjectsProjectIdLayoutRoute:
-        AppProjectsProjectIdLayoutRoute.addChildren({
-          AppProjectsProjectIdLayoutDevicesRoute,
-          AppProjectsProjectIdLayoutGatewaysRoute,
-          AppProjectsProjectIdLayoutIndexRoute,
-          AppProjectsProjectIdLayoutDashboardEditRoute,
-          AppProjectsProjectIdLayoutDashboardIndexRoute,
+    AppDProjectsIndexRoute,
+    AppMProjectsIndexRoute,
+    AppDProjectsProjectIdRoute: AppDProjectsProjectIdRoute.addChildren({
+      AppDProjectsProjectIdLayoutRoute:
+        AppDProjectsProjectIdLayoutRoute.addChildren({
+          AppDProjectsProjectIdLayoutDevicesRoute,
+          AppDProjectsProjectIdLayoutGatewaysRoute,
+          AppDProjectsProjectIdLayoutIndexRoute,
+          AppDProjectsProjectIdLayoutDashboardEditRoute,
+          AppDProjectsProjectIdLayoutDashboardIndexRoute,
+        }),
+    }),
+    AppMProjectsProjectIdRoute: AppMProjectsProjectIdRoute.addChildren({
+      AppMProjectsProjectIdLayoutRoute:
+        AppMProjectsProjectIdLayoutRoute.addChildren({
+          AppMProjectsProjectIdLayoutDevicesRoute,
+          AppMProjectsProjectIdLayoutIndexRoute,
+          AppMProjectsProjectIdLayoutDashboardEditRoute,
+          AppMProjectsProjectIdLayoutDashboardIndexRoute,
         }),
     }),
   }),

@@ -1,6 +1,7 @@
 import {
   DeleteOutlined,
   EditOutlined,
+  EyeOutlined,
   MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
@@ -21,6 +22,7 @@ import { useState } from 'react';
 
 import useApp from '@/hooks/use-app';
 import DeviceFormDrawer from '@/modules/devices/components/device-form-drawer';
+import DevicePreviewDrawer from '@/modules/devices/components/device-preview-drawer';
 import {
   DeviceDataTypeTag,
   DeviceModeTag,
@@ -38,7 +40,7 @@ import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail
 import SoftButton from '@/shared/components/soft-button';
 
 export const Route = createFileRoute(
-  '/_app/projects/$projectId/_layout/devices',
+  '/_app/d/projects/$projectId/_layout/devices',
 )({
   component: ProjectIdDevices,
 });
@@ -51,6 +53,7 @@ function ProjectIdDevices() {
 
   const [selectedDeviceIds, setSelectedDeviceIds] = useState<React.Key[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<TDevice>();
+  const [openPreviewDrawer, setOpenPreviewDrawer] = useState(false);
   const [openCreateForm, setOpenCreateForm] = useState(false);
   const [openUpdateForm, setOpenUpdateForm] = useState(false);
 
@@ -85,6 +88,12 @@ function ProjectIdDevices() {
     <>
       {project && (
         <>
+          <DevicePreviewDrawer
+            open={openPreviewDrawer}
+            setOpen={setOpenPreviewDrawer}
+            device={selectedDevice}
+          />
+
           <DeviceFormDrawer
             open={openCreateForm}
             setOpen={setOpenCreateForm}
@@ -192,7 +201,12 @@ function ProjectIdDevices() {
                   >
                     {record.name}
                   </Typography.Text>
-                  <Typography.Text type="secondary">
+                  <Typography.Text
+                    type="secondary"
+                    css={css`
+                      font-size: ${token.fontSizeSM}px;
+                    `}
+                  >
                     {record.gateway?.name}
                   </Typography.Text>
                 </Space>
@@ -279,15 +293,15 @@ function ProjectIdDevices() {
                   trigger={['click']}
                   menu={{
                     items: [
-                      // {
-                      //   label: t('View'),
-                      //   key: 'view',
-                      //   icon: <EyeOutlined />,
-                      //   onClick: () => {
-                      //     setSelectedGateway(record);
-                      //     // setOpenPreviewDrawer(true);
-                      //   },
-                      // },
+                      {
+                        label: t('View'),
+                        key: 'view',
+                        icon: <EyeOutlined />,
+                        onClick: () => {
+                          setSelectedDevice(record);
+                          setOpenPreviewDrawer(true);
+                        },
+                      },
                       {
                         label: t('Edit'),
                         key: 'edit',

@@ -10,7 +10,7 @@ import ProjectFormDrawer from '@/modules/projects/components/project-form-drawer
 import useGetListProject from '@/modules/projects/hooks/use-get-list-project';
 import TitleHeading from '@/shared/components/title-heading';
 
-export const Route = createFileRoute('/_app/projects/')({
+export const Route = createFileRoute('/_app/d/projects/')({
   component: ProjectListPage,
 });
 

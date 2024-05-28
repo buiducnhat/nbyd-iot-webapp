@@ -102,7 +102,7 @@ const ProjectFormDrawer: React.FC<TProjectFormDrawerProps> = ({
               form.submit();
             }}
           >
-            {t('Submit')}
+            {t('Save')}
           </Button>
         </Space>
       }

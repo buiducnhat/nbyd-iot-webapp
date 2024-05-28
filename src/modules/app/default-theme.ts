@@ -11,6 +11,8 @@ export const defaultTheme: TTheme = {
     colorError: '#c0392b',
     colorLink: '#3498db',
     borderRadius: 0,
+    boxShadowSecondary:
+      '0px 2px 16px 0px rgba(0,0,0,0.06),0px 0px 4px -4px rgba(0,0,0,0.08),0px 0px 12px 4px rgba(0,0,0,0.03)',
 
     fontFamily: 'Noto Sans Display, sans-serif',
     fontFamilyCode: 'Chivo Mono, monospace',

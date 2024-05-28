@@ -38,7 +38,7 @@ import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail
 import SoftButton from '@/shared/components/soft-button';
 
 export const Route = createFileRoute(
-  '/_app/projects/$projectId/_layout/gateways',
+  '/_app/d/projects/$projectId/_layout/gateways',
 )({
   component: ProjectIdGateways,
 });
@@ -175,7 +175,7 @@ function ProjectIdGateways() {
               key: 'status',
               render: (status: EGatewayStatus) => (
                 <Tag
-                  color={status == EGatewayStatus.OFFLINE ? 'orange' : 'green'}
+                  color={status === EGatewayStatus.OFFLINE ? 'orange' : 'green'}
                 >
                   {status}
                 </Tag>
@@ -188,7 +188,7 @@ function ProjectIdGateways() {
               render: (status: EGatewayConnection) => (
                 <Tag
                   color={
-                    status == EGatewayConnection.WIFI ? 'success' : 'default'
+                    status === EGatewayConnection.WIFI ? 'success' : 'default'
                   }
                 >
                   {status}

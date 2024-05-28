@@ -7,7 +7,7 @@ import {
 } from '@ant-design/icons';
 import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
-import { Link, useNavigate, useRouter } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import {
   Avatar,
   Button,
@@ -35,7 +35,6 @@ const MainTopBar = () => {
   const logout = useAuthStore((state) => state.logout);
 
   const navigate = useNavigate();
-  const router = useRouter();
 
   const logoutMutation = useMutation({
     mutationFn: () => authService.logout(),
@@ -89,7 +88,7 @@ const MainTopBar = () => {
       <Button
         type="text"
         icon={<ArrowLeftOutlined />}
-        onClick={() => router.history.back()}
+        onClick={() => navigate({ to: '/' })}
         css={css`
           font-size: 16px !important;
           width: 64px !important;

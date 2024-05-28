@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 
 import useApp from '@/hooks/use-app';
 import { useAuth } from '@/hooks/use-auth';
+import useDeviceSize from '@/hooks/use-device-size';
 import { useAppStore } from '@/modules/app/app.zustand';
 import { socket } from '@/modules/app/socket-io';
 import { useAuthStore } from '@/modules/auth/auth.zustand';
@@ -26,6 +27,7 @@ function AppLayout() {
   const authQuery = useAuth();
 
   const { token, antdApp } = useApp();
+  const { isMobile } = useDeviceSize();
 
   const user = useAuthStore((state) => state.user);
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -94,8 +96,8 @@ function AppLayout() {
       <Layout.Content
         className="main-content"
         css={css`
-          margin: ${token.margin}px;
-          padding: ${token.padding}px;
+          margin: ${isMobile ? 0 : token.margin}px;
+          padding: ${isMobile ? 0 : token.padding}px;
           background-color: ${token.colorBgContainer};
           border-radius: ${token.borderRadius}px;
           height: calc(100dvh - 64px - 2 * ${token.margin}px);

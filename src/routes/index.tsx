@@ -1,9 +1,17 @@
 import { Navigate, createFileRoute } from '@tanstack/react-router';
 
+import useDeviceSize from '@/hooks/use-device-size';
+
 export const Route = createFileRoute('/')({
   component: IndexPage,
 });
 
 function IndexPage() {
-  return <Navigate to="/projects" />;
+  const { isMobile } = useDeviceSize();
+
+  return isMobile ? (
+    <Navigate to="/m/projects" />
+  ) : (
+    <Navigate to="/d/projects" />
+  );
 }

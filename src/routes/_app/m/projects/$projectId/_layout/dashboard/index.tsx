@@ -24,7 +24,7 @@ import { isDefined } from '@/shared/utils';
 const GridLayout = WidthProvider(RGL);
 
 export const Route = createFileRoute(
-  '/_app/projects/$projectId/_layout/dashboard/',
+  '/_app/m/projects/$projectId/_layout/dashboard/',
 )({
   component: ProjectIdDashboard,
 });
@@ -192,7 +192,7 @@ function ProjectIdDashboard() {
         type="primary"
         onClick={() =>
           navigate({
-            to: '/projects/$projectId/dashboard/edit',
+            to: '/projects/d/$projectId/dashboard/edit',
             params: { projectId },
           })
         }

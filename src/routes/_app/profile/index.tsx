@@ -14,6 +14,7 @@ import {
 import dayjs from 'dayjs';
 
 import useApp from '@/hooks/use-app';
+import useDeviceSize from '@/hooks/use-device-size';
 import { useAuthStore } from '@/modules/auth/auth.zustand';
 import UploadAvatar from '@/modules/users/components/upload-avatar';
 import { TUpdateUserDto } from '@/modules/users/dto/update-user.dto';
@@ -26,9 +27,11 @@ export const Route = createFileRoute('/_app/profile/')({
 });
 
 function ProfilePage() {
-  const { t, antdApp } = useApp();
+  const { t, antdApp, token } = useApp();
 
   const { user } = useAuthStore();
+
+  const { isMobile } = useDeviceSize();
 
   const [form] = Form.useForm();
 
@@ -43,10 +46,19 @@ function ProfilePage() {
   });
 
   return (
-    <Flex vertical>
+    <Flex
+      vertical
+      css={css`
+        padding: ${isMobile ? token.paddingSM : 0}px;
+      `}
+    >
       <TitleHeading>{t('Profile')}</TitleHeading>
 
-      <Divider />
+      <Divider
+        css={css`
+          margin: ${isMobile ? token.marginSM : token.marginLG}px 0;
+        `}
+      />
 
       <Flex
         css={css`
@@ -113,7 +125,12 @@ function ProfilePage() {
               <UploadAvatar initialImageUrl={user?.avatarImageFileUrl} />
             </Form.Item>
 
-            <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
+            <Form.Item
+              css={css`
+                display: flex;
+                justify-content: center;
+              `}
+            >
               <Button type="primary" htmlType="submit">
                 {t('Save')}
               </Button>

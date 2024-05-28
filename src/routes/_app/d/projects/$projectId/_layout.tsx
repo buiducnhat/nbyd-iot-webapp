@@ -1,7 +1,12 @@
 import { DeleteOutlined } from '@ant-design/icons';
 import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
-import { Outlet, createFileRoute, useNavigate } from '@tanstack/react-router';
+import {
+  Outlet,
+  createFileRoute,
+  useNavigate,
+  useRouter,
+} from '@tanstack/react-router';
 import {
   ConfigProvider,
   Dropdown,
@@ -13,21 +18,20 @@ import {
   Typography,
 } from 'antd';
 import { useState } from 'react';
-import { useLocation } from 'react-use';
 
 import useApp from '@/hooks/use-app';
 import ProjectFormDrawer from '@/modules/projects/components/project-form-drawer';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
 import projectService from '@/modules/projects/project.service';
 
-export const Route = createFileRoute('/_app/projects/$projectId/_layout')({
+export const Route = createFileRoute('/_app/d/projects/$projectId/_layout')({
   component: ProjectIdLayout,
 });
 
 function ProjectIdLayout() {
   const { projectId } = Route.useParams();
 
-  const location = useLocation();
+  const router = useRouter();
   const navigate = useNavigate();
 
   const { t, token, antdApp } = useApp();
@@ -39,7 +43,7 @@ function ProjectIdLayout() {
   const deleteProjectMutation = useMutation({
     mutationFn: (projectId: string) => projectService.delete(projectId),
     onSuccess: () => {
-      navigate({ to: '/projects' });
+      navigate({ to: '/d/projects' });
       antdApp.message.success(t('Deleted successfully'));
     },
     onError: (error) => {
@@ -161,14 +165,14 @@ function ProjectIdLayout() {
                 navigate({
                   to:
                     key === 'gateways'
-                      ? '/projects/$projectId/'
+                      ? '/d/projects/$projectId/'
                       : key === 'devices'
-                        ? '/projects/$projectId/devices'
-                        : '/projects/$projectId/dashboard',
+                        ? '/d/projects/$projectId/devices'
+                        : '/d/projects/$projectId/dashboard',
                   params: { projectId },
                 });
               }}
-              activeKey={location.pathname?.split('/').pop()}
+              activeKey={router.history.location.pathname?.split('/').pop()}
               items={[
                 {
                   key: 'gateways',
@@ -180,7 +184,8 @@ function ProjectIdLayout() {
                 },
                 {
                   key:
-                    location.pathname?.split('/').pop() === 'dashboard'
+                    router.history.location.pathname?.split('/').pop() ===
+                    'dashboard'
                       ? 'dashboard'
                       : 'edit',
                   label: t('Dashboard'),

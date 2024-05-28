@@ -33,7 +33,7 @@ import { styledOmit$PropsOptions, transApiResDataCode } from '@/shared/utils';
 const GridLayout = WidthProvider(RGL);
 
 export const Route = createFileRoute(
-  '/_app/projects/$projectId/_layout/dashboard/edit',
+  '/_app/d/projects/$projectId/_layout/dashboard/edit',
 )({
   component: ProjectIdEditDashboard,
 });
@@ -307,7 +307,7 @@ function ProjectIdEditDashboard() {
           tooltip={t('Go back')}
           onClick={() =>
             navigate({
-              to: '/projects/$projectId/dashboard',
+              to: '/d/projects/$projectId/dashboard',
               params: { projectId },
             })
           }
