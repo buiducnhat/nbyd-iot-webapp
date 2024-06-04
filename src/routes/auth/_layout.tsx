@@ -12,6 +12,7 @@ export const Route = createFileRoute('/auth/_layout')({
 
 function AuthLayout() {
   const navigate = useNavigate();
+  const search: any = Route.useSearch();
 
   const authQuery = useAuth();
   const { user } = useAuthStore();
@@ -19,10 +20,10 @@ function AuthLayout() {
   useEffect(() => {
     if (user) {
       navigate({
-        to: '/',
+        to: search?.from || '/',
       });
     }
-  }, [navigate, user]);
+  }, [navigate, search?.from, user]);
 
   if (authQuery.isPending && !user) {
     return <Spin size="large" fullscreen />;

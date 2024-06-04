@@ -11,7 +11,7 @@ import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
 import { socket } from '@/modules/app/socket-io';
 import useGetListDevice from '@/modules/devices/hooks/use-get-list-device';
-import { BaseDashboardItem } from '@/modules/projects/components/dashboard-item';
+import BaseDashboardItem from '@/modules/projects/components/base-dashboard-item';
 import DragableTabs from '@/modules/projects/components/dragable-tabs';
 import { FULL_ATTRIBUTES_WIDGETS } from '@/modules/projects/components/widgets';
 import { TSocketDevicCommandDto } from '@/modules/projects/dto/socket-gateway-command.dto';

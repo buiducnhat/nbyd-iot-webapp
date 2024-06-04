@@ -29,6 +29,6 @@ export type TProjectDetail = TProjectBasic & {
   gateways: TGateway[];
   metaData?: any;
   webDashboard?: TWebDashboardTab[];
-  mobileDashboard?: any;
+  mobileDashboard?: TWebDashboardTab[];
   updatedAt: string;
 };

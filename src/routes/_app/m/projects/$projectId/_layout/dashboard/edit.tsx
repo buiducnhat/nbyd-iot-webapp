@@ -1,9 +1,9 @@
-import { BlockOutlined, LeftOutlined, SaveOutlined } from '@ant-design/icons';
+import { CloseOutlined, PlusOutlined, SaveOutlined } from '@ant-design/icons';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Col, FloatButton, Row, Space, Typography } from 'antd';
+import { Flex, FloatButton } from 'antd';
 import { AxiosError } from 'axios';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
@@ -12,38 +12,35 @@ import * as uuid from 'uuid';
 import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
 import useGetListDevice from '@/modules/devices/hooks/use-get-list-device';
-import {
-  BaseDashboardItem,
-  TopLayerEdit,
-} from '@/modules/projects/components/dashboard-item';
+import BaseDashboardItem from '@/modules/projects/components/base-dashboard-item';
+import { MTopLayerEdit } from '@/modules/projects/components/dashboard-item-top-layer';
 import DragableTabs from '@/modules/projects/components/dragable-tabs';
+import SelectWidgetDrawer from '@/modules/projects/components/select-widget-drawer';
 import {
   FULL_ATTRIBUTES_WIDGETS,
   TDashboardItem,
-  TWidgetCommon,
-  TWidgetType,
 } from '@/modules/projects/components/widgets';
 import useGetProjectDetail from '@/modules/projects/hooks/use-get-project-detail';
 import { TWebDashboardTab } from '@/modules/projects/project.model';
 import projectService from '@/modules/projects/project.service';
 import { THttpResponse } from '@/shared/http-service';
 import { TAntdToken } from '@/shared/types/tst.type';
-import { styledOmit$PropsOptions, transApiResDataCode } from '@/shared/utils';
+import { transApiResDataCode } from '@/shared/utils';
 
 const GridLayout = WidthProvider(RGL);
 
 export const Route = createFileRoute(
   '/_app/m/projects/$projectId/_layout/dashboard/edit',
 )({
-  component: ProjectIdEditDashboard,
+  component: MProjectIdEditDashboard,
 });
 
 const DEFAULT_ROW_NUM = 7;
-const NUMBER_OF_COLUMNS = 24;
-const ITEM_UNIT_HEIGHT = 96;
+const NUMBER_OF_COLUMNS = 8;
+const ITEM_UNIT_HEIGHT = 80;
 const MARGIN_DASHBOARD = 8;
 
-function ProjectIdEditDashboard() {
+function MProjectIdEditDashboard() {
   const { projectId } = Route.useParams();
 
   const navigate = useNavigate();
@@ -57,13 +54,13 @@ function ProjectIdEditDashboard() {
 
   const [dashboardTabs, setDashboardTabs] = useState<TWebDashboardTab[]>([]);
   const [activeTabKey, setActiveTabKey] = useState<string>('');
-  const [droppingItem, setDroppingItem] = useState<TWidgetCommon>();
   const [curRowNum, setCurRowNum] = useState<number>(DEFAULT_ROW_NUM);
+  const [openSelectWidgetDrawer, setOpenSelectWidgetDrawer] = useState(false);
 
-  const updateWebDashboard = useMutation({
-    mutationFn: (webDashboard: TWebDashboardTab[]) =>
-      projectService.updateWebDashboard(projectId, {
-        webDashboard: webDashboard,
+  const updatemobileDashboard = useMutation({
+    mutationFn: (mobileDashboard: TWebDashboardTab[]) =>
+      projectService.updateDashboard(projectId, {
+        mobileDashboard: mobileDashboard,
       }),
     onError: (error: AxiosError<THttpResponse<null>>) =>
       antdApp.notification.error({
@@ -110,14 +107,14 @@ function ProjectIdEditDashboard() {
   }, [projectQuery.isFetching, setLoading]);
 
   useEffect(() => {
-    if (project?.webDashboard) {
-      setDashboardTabs(project?.webDashboard);
-      setActiveTabKey(project?.webDashboard?.[0]?.key);
+    if (project?.mobileDashboard) {
+      setDashboardTabs(project?.mobileDashboard);
+      setActiveTabKey(project?.mobileDashboard?.[0]?.key);
     }
-  }, [project?.webDashboard]);
+  }, [project?.mobileDashboard]);
 
   useEffect(() => {
-    if (!project?.webDashboard || project?.webDashboard?.length === 0) {
+    if (!project?.mobileDashboard || project?.mobileDashboard?.length === 0) {
       const newKey = uuid.v4();
 
       setDashboardTabs([
@@ -129,185 +126,147 @@ function ProjectIdEditDashboard() {
       ]);
       setActiveTabKey(newKey);
     }
-  }, [project?.webDashboard, project?.webDashboard?.length, t]);
+  }, [project?.mobileDashboard, project?.mobileDashboard?.length, t]);
 
   return (
     <>
-      <Row gutter={token.size}>
-        <Col span={4}>
-          <ListWidgetLayout
-            $token={token}
-            direction="vertical"
-            size="middle"
-            css={css`
-              overflow-y: auto;
-            `}
-          >
-            <Space align="center" size="large">
-              <BlockOutlined
-                css={css`
-                  font-size: ${token.fontSizeHeading5}px;
-                `}
-              />
+      <SelectWidgetDrawer
+        open={openSelectWidgetDrawer}
+        setOpen={setOpenSelectWidgetDrawer}
+        onSelected={(widgetType) => {
+          setOpenSelectWidgetDrawer(false);
+          const newWidget = FULL_ATTRIBUTES_WIDGETS[widgetType];
+          if (!newWidget) return;
 
-              <Typography.Text
-                css={css`
-                  font-size: ${token.fontSizeHeading4}px;
-                `}
-              >
-                {t('Widgets')}
-              </Typography.Text>
-            </Space>
+          setDashboardItems([
+            ...dashboardItems,
+            {
+              type: widgetType,
+              properties: {
+                title: `${widgetType}-${dashboardItems.length}`,
+              },
+              layout: {
+                ...newWidget.layoutSettings,
+                i: `${widgetType}-${dashboardItems.length}`,
+                x: 0,
+                y: 0,
+              },
+            },
+          ]);
+        }}
+      />
 
-            {Object.keys(FULL_ATTRIBUTES_WIDGETS).map((widgetType) => {
-              const widget = FULL_ATTRIBUTES_WIDGETS[widgetType as TWidgetType];
+      <Flex vertical>
+        <DragableTabs
+          tabs={dashboardTabs}
+          setTabs={setDashboardTabs}
+          activeKey={activeTabKey}
+          setActiveKey={setActiveTabKey}
+        />
 
-              return (
-                <BaseDashboardItem
-                  css={css`
-                    cursor: grab;
-                  `}
-                  $token={token}
-                  className="droppable-element"
-                  key={widgetType}
-                  draggable
-                  onDragStart={() => setDroppingItem(widget)}
-                  onDragEnd={() => setDroppingItem(undefined)}
-                >
-                  <widget.Widget />
-                </BaseDashboardItem>
-              );
-            })}
-          </ListWidgetLayout>
-        </Col>
-
-        <Col span={20}>
-          <DragableTabs
-            tabs={dashboardTabs}
-            setTabs={setDashboardTabs}
-            activeKey={activeTabKey}
-            setActiveKey={setActiveTabKey}
-          />
-
-          <DashboardLayout
-            $token={token}
-            css={css`
-              height: ${curRowNum * ITEM_UNIT_HEIGHT +
-              MARGIN_DASHBOARD * (curRowNum + 1.5)}px;
-            `}
-          >
-            <DashboardBoxRow $token={token}>
-              {new Array(24 * curRowNum).fill(0).map((_, index) => {
+        <DashboardLayout
+          $token={token}
+          css={css`
+            height: ${curRowNum * ITEM_UNIT_HEIGHT +
+            MARGIN_DASHBOARD * (curRowNum + 1.5)}px;
+          `}
+        >
+          <DashboardBoxRow $token={token}>
+            {new Array(NUMBER_OF_COLUMNS * curRowNum)
+              .fill(0)
+              .map((_, index) => {
                 return (
                   <DashboardBoxCol key={index} $token={token}>
                     <DashboardBox $token={token}></DashboardBox>
                   </DashboardBoxCol>
                 );
               })}
-            </DashboardBoxRow>
+          </DashboardBoxRow>
 
-            <GridLayout
-              css={css`
-                height: 100% !important;
-              `}
-              className="layout"
-              compactType={null}
-              cols={NUMBER_OF_COLUMNS}
-              rowHeight={ITEM_UNIT_HEIGHT}
-              isDroppable={true}
-              droppingItem={droppingItem?.layoutSettings}
-              margin={[MARGIN_DASHBOARD, MARGIN_DASHBOARD]}
-              onLayoutChange={(layout) => {
-                setDashboardItems(
-                  dashboardItems.map((item) => {
-                    const newItem = layout.find((l) => l.i === item.layout.i);
+          <GridLayout
+            css={css`
+              height: 100% !important;
+            `}
+            className="layout"
+            compactType={null}
+            cols={NUMBER_OF_COLUMNS}
+            rowHeight={ITEM_UNIT_HEIGHT}
+            margin={[MARGIN_DASHBOARD, MARGIN_DASHBOARD]}
+            onLayoutChange={(layout) => {
+              setDashboardItems(
+                dashboardItems.map((item) => {
+                  const newItem = layout.find((l) => l.i === item.layout.i);
 
-                    if (!newItem) return item;
+                  if (!newItem) return item;
 
-                    return {
-                      ...item,
-                      layout: newItem,
-                    };
-                  }),
-                );
-              }}
-              onDrop={(_layout, item) => {
-                if (!droppingItem) return;
+                  return {
+                    ...item,
+                    layout: newItem,
+                  };
+                }),
+              );
+            }}
+          >
+            {dashboardItems?.map((item) => {
+              const widget = FULL_ATTRIBUTES_WIDGETS[item.type];
 
-                if (item.y + droppingItem.layoutSettings.h > curRowNum) {
-                  setCurRowNum(item.y + droppingItem.layoutSettings.h);
-                }
+              if (!widget) return null;
 
-                setDashboardItems([
-                  {
-                    type: droppingItem.type,
-                    properties: {
-                      title: `${droppingItem?.type}-${dashboardItems.length}`,
-                    },
-                    layout: {
-                      ...item,
-                      i: `${droppingItem?.type}-${dashboardItems.length}`,
-                    },
-                  },
-                  ...dashboardItems,
-                ]);
-              }}
-            >
-              {dashboardItems?.map((item) => {
-                const widget = FULL_ATTRIBUTES_WIDGETS[item.type];
-
-                if (!widget) return null;
-
-                return (
-                  <BaseDashboardItem
-                    key={item.layout.i}
-                    $editing
-                    $token={token}
-                    className="droppable-element"
-                    data-grid={{
-                      ...item.layout,
-                      minW: widget.layoutSettings.minW,
-                      maxW: widget.layoutSettings.maxW,
-                      minH: widget.layoutSettings.minH,
-                      maxH: widget.layoutSettings.maxH,
+              return (
+                <BaseDashboardItem
+                  key={item.layout.i}
+                  $editing
+                  $token={token}
+                  $minHeight={ITEM_UNIT_HEIGHT}
+                  className="droppable-element"
+                  data-grid={{
+                    ...item.layout,
+                    minW: widget.layoutSettings.minW,
+                    maxW: widget.layoutSettings.maxW,
+                    minH: widget.layoutSettings.minH,
+                    maxH: widget.layoutSettings.maxH,
+                  }}
+                >
+                  <MTopLayerEdit
+                    dashboardItems={dashboardItems}
+                    dashboardItem={item}
+                    devices={devices.map((x) => ({
+                      ...x,
+                      gateway: project?.gateways.find(
+                        (g) => g.id === x.gatewayId,
+                      ),
+                    }))}
+                    onSave={(items) => {
+                      setDashboardItems(items);
                     }}
                   >
-                    <TopLayerEdit
-                      webDashboard={dashboardItems}
-                      dashboardItem={item}
-                      devices={devices.map((x) => ({
-                        ...x,
-                        gateway: project?.gateways.find(
-                          (g) => g.id === x.gatewayId,
-                        ),
-                      }))}
-                      onSave={(items) => {
-                        setDashboardItems(items);
-                      }}
-                    >
-                      <widget.Widget
-                        properties={item.properties}
-                        defaultProperties={widget.defaultProperties}
-                        device={devices.find(
-                          (x) => x.id === item.properties.deviceId,
-                        )}
-                      />
-                    </TopLayerEdit>
-                  </BaseDashboardItem>
-                );
-              })}
-            </GridLayout>
-          </DashboardLayout>
-        </Col>
-      </Row>
+                    <widget.Widget
+                      properties={item.properties}
+                      defaultProperties={widget.defaultProperties}
+                      device={devices.find(
+                        (x) => x.id === item.properties.deviceId,
+                      )}
+                    />
+                  </MTopLayerEdit>
+                </BaseDashboardItem>
+              );
+            })}
+          </GridLayout>
+        </DashboardLayout>
+      </Flex>
 
       <FloatButton.Group>
         <FloatButton
-          icon={<LeftOutlined />}
-          tooltip={t('Go back')}
+          icon={<PlusOutlined />}
+          onClick={() => setOpenSelectWidgetDrawer(true)}
+        />
+
+        <FloatButton
+          icon={<CloseOutlined />}
+          tooltip={t('Cancel')}
           onClick={() =>
             navigate({
-              to: '/projects/$projectId/dashboard',
+              to: '/m/projects/$projectId/dashboard',
               params: { projectId },
             })
           }
@@ -317,33 +276,21 @@ function ProjectIdEditDashboard() {
           icon={<SaveOutlined />}
           tooltip={t('Save')}
           type="primary"
-          onClick={() => updateWebDashboard.mutate(dashboardTabs)}
+          onClick={() => updatemobileDashboard.mutate(dashboardTabs)}
         />
       </FloatButton.Group>
     </>
   );
 }
 
-const ListWidgetLayout = styled(
-  Space,
-  styledOmit$PropsOptions,
-)<TAntdToken>(({ $token }) => ({
-  padding: $token.paddingXS,
-  borderRadius: $token.borderRadius,
-  backgroundColor: $token.colorBgLayout,
-  height: 'calc(100vh - 275px)',
-  width: '100%',
-}));
-
 const DashboardLayout = styled.div<TAntdToken>`
   background-color: ${({ $token }) => $token.colorBgContainer};
   border-radius: ${({ $token }) => $token.borderRadius}px;
   border: 1px dashed ${({ $token }) => $token.colorBorder};
   position: relative;
-  /* overflow-y: hidden; */
-  max-height: calc(100vh - 330px);
+  max-height: calc(100dvh - 300px);
   overflow-y: auto;
-  width: '100%';
+  width: 100%;
 `;
 
 const DashboardBoxRow = styled.div<TAntdToken>`
@@ -357,14 +304,14 @@ const DashboardBoxRow = styled.div<TAntdToken>`
   width: 100%;
   overflow: hidden;
   display: grid;
-  grid-template-columns: repeat(24, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(${NUMBER_OF_COLUMNS}, 1fr);
+  gap: ${({ $token }) => $token.paddingXS}px;
 `;
 
 const DashboardBoxCol = styled.div<TAntdToken>`
   border-radius: ${({ $token }) => $token.borderRadius}px;
-  padding: ${({ $token }) => $token.sizeXXS};
-  height: 96px;
+  /* padding: ${({ $token }) => $token.paddingXXS}px; */
+  height: ${ITEM_UNIT_HEIGHT}px;
 `;
 
 const DashboardBox = styled.div<TAntdToken>`

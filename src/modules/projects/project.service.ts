@@ -3,7 +3,7 @@ import httpService from '@/shared/http-service';
 import { TDevice } from '../devices/device.model';
 import { TCreateProjectDto } from './dto/create-project.dto';
 import { TGetListProjectDto } from './dto/get-list-project.dto';
-import { TUpdateProjectWebDashboardDto } from './dto/update-project-web-dashboard.dto';
+import { TUpdateDashboardDto } from './dto/update-project-web-dashboard.dto';
 import { TProjectBasic, TProjectDetail } from './project.model';
 
 class ProjectService {
@@ -56,9 +56,9 @@ class ProjectService {
     });
   }
 
-  updateWebDashboard(id: string, data: TUpdateProjectWebDashboardDto) {
+  updateDashboard(id: string, data: TUpdateDashboardDto) {
     return httpService.request<TProjectBasic>({
-      url: `/api/projects/${id}/web-dashboard`,
+      url: `/api/projects/${id}/dashboard`,
       method: 'PATCH',
       data,
     });

@@ -12,10 +12,8 @@ import * as uuid from 'uuid';
 import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
 import useGetListDevice from '@/modules/devices/hooks/use-get-list-device';
-import {
-  BaseDashboardItem,
-  TopLayerEdit,
-} from '@/modules/projects/components/dashboard-item';
+import BaseDashboardItem from '@/modules/projects/components/base-dashboard-item';
+import { TopLayerEdit } from '@/modules/projects/components/dashboard-item-top-layer';
 import DragableTabs from '@/modules/projects/components/dragable-tabs';
 import {
   FULL_ATTRIBUTES_WIDGETS,
@@ -62,7 +60,7 @@ function ProjectIdEditDashboard() {
 
   const updateWebDashboard = useMutation({
     mutationFn: (webDashboard: TWebDashboardTab[]) =>
-      projectService.updateWebDashboard(projectId, {
+      projectService.updateDashboard(projectId, {
         webDashboard: webDashboard,
       }),
     onError: (error: AxiosError<THttpResponse<null>>) =>
@@ -273,7 +271,7 @@ function ProjectIdEditDashboard() {
                     }}
                   >
                     <TopLayerEdit
-                      webDashboard={dashboardItems}
+                      dashboardItems={dashboardItems}
                       dashboardItem={item}
                       devices={devices.map((x) => ({
                         ...x,

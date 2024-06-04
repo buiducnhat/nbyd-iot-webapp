@@ -11,7 +11,7 @@ import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
 import { socket } from '@/modules/app/socket-io';
 import useGetListDevice from '@/modules/devices/hooks/use-get-list-device';
-import { BaseDashboardItem } from '@/modules/projects/components/dashboard-item';
+import BaseDashboardItem from '@/modules/projects/components/base-dashboard-item';
 import DragableTabs from '@/modules/projects/components/dragable-tabs';
 import { FULL_ATTRIBUTES_WIDGETS } from '@/modules/projects/components/widgets';
 import { TSocketDevicCommandDto } from '@/modules/projects/dto/socket-gateway-command.dto';
@@ -26,15 +26,15 @@ const GridLayout = WidthProvider(RGL);
 export const Route = createFileRoute(
   '/_app/m/projects/$projectId/_layout/dashboard/',
 )({
-  component: ProjectIdDashboard,
+  component: MProjectIdDashboard,
 });
 
 const DEFAULT_ROW_NUM = 7;
-const NUMBER_OF_COLUMNS = 24;
-const ITEM_UNIT_HEIGHT = 96;
+const NUMBER_OF_COLUMNS = 8;
+const ITEM_UNIT_HEIGHT = 80;
 const MARGIN_DASHBOARD = 8;
 
-function ProjectIdDashboard() {
+function MProjectIdDashboard() {
   const { projectId } = Route.useParams();
   const navigate = useNavigate();
 
@@ -52,8 +52,9 @@ function ProjectIdDashboard() {
 
   const items = useMemo(
     () =>
-      project?.webDashboard?.find((x) => x.key === activeTabKey)?.content ?? [],
-    [activeTabKey, project?.webDashboard],
+      project?.mobileDashboard?.find((x) => x.key === activeTabKey)?.content ??
+      [],
+    [activeTabKey, project?.mobileDashboard],
   );
 
   const maxY = useMemo(
@@ -78,10 +79,10 @@ function ProjectIdDashboard() {
   }, [JSON.stringify(devices)]);
 
   useEffect(() => {
-    if (project?.webDashboard) {
-      setActiveTabKey(project?.webDashboard?.[0]?.key);
+    if (project?.mobileDashboard) {
+      setActiveTabKey(project?.mobileDashboard?.[0]?.key);
     }
-  }, [project?.webDashboard]);
+  }, [project?.mobileDashboard]);
 
   useEffect(() => {
     if (connectedSocket) {
@@ -108,7 +109,7 @@ function ProjectIdDashboard() {
       <MacScrollbar>
         <DragableTabs
           viewMode
-          tabs={project?.webDashboard || []}
+          tabs={project?.mobileDashboard || []}
           setTabs={() => null}
           activeKey={activeTabKey}
           setActiveKey={setActiveTabKey}
@@ -192,7 +193,7 @@ function ProjectIdDashboard() {
         type="primary"
         onClick={() =>
           navigate({
-            to: '/projects/d/$projectId/dashboard/edit',
+            to: '/m/projects/$projectId/dashboard/edit',
             params: { projectId },
           })
         }

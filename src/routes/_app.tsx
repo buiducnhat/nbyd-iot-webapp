@@ -1,6 +1,11 @@
 import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
-import { Outlet, createFileRoute, useNavigate } from '@tanstack/react-router';
+import {
+  Outlet,
+  createFileRoute,
+  useNavigate,
+  useRouter,
+} from '@tanstack/react-router';
 import { Image, Layout, Space } from 'antd';
 import { onMessage } from 'firebase/messaging';
 import { useEffect } from 'react';
@@ -23,6 +28,7 @@ export const Route = createFileRoute('/_app')({
 
 function AppLayout() {
   const navigate = useNavigate();
+  const router = useRouter();
 
   const authQuery = useAuth();
 
@@ -48,10 +54,15 @@ function AppLayout() {
   });
 
   useEffect(() => {
-    if (authQuery.isError || !user) {
-      navigate({ to: '/auth/login' });
+    if (authQuery.isError) {
+      navigate({
+        to: '/auth/login',
+        search: {
+          from: router.history.location.pathname,
+        },
+      });
     }
-  }, [authQuery.isError, navigate, user]);
+  }, [authQuery.isError, navigate, router.history.location.pathname, user]);
 
   useEffect(() => {
     if (authQuery.isSuccess && user) {

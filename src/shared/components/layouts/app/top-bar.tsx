@@ -1,5 +1,4 @@
 import {
-  ArrowLeftOutlined,
   MoonOutlined,
   SunOutlined,
   UnlockFilled,
@@ -10,7 +9,6 @@ import { useMutation } from '@tanstack/react-query';
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
   Avatar,
-  Button,
   Dropdown,
   Layout,
   MenuProps,
@@ -85,16 +83,26 @@ const MainTopBar = () => {
         align-items: center;
       `}
     >
-      <Button
-        type="text"
-        icon={<ArrowLeftOutlined />}
-        onClick={() => navigate({ to: '/' })}
+      <div
         css={css`
-          font-size: 16px !important;
-          width: 64px !important;
-          height: 64px !important;
+          cursor: pointer;
+          width: 100%;
+          padding: ${token.paddingSM}px;
+          display: flex;
+          align-items: center;
         `}
-      />
+        onClick={() => navigate({ to: '/' })}
+      >
+        <img
+          src="/assets/images/logo.png"
+          alt="logo"
+          width={24}
+          css={css`
+            border-radius: ${token.borderRadius}px;
+            transition: ease-in-out 1s;
+          `}
+        />
+      </div>
 
       <div
         css={css`

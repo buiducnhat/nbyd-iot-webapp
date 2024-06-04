@@ -18,29 +18,29 @@ import { useEffect, useMemo, useState } from 'react';
 
 import useApp from '@/hooks/use-app';
 import { TDevice } from '@/modules/devices/device.model';
+import BaseDashboardItem from '@/modules/projects/components/base-dashboard-item';
 
 import { FULL_ATTRIBUTES_WIDGETS, TDashboardItem, TValidDeviceType } from '.';
-import { BaseDashboardItem } from '../dashboard-item';
 
 type TBaseWidgetSettingsFormProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  webDashboard: TDashboardItem[];
+  dashboardItems: TDashboardItem[];
   dashboardItem: TDashboardItem;
   initTitle?: string;
   devices: TDevice[];
-  onSave: (webDashboard: TDashboardItem[]) => void;
+  onSave: (dashboardItems: TDashboardItem[]) => void;
 };
 
-function BaseWidgetSettingsModal({
+const BaseWidgetSettingsModal = ({
   open,
   setOpen,
-  webDashboard,
+  dashboardItems,
   dashboardItem,
   initTitle,
   devices,
   onSave,
-}: TBaseWidgetSettingsFormProps) {
+}: TBaseWidgetSettingsFormProps) => {
   const { t, token } = useApp();
 
   const [form] = Form.useForm();
@@ -59,23 +59,23 @@ function BaseWidgetSettingsModal({
   }, [dashboardItem.type, formValues]);
 
   const onFinishForm = (data: any) => {
-    const foundItem = webDashboard.find(
+    const foundItem = dashboardItems.find(
       (item) => item.layout.i === dashboardItem.layout.i,
     );
 
     if (!foundItem) {
-      webDashboard.push({
+      dashboardItems.push({
         ...dashboardItem,
         properties: data,
       });
     } else {
       foundItem.properties = data;
-      webDashboard = webDashboard.map((item) =>
+      dashboardItems = dashboardItems.map((item) =>
         item.layout.i === dashboardItem.layout.i ? foundItem : item,
       );
     }
 
-    onSave(webDashboard);
+    onSave(dashboardItems);
 
     setOpen(false);
   };
@@ -260,6 +260,6 @@ function BaseWidgetSettingsModal({
       </Row>
     </Modal>
   );
-}
+};
 
 export default BaseWidgetSettingsModal;

@@ -1,5 +1,6 @@
 import { TWebDashboardTab } from '../project.model';
 
-export type TUpdateProjectWebDashboardDto = {
-  webDashboard: TWebDashboardTab[];
+export type TUpdateDashboardDto = {
+  webDashboard?: TWebDashboardTab[];
+  mobileDashboard?: TWebDashboardTab[];
 };

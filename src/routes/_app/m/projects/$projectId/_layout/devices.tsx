@@ -27,10 +27,10 @@ import SoftButton from '@/shared/components/soft-button';
 export const Route = createFileRoute(
   '/_app/m/projects/$projectId/_layout/devices',
 )({
-  component: ProjectIdMDevices,
+  component: MProjectIdDevices,
 });
 
-function ProjectIdMDevices() {
+function MProjectIdDevices() {
   const { projectId } = Route.useParams();
 
   const { t, token, antdApp } = useApp();
@@ -67,7 +67,7 @@ function ProjectIdMDevices() {
         <>
           <DeviceFormDrawer
             open={openCreateForm}
-            setOpen={setOpenPreview}
+            setOpen={setOpenCreateForm}
             project={project}
             refetch={devicesQuery.refetch}
             devices={devices}
