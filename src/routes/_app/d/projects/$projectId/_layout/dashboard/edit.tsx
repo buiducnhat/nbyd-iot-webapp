@@ -164,6 +164,7 @@ function ProjectIdEditDashboard() {
                 <BaseDashboardItem
                   css={css`
                     cursor: grab;
+                    min-height: ${ITEM_UNIT_HEIGHT}px;
                   `}
                   $token={token}
                   className="droppable-element"
