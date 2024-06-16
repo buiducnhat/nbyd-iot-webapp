@@ -129,7 +129,9 @@ function ProjectIdDevices() {
                 font-size: ${token.fontSizeLG}px;
               `}
             >
-              {t('deviceWithCount', { count: devices?.length })}
+              {devices?.length +
+                ' ' +
+                t(devices?.length === 1 ? 'device' : 'devices')}
             </Typography.Text>
 
             {selectedDeviceIds.length > 0 && (

@@ -59,6 +59,12 @@ export const getEsp32TemplateCode = (
   return `#include <NBYD_IOT.h>\n\n#define PROJECT_ID "${projectId}"\n#define DEVICE_AUTH_TOKEN "${gatewayAuthToken}"`;
 };
 
+export const getLinuxTemplateCode = (
+  projectId: string,
+  gatewayAuthToken = '***',
+) =>
+  `from src.nbyd import Nbyd\n\nPROJECT_ID = "${projectId}"\nGATEWAY_AUTH_TOKEN = "${gatewayAuthToken}"\n\ndef main():\n\tnbyd = Nbyd(PROJECT_ID, GATEWAY_AUTH_TOKEN)\n\tnbyd.run()\n\nif __name__ == "__main__":\n\tmain()\n`;
+
 export const isDefined = (value?: any) => {
   return value !== undefined && value !== null;
 };

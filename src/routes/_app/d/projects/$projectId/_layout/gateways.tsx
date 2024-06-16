@@ -112,7 +112,9 @@ function ProjectIdGateways() {
               font-size: ${token.fontSizeLG}px;
             `}
           >
-            {t('gatewayWithCount', { count: project?.gateways.length })}
+            {project?.gateways.length +
+              ' ' +
+              t(project?.gateways.length === 1 ? 'gateway' : 'gateways')}
           </Typography.Text>
 
           <SoftButton
@@ -144,9 +146,8 @@ function ProjectIdGateways() {
               title: t('Gateway'),
               dataIndex: 'name',
               key: 'name',
-              fixed: 'left',
               render: (name: string, record) => (
-                <Space direction="vertical" align="center">
+                <Space direction="vertical">
                   <Image
                     css={css`
                       border-radius: ${token.borderRadius}px;
@@ -197,12 +198,12 @@ function ProjectIdGateways() {
             },
             {
               title: t('Last online'),
-              dataIndex: 'lastOnlineAt',
-              key: 'lastOnlineAt',
+              dataIndex: 'lastOnline',
+              key: 'lastOnline',
               render: (lastOnlineAt: string) => (
                 <Typography.Text>
                   {lastOnlineAt
-                    ? dayjs(lastOnlineAt).format('YYYY-MM-DD HH:mm')
+                    ? dayjs(lastOnlineAt).format('YYYY-MM-DD HH:mm:ss')
                     : '-'}
                 </Typography.Text>
               ),

@@ -11,7 +11,7 @@ import {
 
 import useApp from '@/hooks/use-app';
 import { TAntdToken } from '@/shared/types/tst.type';
-import { getEsp32TemplateCode } from '@/shared/utils';
+import { getEsp32TemplateCode, getLinuxTemplateCode } from '@/shared/utils';
 
 import { EGatewayHardware, TGateway } from '../gateway.model';
 
@@ -33,7 +33,7 @@ const GatewayCodeDrawer = ({
   const code = useMemo(() => {
     return gateway.hardware === EGatewayHardware.ESP32
       ? getEsp32TemplateCode(projectId, gateway?.authToken)
-      : '';
+      : getLinuxTemplateCode(projectId, gateway?.authToken);
   }, [gateway, projectId]);
 
   return (
@@ -73,7 +73,9 @@ const GatewayCodeDrawer = ({
           customStyle={{
             background: 'transparent',
           }}
-          language="cpp"
+          language={
+            gateway.hardware === EGatewayHardware.ESP32 ? 'cpp' : 'python'
+          }
           style={isDarkTheme ? codeHighlightDarkTheme : codeHighlightLightTheme}
         >
           {code}

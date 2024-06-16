@@ -1,4 +1,6 @@
 import {
+  BellOutlined,
+  GlobalOutlined,
   MoonOutlined,
   SunOutlined,
   UnlockFilled,
@@ -9,16 +11,18 @@ import { useMutation } from '@tanstack/react-query';
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
   Avatar,
+  Button,
   Dropdown,
+  Flex,
   Layout,
   MenuProps,
-  Space,
   Switch,
   theme,
 } from 'antd';
 import { useCallback, useMemo } from 'react';
 
 import useApp from '@/hooks/use-app';
+import i18n from '@/i18n';
 import { useAppStore } from '@/modules/app/app.zustand';
 import authService from '@/modules/auth/auth.service';
 import { useAuthStore } from '@/modules/auth/auth.zustand';
@@ -110,17 +114,40 @@ const MainTopBar = () => {
         `}
       />
 
-      <Space
+      <Flex
         css={css`
           margin-right: ${token.margin}px;
         `}
+        align="center"
+        gap={token.size}
       >
+        <Dropdown
+          trigger={['click']}
+          menu={{
+            items: [
+              { key: 'en', label: 'English' },
+              { key: 'vi', label: 'Tiếng Việt' },
+            ].map((item) => ({
+              ...item,
+              onClick: () => {
+                i18n.changeLanguage(item.key);
+                localStorage.setItem('lang', item.key);
+              },
+            })),
+          }}
+          placement="bottomRight"
+        >
+          <Button icon={<GlobalOutlined />} type="text"></Button>
+        </Dropdown>
+
         <Switch
           checkedChildren={<MoonOutlined />}
           unCheckedChildren={<SunOutlined />}
           checked={gTheme.algorithm.includes(theme.darkAlgorithm)}
           onChange={() => toggleTheme()}
         />
+
+        <Button icon={<BellOutlined />} type="link"></Button>
 
         <Dropdown
           trigger={['click']}
@@ -138,7 +165,7 @@ const MainTopBar = () => {
             {user?.firstName.charAt(0)}
           </Avatar>
         </Dropdown>
-      </Space>
+      </Flex>
     </Layout.Header>
   );
 };

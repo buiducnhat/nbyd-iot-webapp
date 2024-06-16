@@ -2,6 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 import enTranslation from './en/translation.json';
+import viTranslation from './vi/translation.json';
 
 for (const key in enTranslation) {
   if (Object.prototype.hasOwnProperty.call(enTranslation, key)) {
@@ -11,7 +12,7 @@ for (const key in enTranslation) {
 }
 
 i18n.use(initReactI18next).init({
-  lng: 'en',
+  lng: localStorage.getItem('lang') || 'en',
   fallbackLng: 'en',
   initImmediate: true,
   compatibilityJSON: 'v4',
@@ -22,6 +23,9 @@ i18n.use(initReactI18next).init({
   resources: {
     en: {
       translation: enTranslation,
+    },
+    vi: {
+      translation: viTranslation,
     },
   },
   react: {

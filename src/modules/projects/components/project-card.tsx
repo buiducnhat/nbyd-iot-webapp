@@ -38,9 +38,11 @@ const ProjectCard = ({ project }: TProjectCardProps) => {
       >
         <Card.Meta
           title={project.name}
-          description={t('gatewayWithCount', {
-            count: project._count.gateways,
-          })}
+          description={
+            project._count.gateways +
+            ' ' +
+            t(project._count.gateways === 1 ? 'gateway' : 'gateways')
+          }
         />
       </Card>
     </Link>
