@@ -41,11 +41,11 @@ class DeviceService {
     });
   }
 
-  getListByProject(projectId: string, needValues = false) {
+  getListByProject(projectId: string, limitValue = 0) {
     return httpService.request<TDevice[]>({
       url: `/api/projects/${projectId}/devices`,
       method: 'GET',
-      params: { needValues },
+      params: { limitValue },
     });
   }
 
@@ -63,7 +63,7 @@ class DeviceService {
 
     switch (type) {
       case EDeviceType.DIGITAL:
-        result = Array.from({ length: 14 }, (_, i) => i).map((i) => ({
+        result = Array.from({ length: 20 }, (_, i) => i).map((i) => ({
           label: `D${i}`,
           value: `D${i}`,
         }));

@@ -55,7 +55,7 @@ const SelectWidgetDrawer = ({
               key={widgetType}
               onClick={() => onSelected(widgetType as TWidgetType)}
             >
-              <widget.Widget />
+              <widget.Widget context="selector" />
             </BaseDashboardItem>
           );
         })}

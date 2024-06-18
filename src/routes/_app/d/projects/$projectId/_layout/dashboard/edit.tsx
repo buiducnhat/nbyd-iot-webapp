@@ -173,7 +173,7 @@ function ProjectIdEditDashboard() {
                   onDragStart={() => setDroppingItem(widget)}
                   onDragEnd={() => setDroppingItem(undefined)}
                 >
-                  <widget.Widget />
+                  <widget.Widget context="selector" />
                 </BaseDashboardItem>
               );
             })}
@@ -285,6 +285,7 @@ function ProjectIdEditDashboard() {
                       }}
                     >
                       <widget.Widget
+                        context="editor"
                         properties={item.properties}
                         defaultProperties={widget.defaultProperties}
                         device={devices.find(

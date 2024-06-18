@@ -4,6 +4,7 @@ import RGL from 'react-grid-layout';
 import { TDevice } from '@/modules/devices/device.model';
 import { TFormField } from '@/shared/types/form-field';
 
+import BasicChartWidget from './basic-chart';
 import DoorSensor from './door-sensor';
 import InputNumberWidget from './input-number';
 import InputTextWidget from './input-text';
@@ -23,6 +24,7 @@ export type TWidgetType =
   | 'SLIDER'
   | 'INPUT_NUMBER'
   | 'INPUT_TEXT'
+  | 'BASIC_CHART'
   | 'DOOR_SENSOR'
   | 'SWITCH_1G'
   | 'SWITCH_2G'
@@ -35,6 +37,12 @@ export type TWidgetProps<TProperties = any, TValue = any> = {
   properties?: TProperties;
   defaultProperties?: TProperties;
   device?: TDevice;
+  values?: {
+    deviceId: string;
+    value: TValue;
+    createdAt: string;
+  }[];
+  context?: 'dashboard' | 'selector' | 'editor' | 'preview';
 };
 
 export type TValidDeviceType =
@@ -59,6 +67,7 @@ export type TWidgetCommon = {
   properties?: any;
   propertiesFields: TFormField[];
   defaultProperties?: any;
+  placeholderImageUrl?: string;
 };
 
 export type TDashboardItem = {
@@ -242,6 +251,34 @@ export const FULL_ATTRIBUTES_WIDGETS: Record<TWidgetType, TWidgetCommon> = {
     defaultProperties: {
       value: '',
     },
+  },
+  BASIC_CHART: {
+    type: 'BASIC_CHART',
+    Widget: BasicChartWidget,
+    layoutSettings: {
+      i: 'BASIC_CHART',
+      w: 8,
+      h: 3,
+      x: 0,
+      y: 0,
+      minW: 8,
+      maxW: 24,
+      minH: 3,
+      maxH: 6,
+    },
+    validDeviceTypes: [
+      'VIRTUAL__INTEGER',
+      'VIRTUAL__FLOAT',
+      'DIGITAL_INPUT_INTEGER',
+      'DIGITAL_OUTPUT_INTEGER',
+      'ANALOG_INPUT_INTEGER',
+      'ANALOG_OUTPUT_INTEGER',
+      'ZIGBEE__DOOR_SENSOR',
+      'ZIGBEE__TH_SENSOR',
+    ],
+    propertiesFields: [{ label: 'Color', name: 'color', type: 'color-picker' }],
+    defaultProperties: {},
+    placeholderImageUrl: '/assets/images/chart-placeholder.webp',
   },
   DOOR_SENSOR: {
     type: 'DOOR_SENSOR',

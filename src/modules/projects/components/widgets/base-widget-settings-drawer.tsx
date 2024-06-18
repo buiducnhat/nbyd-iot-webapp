@@ -190,13 +190,6 @@ const BaseWidgetSettingsDrawer = ({
                 .filter((x) => {
                   const w = FULL_ATTRIBUTES_WIDGETS[dashboardItem.type];
 
-                  console.log(
-                    w.validDeviceTypes,
-                    `${x.type}_${x.mode || ''}_${
-                      x.dataType || x.pin
-                    }` as TValidDeviceType,
-                  );
-
                   return (
                     w.validDeviceTypes.includes(
                       `${x.type}_${x.mode || ''}_${

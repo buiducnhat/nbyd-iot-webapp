@@ -13,7 +13,6 @@ export const requestFcmPermission = async () => {
 
     return token;
   } else if (permission === 'denied') {
-    console.log('[Notification Permission] denied');
     return null;
   }
 

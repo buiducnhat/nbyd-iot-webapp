@@ -6,6 +6,7 @@ import { FloatButton } from 'antd';
 import { MacScrollbar } from 'mac-scrollbar';
 import { useEffect, useMemo, useState } from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
+import { useDeepCompareEffect } from 'react-use';
 
 import useApp from '@/hooks/use-app';
 import { useAppStore } from '@/modules/app/app.zustand';
@@ -26,15 +27,16 @@ const GridLayout = WidthProvider(RGL);
 export const Route = createFileRoute(
   '/_app/m/projects/$projectId/_layout/dashboard/',
 )({
-  component: MProjectIdDashboard,
+  component: ProjectIdDashboard,
 });
 
 const DEFAULT_ROW_NUM = 7;
 const NUMBER_OF_COLUMNS = 8;
 const ITEM_UNIT_HEIGHT = 80;
 const MARGIN_DASHBOARD = 8;
+const LIMIT_DEVICE_VALUE = 100;
 
-function MProjectIdDashboard() {
+function ProjectIdDashboard() {
   const { projectId } = Route.useParams();
   const navigate = useNavigate();
 
@@ -43,10 +45,13 @@ function MProjectIdDashboard() {
   const connectedSocket = useAppStore((state) => state.connectedSocket);
 
   const { project } = useGetProjectDetail(projectId);
-  const { devices } = useGetListDevice(projectId, true);
+  const { devices } = useGetListDevice(projectId, LIMIT_DEVICE_VALUE);
 
-  const [deviceValues, setDeviceValues] = useState<{
+  const [deviceValueMap, setDeviceValueMap] = useState<{
     [deviceId: string]: any;
+  }>({});
+  const [deviceValuesMap, setDeviceValuesMap] = useState<{
+    [deviceId: string]: any[];
   }>({});
   const [activeTabKey, setActiveTabKey] = useState<string>('');
 
@@ -66,17 +71,28 @@ function MProjectIdDashboard() {
     [items],
   );
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (devices) {
-      setDeviceValues(
+      setDeviceValueMap(
         devices.reduce((prev: { [deviceId: string]: any }, curr) => {
           prev[curr.id] = curr.values?.[0]?.value ?? curr.defaultValue ?? '';
           return prev;
         }, {}),
       );
+
+      for (const device of devices) {
+        if (device.enabledHistory) {
+          setDeviceValuesMap((prev) => {
+            const values = device.values ?? [];
+            if (values.length > LIMIT_DEVICE_VALUE) {
+              values.splice(0, values.length - LIMIT_DEVICE_VALUE);
+            }
+            return { ...prev, [device.id]: values };
+          });
+        }
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(devices)]);
+  }, [devices]);
 
   useEffect(() => {
     if (project?.mobileDashboard) {
@@ -91,7 +107,18 @@ function MProjectIdDashboard() {
       } as TSocketJoinRoomDto);
 
       socket.on('/devices/data', (data: TSocketGatewayDataDto) => {
-        setDeviceValues((prev) => ({ ...prev, [data.deviceId]: data.value }));
+        setDeviceValueMap((prev) => ({ ...prev, [data.deviceId]: data.value }));
+
+        if (devices.find((x) => x.id === data.deviceId)?.enabledHistory) {
+          setDeviceValuesMap((prev) => {
+            const values = prev[data.deviceId] || [];
+            values.push(data);
+            if (values.length > LIMIT_DEVICE_VALUE) {
+              values.shift();
+            }
+            return { ...prev, [data.deviceId]: values };
+          });
+        }
       });
 
       return () => {
@@ -102,7 +129,7 @@ function MProjectIdDashboard() {
         socket.off('/devices/data');
       };
     }
-  }, [projectId, connectedSocket]);
+  }, [projectId, connectedSocket, devices]);
 
   return (
     <>
@@ -155,28 +182,45 @@ function MProjectIdDashboard() {
                   draggable={false}
                 >
                   <widget.Widget
+                    context="dashboard"
                     properties={item.properties}
                     defaultProperties={widget.defaultProperties}
                     device={device}
                     value={
                       device
-                        ? deviceValues[device.id]
+                        ? deviceValueMap[device.id]
                         : widget.defaultProperties.value
                     }
-                    onChange={(value) => {
+                    values={device?.id ? deviceValuesMap[device?.id] : []}
+                    onChange={(newVal) => {
                       if (device) {
-                        if (connectedSocket && isDefined(value)) {
+                        if (connectedSocket && isDefined(newVal)) {
                           socket.emit('/devices/command', {
                             projectId,
                             gatewayId: device?.gatewayId,
                             deviceId: device?.id,
-                            value,
+                            value: newVal,
                           } as TSocketDevicCommandDto);
                         }
-                        setDeviceValues((prev) => ({
+                        setDeviceValueMap((prev) => ({
                           ...prev,
-                          [device.id]: value,
+                          [device.id]: newVal,
                         }));
+
+                        if (device.enabledHistory) {
+                          setDeviceValuesMap((prev) => {
+                            const values = prev[device.id] || [];
+                            if (values.length > LIMIT_DEVICE_VALUE) {
+                              values.shift();
+                            }
+                            values.unshift({
+                              deviceId: device.id,
+                              value: newVal,
+                              createdAt: new Date().toISOString(),
+                            });
+                            return { ...prev, [device.id]: values };
+                          });
+                        }
                       }
                     }}
                   />

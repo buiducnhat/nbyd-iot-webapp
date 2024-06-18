@@ -2,10 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 
 import deviceService from '../device.service';
 
-function useGetListDevice(projectId: string, needValues = false) {
+function useGetListDevice(projectId: string, limitValue = 0) {
   const devicesQuery = useQuery({
-    queryKey: ['/projects/devices', projectId, needValues],
-    queryFn: async () => deviceService.getListByProject(projectId, needValues),
+    queryKey: ['/projects/devices', projectId, limitValue],
+    queryFn: async () => deviceService.getListByProject(projectId, limitValue),
     enabled: !!projectId,
   });
 

@@ -241,6 +241,7 @@ function MProjectIdEditDashboard() {
                     }}
                   >
                     <widget.Widget
+                      context="editor"
                       properties={item.properties}
                       defaultProperties={widget.defaultProperties}
                       device={devices.find(

@@ -249,6 +249,7 @@ const BaseWidgetSettingsModal = ({
               `}
             >
               <previewWidget.Widget
+                context="preview"
                 value={previewValue}
                 onChange={setPreviewValue}
                 properties={previewWidget.properties}
